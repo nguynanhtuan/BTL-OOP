@@ -1,0 +1,19 @@
+# Build output
+target/
+build/
+dist/
+
+# IDE
+nbproject/private/
+.nb-gradle/
+build.xml
+
+# Compiled files
+*.class
+
+# Log
+*.log
+
+# System
+.DS_Store
+Thumbs.db
