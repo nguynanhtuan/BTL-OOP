@@ -12,7 +12,7 @@ public class DBConnection {
         + "&characterEncoding=UTF-8";
 
     private static final String USER = "root";
-    private static final String PASSWORD = "admin";
+    private static final String PASSWORD = "Quan@Emiya1415";
 
     public static Connection getConnection() throws Exception {
         return DriverManager.getConnection(URL, USER, PASSWORD);
