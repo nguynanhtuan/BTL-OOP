@@ -3,7 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -12,7 +18,9 @@ package view;
 public class AdminFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminFrame.class.getName());
-
+    private final String DB_URL = "jdbc:mysql://localhost:3306/qldv_db?useSSL=false&serverTimezone=UTC";
+    private final String DB_USER = "root";
+    private final String DB_PASSWORD = "mk";
     /**
      * Creates new form AdminFrame
      */
@@ -20,6 +28,73 @@ public class AdminFrame extends javax.swing.JFrame {
         initComponents();
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        loadDataToTable1("Tất cả");
+        loadDataToTable2();
+    }
+    // Hàm kết nối CSDL
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
+
+    // Load dữ liệu lên bảng Quản lý tin (jTable1) có lọc theo trạng thái
+    private void loadDataToTable1(String statusFilter) {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        String query = "SELECT id, machine_name, username, status, created_date FROM posts";
+        if (!statusFilter.equals("Tất cả")) {
+            query += " WHERE status = ?";
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (!statusFilter.equals("Tất cả")) {
+                pstmt.setString(1, statusFilter);
+            }
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("id"),
+                    rs.getString("machine_name"),
+                    rs.getString("username"),
+                    rs.getString("status"),
+                    rs.getDate("created_date")
+                };
+                model.addRow(row);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi kết nối CSDL (Bảng tin): " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Load dữ liệu lên bảng Quản lý user (jTable2)
+    private void loadDataToTable2() {
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        model.setRowCount(0);
+
+        String query = "SELECT id, username, fullname, phone, role, status FROM users";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("fullname"),
+                    rs.getString("phone"),
+                    rs.getString("role"),
+                    rs.getString("status")
+                };
+                model.addRow(row);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi kết nối CSDL (Bảng user): " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Hàm phụ trợ lấy ID của dòng đang chọn trên JTable
+    private int getSelectedId(int row, javax.swing.JTable table) {
+        return Integer.parseInt(table.getValueAt(row, 0).toString());
     }
 
     /**
@@ -68,6 +143,7 @@ public class AdminFrame extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Làm mới");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -88,16 +164,19 @@ public class AdminFrame extends javax.swing.JFrame {
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Duyệt");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
 
         jButton4.setBackground(new java.awt.Color(255, 153, 0));
         jButton4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Từ chối");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
         jButton5.setBackground(new java.awt.Color(255, 0, 51));
         jButton5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("Xóa");
+        jButton5.addActionListener(this::jButton5ActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -150,6 +229,7 @@ public class AdminFrame extends javax.swing.JFrame {
         jButton6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton6.setForeground(new java.awt.Color(255, 255, 255));
         jButton6.setText("Làm mới");
+        jButton6.addActionListener(this::jButton6ActionPerformed);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -170,11 +250,13 @@ public class AdminFrame extends javax.swing.JFrame {
         jButton7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton7.setForeground(new java.awt.Color(255, 255, 255));
         jButton7.setText("Khóa tài khoản");
+        jButton7.addActionListener(this::jButton7ActionPerformed);
 
         jButton8.setBackground(new java.awt.Color(0, 255, 0));
         jButton8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton8.setForeground(new java.awt.Color(255, 255, 255));
         jButton8.setText("Mở khóa");
+        jButton8.addActionListener(this::jButton8ActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -249,11 +331,124 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
+        String selectedStatus = (String) jComboBox1.getSelectedItem();
+        loadDataToTable1(selectedStatus);
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        jComboBox1.setSelectedIndex(0);
+        loadDataToTable1("Tất cả");
+        JOptionPane.showMessageDialog(this, "Đã làm mới danh sách quản lý tin!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần duyệt!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int id = getSelectedId(selectedRow, jTable1);
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("UPDATE posts SET status = 'APPROVED' WHERE id = ?")) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            loadDataToTable1((String) jComboBox1.getSelectedItem());
+            JOptionPane.showMessageDialog(this, "Đã duyệt thành công tin ID: " + id, "Thành công", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi CSDL: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần từ chối!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int id = getSelectedId(selectedRow, jTable1);
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("UPDATE posts SET status = 'REJECTED' WHERE id = ?")) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            loadDataToTable1((String) jComboBox1.getSelectedItem());
+            JOptionPane.showMessageDialog(this, "Đã từ chối tin ID: " + id, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi CSDL: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int id = getSelectedId(selectedRow, jTable1);
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa tin ID: " + id + "?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection conn = getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement("DELETE FROM posts WHERE id = ?")) {
+                pstmt.setInt(1, id);
+                pstmt.executeUpdate();
+                loadDataToTable1((String) jComboBox1.getSelectedItem());
+                JOptionPane.showMessageDialog(this, "Đã xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Lỗi CSDL: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        loadDataToTable2();
+        JOptionPane.showMessageDialog(this, "Đã làm mới danh sách tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable2.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int id = getSelectedId(selectedRow, jTable2);
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("UPDATE users SET status = 'Hoạt động' WHERE id = ?")) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            loadDataToTable2();
+            JOptionPane.showMessageDialog(this, "Đã mở khóa tài khoản ID: " + id, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi CSDL: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable2.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần khóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int id = getSelectedId(selectedRow, jTable2);
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("UPDATE users SET status = 'Đã khóa' WHERE id = ?")) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            loadDataToTable2();
+            JOptionPane.showMessageDialog(this, "Đã khóa tài khoản ID: " + id, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi CSDL: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments
