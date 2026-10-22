@@ -40,8 +40,8 @@ public class DangKi extends javax.swing.JDialog {
         jPasswordField2 = new javax.swing.JPasswordField();
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        Dang_Ki_ = new javax.swing.JButton();
+        Quay_Lai_ = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -60,11 +60,11 @@ public class DangKi extends javax.swing.JDialog {
 
         jTextField3.addActionListener(this::jTextField3ActionPerformed);
 
-        jButton1.setText("Đăng kí");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        Dang_Ki_.setText("Đăng kí");
+        Dang_Ki_.addActionListener(this::Dang_Ki_ActionPerformed);
 
-        jButton2.setText("Quay lại");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        Quay_Lai_.setText("Quay lại");
+        Quay_Lai_.addActionListener(this::Quay_Lai_ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,9 +98,9 @@ public class DangKi extends javax.swing.JDialog {
                                     .addComponent(jTextField3)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(120, 120, 120)
-                        .addComponent(jButton1)
+                        .addComponent(Dang_Ki_)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(Quay_Lai_)))
                 .addContainerGap(110, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -130,8 +130,8 @@ public class DangKi extends javax.swing.JDialog {
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(Dang_Ki_)
+                    .addComponent(Quay_Lai_))
                 .addContainerGap(61, Short.MAX_VALUE))
         );
 
@@ -142,13 +142,13 @@ public class DangKi extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void Quay_Lai_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Quay_Lai_ActionPerformed
         // TODO add your handling code here:
         this.dispose();
         
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_Quay_Lai_ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void Dang_Ki_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Dang_Ki_ActionPerformed
         // TODO add your handling code here:
         // 1. Lấy dữ liệu từ các ô nhập trên form
         String username = jTextField1.getText().trim();
@@ -194,7 +194,7 @@ public class DangKi extends javax.swing.JDialog {
             javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
         }
         
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_Dang_Ki_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -234,8 +234,8 @@ public class DangKi extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton Dang_Ki_;
+    private javax.swing.JButton Quay_Lai_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -40,14 +40,14 @@ public class DangBanDT extends javax.swing.JDialog {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        Chon_File_ = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        Nut_Luu_ = new javax.swing.JButton();
+        Nut_Huy_ = new javax.swing.JButton();
+        Nut_X_ = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -68,8 +68,8 @@ public class DangBanDT extends javax.swing.JDialog {
 
         jLabel6.setText("Ảnh:");
 
-        jButton1.setText("Chọn File");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        Chon_File_.setText("Chọn File");
+        Chon_File_.addActionListener(this::Chon_File_ActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -121,14 +121,14 @@ public class DangBanDT extends javax.swing.JDialog {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        jButton2.setText("Lưu");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        Nut_Luu_.setText("Lưu");
+        Nut_Luu_.addActionListener(this::Nut_Luu_ActionPerformed);
 
-        jButton3.setText("Hủy");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        Nut_Huy_.setText("Hủy");
+        Nut_Huy_.addActionListener(this::Nut_Huy_ActionPerformed);
 
-        jButton4.setText("X");
-        jButton4.addActionListener(this::jButton4ActionPerformed);
+        Nut_X_.setText("X");
+        Nut_X_.addActionListener(this::Nut_X_ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -151,7 +151,7 @@ public class DangBanDT extends javax.swing.JDialog {
                                 .addComponent(jTextField2)
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jTextField3)
-                                .addComponent(jButton1))
+                                .addComponent(Chon_File_))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(112, 112, 112)
@@ -160,15 +160,15 @@ public class DangBanDT extends javax.swing.JDialog {
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(46, 46, 46)
-                        .addComponent(jButton2)
+                        .addComponent(Nut_Luu_)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3)))
+                        .addComponent(Nut_Huy_)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(65, 65, 65)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton4)
+                .addComponent(Nut_X_)
                 .addGap(65, 65, 65))
         );
         layout.setVerticalGroup(
@@ -177,7 +177,7 @@ public class DangBanDT extends javax.swing.JDialog {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton4))
+                    .addComponent(Nut_X_))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -197,7 +197,7 @@ public class DangBanDT extends javax.swing.JDialog {
                 .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jButton1))
+                    .addComponent(Chon_File_))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -205,8 +205,8 @@ public class DangBanDT extends javax.swing.JDialog {
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(Nut_Luu_)
+                    .addComponent(Nut_Huy_))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
@@ -217,12 +217,12 @@ public class DangBanDT extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void Nut_X_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_X_ActionPerformed
         // TODO add your handling code here:
         this.dispose();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_Nut_X_ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void Chon_File_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Chon_File_ActionPerformed
         // TODO add your handling code here:
         javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
     // Bộ lọc chỉ cho phép chọn các định dạng ảnh phổ biến
@@ -235,9 +235,9 @@ public class DangBanDT extends javax.swing.JDialog {
         
             javax.swing.JOptionPane.showMessageDialog(this, "Đã chọn ảnh: " + selectedFile.getName());
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_Chon_File_ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void Nut_Luu_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_Luu_ActionPerformed
         // TODO add your handling code here:
         // 1. Lấy dữ liệu từ các ô nhập trên form
         String tenMay = jTextField1.getText().trim();
@@ -280,9 +280,9 @@ public class DangBanDT extends javax.swing.JDialog {
             javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
         }
         
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_Nut_Luu_ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void Nut_Huy_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_Huy_ActionPerformed
         // TODO add your handling code here:
         // TODO add your handling code here:
         int chon = javax.swing.JOptionPane.showConfirmDialog(this, 
@@ -293,7 +293,7 @@ public class DangBanDT extends javax.swing.JDialog {
         if (chon == javax.swing.JOptionPane.YES_OPTION) {
             this.dispose(); // Chỉ đóng form khi người dùng bấm "Yes"
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_Nut_Huy_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -333,10 +333,10 @@ public class DangBanDT extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton Chon_File_;
+    private javax.swing.JButton Nut_Huy_;
+    private javax.swing.JButton Nut_Luu_;
+    private javax.swing.JButton Nut_X_;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

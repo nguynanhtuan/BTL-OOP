@@ -36,8 +36,8 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jPasswordField2 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        Dang_Nhap_ = new javax.swing.JButton();
+        Dang_Ki_ = new javax.swing.JButton();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -54,11 +54,11 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
 
         jLabel4.setText("Password:");
 
-        jButton1.setText("Đăng nhập");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        Dang_Nhap_.setText("Đăng nhập");
+        Dang_Nhap_.addActionListener(this::Dang_Nhap_ActionPerformed);
 
-        jButton3.setText("Đăng kí");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        Dang_Ki_.setText("Đăng kí");
+        Dang_Ki_.addActionListener(this::Dang_Ki_ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -78,9 +78,9 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(13, 13, 13)
-                                        .addComponent(jButton1)
+                                        .addComponent(Dang_Nhap_)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton3))
+                                        .addComponent(Dang_Ki_))
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(jTextField1)
                                         .addComponent(jPasswordField2, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))))))
@@ -106,8 +106,8 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
                     .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3))
+                    .addComponent(Dang_Nhap_)
+                    .addComponent(Dang_Ki_))
                 .addContainerGap(121, Short.MAX_VALUE))
         );
 
@@ -118,7 +118,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void Dang_Ki_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Dang_Ki_ActionPerformed
     // Mở giao diện đăng ký
         // TODO add your handling code here:
         // 1. Khởi tạo form DangKi (DangKi là JDialog)
@@ -132,9 +132,9 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
     
     // 4. Khi đóng form Đăng ký thì hiện lại giao diện Đăng nhập
         this.setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_Dang_Ki_ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void Dang_Nhap_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Dang_Nhap_ActionPerformed
         // TODO add your handling code here:
         // 1. Lấy dữ liệu từ ô tên đăng nhập và ô mật khẩu (jPasswordField2)
         String username = jTextField1.getText().trim();
@@ -164,7 +164,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_Dang_Nhap_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -192,9 +192,9 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton Dang_Ki_;
+    private javax.swing.JButton Dang_Nhap_;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
