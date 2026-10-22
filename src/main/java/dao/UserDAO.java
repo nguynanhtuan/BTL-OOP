@@ -10,7 +10,8 @@ public class UserDAO {
 
     // ==================== ĐĂNG NHẬP ====================
     public User login(String username, String password) {
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        
+        String sql = "SELECT * FROM users WHERE username = ? AND password = ? AND status != 'LOCKED'";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -19,14 +20,7 @@ public class UserDAO {
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                User u = new User();
-                u.setId(rs.getInt("id"));
-                u.setUsername(rs.getString("username"));
-                u.setPassword(rs.getString("password"));
-                u.setFullName(rs.getString("full_name"));
-                u.setPhoneNumber(rs.getString("phone_number"));
-                u.setRole(rs.getString("role"));
-                return u;
+                return mapRow(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,8 +33,9 @@ public class UserDAO {
         if (findByUsername(u.getUsername()) != null) {
             return false;
         }
-        String sql = "INSERT INTO users (username, password, full_name, phone_number, role) "
-                   + "VALUES (?, ?, ?, ?, 'USER')";
+        // Thêm status mặc định khi đăng ký mới là ACTIVE
+        String sql = "INSERT INTO users (username, password, full_name, phone_number, role, status) "
+                   + "VALUES (?, ?, ?, ?, 'USER', 'ACTIVE')";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -106,6 +101,21 @@ public class UserDAO {
         return list;
     }
 
+    // ==================== CẬP NHẬT TRẠNG THÁI (Dùng cho Admin) ====================
+    public boolean updateStatus(int userId, String status) {
+        String sql = "UPDATE users SET status = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // ==================== HÀM PHỤ ====================
     private User mapRow(ResultSet rs) throws Exception {
         User u = new User();
@@ -115,6 +125,7 @@ public class UserDAO {
         u.setFullName(rs.getString("full_name"));
         u.setPhoneNumber(rs.getString("phone_number"));
         u.setRole(rs.getString("role"));
+        u.setStatus(rs.getString("status")); // 
         return u;
     }
 }
