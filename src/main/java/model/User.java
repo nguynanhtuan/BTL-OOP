@@ -7,6 +7,7 @@ public class User {
     private String fullName;
     private String phoneNumber;
     private String role;
+    private String status;
 
     public User() {
     }
@@ -47,7 +48,9 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
-
+    public String getStatus() {
+        return status;
+    }
     public void setUsername(String username) {
         this.username = username;
     }
@@ -67,7 +70,9 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-    
-
-
+     public void setStatus(String status) {
+        this.status = status;
+    }
 }
+
+
