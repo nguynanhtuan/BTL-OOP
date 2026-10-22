@@ -134,7 +134,7 @@ public class AdminFrame extends javax.swing.JFrame {
         jLabel2.setText("Lọc trạng thái:");
 
         ThanhTim1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        ThanhTim1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "PENDING", "APPROVED", "REJECTED" }));
+        ThanhTim1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "PENDING", "APPROVED", "REJECTED", "SOLD" }));
         ThanhTim1.setToolTipText("");
         ThanhTim1.addActionListener(this::ThanhTim1ActionPerformed);
 
@@ -356,6 +356,17 @@ public class AdminFrame extends javax.swing.JFrame {
         }
 
         int id = getSelectedId(row, jTable1);
+        String status = jTable1.getValueAt(row, 3).toString();
+
+        if ("SOLD".equalsIgnoreCase(status)) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Điện thoại đã bán, không thể thực hiện thao tác này!",
+                "Thông báo",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
         if (phoneDAO.updateStatus(id, "APPROVED")) {
             loadDataToTable1(
@@ -380,6 +391,18 @@ public class AdminFrame extends javax.swing.JFrame {
         }
 
         int id = getSelectedId(row, jTable1);
+        
+        String status = jTable1.getValueAt(row, 3).toString();
+
+        if ("SOLD".equalsIgnoreCase(status)) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Điện thoại đã bán, không thể thực hiện thao tác này!",
+                "Thông báo",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
         if (phoneDAO.updateStatus(id, "REJECTED")) {
             loadDataToTable1(
@@ -404,7 +427,19 @@ public class AdminFrame extends javax.swing.JFrame {
         }
 
         int id = getSelectedId(row, jTable1);
+        
+        String status = jTable1.getValueAt(row, 3).toString();
 
+        if ("SOLD".equalsIgnoreCase(status)) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Điện thoại đã bán, không thể thực hiện thao tác này!",
+                "Thông báo",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+        
         int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc chắn muốn xóa tin ID: " + id + "?",
@@ -465,7 +500,23 @@ public class AdminFrame extends javax.swing.JFrame {
         }
 
         int id = getSelectedId(row, jTable2);
+        
+        User user = userDAO.findById(id);
 
+        if (user == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy tài khoản!");
+            return;
+        }
+
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Không thể khóa tài khoản ADMIN!",
+                "Thông báo",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
         int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc chắn muốn khóa tài khoản ID: " + id + "?",
