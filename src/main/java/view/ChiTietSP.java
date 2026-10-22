@@ -12,13 +12,94 @@ public class ChiTietSP extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ChiTietSP.class.getName());
 
-    /**
-     * Creates new form ChiTietSP
-     */
-    public ChiTietSP(java.awt.Frame parent, boolean modal) {
+     private model.Phone currentPhone;
+    private model.User currentUser;
+    
+    
+   public ChiTietSP(java.awt.Frame parent, boolean modal, model.Phone phone, model.User user) {
         super(parent, modal);
+        this.currentPhone = phone;
+        this.currentUser = user;
         initComponents();
+        setLocationRelativeTo(parent); 
+        
+        loadData();     
     }
+            // Hàm chính: Đổ dữ liệu chữ và gọi hàm hiển thị ảnh
+    private void loadData() {
+        // 1. Hiển thị thông tin cơ bản
+        jLabel9.setText(currentPhone.getName());
+        jLabel10.setText(currentPhone.getBrand());
+        jLabel11.setText(String.format("%,.0f", currentPhone.getPrice()) + " VNĐ");
+        jLabel12.setText("<html>" + currentPhone.getDescription() + "</html>"); 
+
+        // 2. Lấy thông tin người bán từ Database
+        dao.UserDAO userDAO = new dao.UserDAO();
+        model.User seller = userDAO.findById(currentPhone.getUserId());
+        if (seller != null) {
+            jLabel13.setText(seller.getFullName());
+            jLabel14.setText(seller.getPhoneNumber());
+        } else {
+            jLabel13.setText("Không xác định");
+            jLabel14.setText("Không xác định");
+        }
+        
+        // 3. Gọi hàm hiển thị ảnh
+        hienThiAnh();
+    }
+
+    // Hàm phụ: Chuyên xử lý việc load và hiển thị ảnh
+    private void hienThiAnh() {
+        // Xóa những gì đang có trong khung ảnh (nếu có)
+        jPanel1.removeAll(); 
+        
+        // Ép layout cho jPanel1 để nhãn ảnh không bị co lại bằng 0
+        jPanel1.setLayout(new java.awt.BorderLayout()); 
+
+        String imgName = currentPhone.getImagePath();
+        
+        // Trường hợp 1: Không có tên file ảnh trong Database
+        if (imgName == null || imgName.trim().isEmpty()) {
+            javax.swing.JLabel lblNoImage = new javax.swing.JLabel("Không có ảnh", javax.swing.SwingConstants.CENTER);
+            lblNoImage.setFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 12));
+            jPanel1.add(lblNoImage, java.awt.BorderLayout.CENTER);
+        } 
+        // Trường hợp 2: Có tên file ảnh
+        else {
+            try {
+                // Đường dẫn tới thư mục images của project
+                String fullPath = "images/" + imgName;
+                java.io.File fileAnh = new java.io.File(fullPath);
+
+                // Kiểm tra xem file ảnh có thực sự tồn tại trong máy không
+                if (fileAnh.exists()) {
+                    javax.swing.ImageIcon icon = new javax.swing.ImageIcon(fullPath);
+                    // Lấy kích thước hiện tại của jPanel1 để resize ảnh cho vừa
+                    int w = jPanel1.getWidth() > 0 ? jPanel1.getWidth() : 132;
+                    int h = jPanel1.getHeight() > 0 ? jPanel1.getHeight() : 110;
+                    
+                    java.awt.Image img = icon.getImage().getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
+                    javax.swing.JLabel lblImage = new javax.swing.JLabel(new javax.swing.ImageIcon(img));
+                    lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                    
+                    jPanel1.add(lblImage, java.awt.BorderLayout.CENTER);
+                } else {
+                    // Có tên trong DB nhưng không tìm thấy file trong thư mục
+                    javax.swing.JLabel lblError = new javax.swing.JLabel("Không tìm thấy file", javax.swing.SwingConstants.CENTER);
+                    lblError.setForeground(java.awt.Color.RED);
+                    jPanel1.add(lblError, java.awt.BorderLayout.CENTER);
+                    System.out.println("Lỗi: Không tìm thấy file tại " + fileAnh.getAbsolutePath());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        // Làm mới khung ảnh để nó vẽ lại
+        jPanel1.revalidate();
+        jPanel1.repaint();
+    }
+    // ... (các phần khác giữ nguyên)
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -209,42 +290,58 @@ public class ChiTietSP extends javax.swing.JDialog {
     }//GEN-LAST:event_Nut_Dong_ActionPerformed
 
     private void Mua_Ngay_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mua_Ngay_ActionPerformed
-        // TODO add your handling code here:
-        // 1. Hiển thị hộp thoại xác nhận khi người dùng bấm Mua Ngay
-    int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
-        "Bạn có chắc chắn muốn mua sản phẩm này?", 
-        "Xác nhận mua hàng", 
-        javax.swing.JOptionPane.YES_NO_OPTION);
-        
-    // 2. Nếu người dùng chọn Yes
+       
+                                                   
+        // 1. Kiểm tra lỗi: Không cho tự mua máy của chính mình
+        if (currentPhone.getUserId() == currentUser.getId()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Bạn không thể mua máy của chính mình!");
+            return;
+        }
+
+        // 2. Kiểm tra lỗi: Đã đặt mua máy này chưa (Tránh spam tạo nhiều đơn)
+        dao.OrderDAO orderDAO = new dao.OrderDAO();
+        if (orderDAO.existsByPhoneAndBuyer(currentPhone.getId(), currentUser.getId())) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Bạn đã đặt mua máy này rồi, vui lòng chờ xác nhận!");
+            return;
+        }
+
+        // 3. Hỏi xác nhận
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc chắn muốn mua " + currentPhone.getName() + " với giá " + String.format("%,.0f", currentPhone.getPrice()) + " đ?", 
+            "Xác nhận mua hàng", 
+            javax.swing.JOptionPane.YES_NO_OPTION);
+            
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
             try {
-            // (Tùy chọn) Bạn có thể gọi DAO để lưu đơn hàng vào database ở đây
-            // dao.OrderDAO orderDAO = new dao.OrderDAO();
-            // orderDAO.addOrder(...);
+                // 4. Tạo đối tượng Order và đóng gói dữ liệu
+                model.Order order = new model.Order();
+                order.setPhoneId(currentPhone.getId());
+                order.setBuyerId(currentUser.getId());
+                order.setSellerId(currentPhone.getUserId());
+                order.setPrice(currentPhone.getPrice());
+                order.setStatus("PENDING"); // Trạng thái chờ người bán xác nhận
 
-            // 3. Hiện thông báo chuyển đến trang mua hàng thành công
-                javax.swing.JOptionPane.showMessageDialog(this, "Chuyển đến trang mua hàng thành công!");
-            
-            // 4. Đóng form chi tiết sản phẩm lại để quay về màn hình chính[cite: 5]
-                this.dispose(); 
-            
+                // 5. Gọi DAO lưu vào Database
+                if (orderDAO.create(order)) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Đặt mua thành công! Vui lòng chờ người bán xác nhận.");
+                    this.dispose(); // Đóng form
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Đặt mua thất bại! Vui lòng thử lại.");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi mua hàng: " + e.getMessage());
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
             }
         }
+    
     }//GEN-LAST:event_Mua_Ngay_ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+           
+        // (Phần look and feel giữ nguyên...)
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -252,25 +349,30 @@ public class ChiTietSP extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(ChiTietSP.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ChiTietSP dialog = new ChiTietSP(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            // TẠO DỮ LIỆU GIẢ ĐỂ TEST
+            model.Phone fakePhone = new model.Phone();
+            fakePhone.setId(1);
+            fakePhone.setName("iPhone 15 Pro Max");
+            fakePhone.setBrand("Apple");
+            fakePhone.setPrice(30000000);
+            fakePhone.setDescription("Máy mới 100%, nguyên seal");
+            fakePhone.setImagePath("z8074113878470_332a663d94baaf5cf929bf4b6126181d.jpg"); 
+            fakePhone.setUserId(2); // Người bán ID = 2
+
+            model.User fakeUser = new model.User();
+            fakeUser.setId(3); // Người mua (đang đăng nhập) ID = 3
+            fakeUser.setFullName("Nguyễn Văn Test");
+
+            // Mở form
+            ChiTietSP dialog = new ChiTietSP(new javax.swing.JFrame(), true, fakePhone, fakeUser);
+            dialog.setVisible(true);
         });
+    
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -9,8 +9,9 @@ package view;
  * @author Master
  */
 public class DangBanDT extends javax.swing.JDialog {
-    private String imagePath = ""; // Biến lưu đường dẫn file ảnh chọn từ máy
-    
+    private String imagePath = ""; 
+      private java.io.File selectedImageFile;
+    private int currentUserId = 1;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DangBanDT.class.getName());
 
     /**
@@ -19,6 +20,7 @@ public class DangBanDT extends javax.swing.JDialog {
     public DangBanDT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -223,29 +225,40 @@ public class DangBanDT extends javax.swing.JDialog {
     }//GEN-LAST:event_Nut_X_ActionPerformed
 
     private void Chon_File_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Chon_File_ActionPerformed
-        // TODO add your handling code here:
+                                                      
         javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-    // Bộ lọc chỉ cho phép chọn các định dạng ảnh phổ biến
         fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "png", "jpeg"));
-    
+        
         int result = fileChooser.showOpenDialog(this);
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File selectedFile = fileChooser.getSelectedFile();
-            imagePath = selectedFile.getAbsolutePath(); // Lấy đường dẫn tuyệt đối của ảnh
-        
-            javax.swing.JOptionPane.showMessageDialog(this, "Đã chọn ảnh: " + selectedFile.getName());
+            // LƯU LẠI FILE GỐC
+            selectedImageFile = fileChooser.getSelectedFile(); 
+            imagePath = selectedImageFile.getName(); 
+            
+            javax.swing.JOptionPane.showMessageDialog(this, "Đã chọn ảnh: " + imagePath);
+            
+            // Code hiển thị ảnh nhỏ lên jPanel1 (giữ nguyên như cũ của bạn)
+            try {
+                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(selectedImageFile.getAbsolutePath());
+                java.awt.Image img = icon.getImage().getScaledInstance(jPanel1.getWidth(), jPanel1.getHeight(), java.awt.Image.SCALE_SMOOTH);
+                jPanel1.removeAll();
+                jPanel1.add(new javax.swing.JLabel(new javax.swing.ImageIcon(img)));
+                jPanel1.revalidate();
+                jPanel1.repaint();
+            } catch (Exception e) {
+                System.out.println("Lỗi hiển thị ảnh!");
+            }
         }
+    
     }//GEN-LAST:event_Chon_File_ActionPerformed
 
     private void Nut_Luu_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_Luu_ActionPerformed
-        // TODO add your handling code here:
-        // 1. Lấy dữ liệu từ các ô nhập trên form
-        String tenMay = jTextField1.getText().trim();
+                                                   
+         String tenMay = jTextField1.getText().trim();
         String hang = jComboBox1.getSelectedItem().toString();
         String giaStr = jTextField2.getText().trim();
         String moTa = jTextField3.getText().trim();
 
-        // 2. Kiểm tra dữ liệu rỗng cơ bản
         if (tenMay.isEmpty() || giaStr.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập tên máy và giá bán!");
             return;
@@ -254,32 +267,51 @@ public class DangBanDT extends javax.swing.JDialog {
         try {
             double gia = Double.parseDouble(giaStr);
 
-            // 3. Đóng gói vào model Phone của nhóm
+            // --- BẮT ĐẦU ĐOẠN CODE COPY ẢNH VÀO PROJECT ---
+            if (selectedImageFile != null) {
+                // 1. Tạo thư mục 'images' nếu chưa có
+                java.io.File thuMucImages = new java.io.File("images");
+                if (!thuMucImages.exists()) {
+                    thuMucImages.mkdirs(); 
+                }
+                
+                // 2. Copy file từ ổ D sang thư mục images của project
+                java.io.File dich = new java.io.File(thuMucImages, imagePath);
+                java.nio.file.Files.copy(
+                    selectedImageFile.toPath(), 
+                    dich.toPath(), 
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                );
+                System.out.println("Đã copy ảnh vào: " + dich.getAbsolutePath());
+            }
+            // --- KẾT THÚC ĐOẠN CODE COPY ẢNH ---
+
             model.Phone phone = new model.Phone();
             phone.setName(tenMay);
-            phone.setBrand(hang); // Nếu model Phone dùng hàm khác để lưu hãng, bạn có thể chỉnh lại tên hàm cho khớp (ví dụ: setHang)
+            phone.setBrand(hang);
             phone.setPrice(gia);
             phone.setDescription(moTa);
-            phone.setImage(imagePath); // Gắn đường dẫn ảnh đã chọn từ JFileChooser
+            
+            phone.setImagePath(imagePath);   
+            phone.setUserId(currentUserId);  
+            phone.setStatus("PENDING");      
 
-            // 4. Gọi PhoneDAO theo đúng chuẩn kiến trúc phân tầng (tuyệt đối không viết câu lệnh SQL ở đây)
             dao.PhoneDAO phoneDAO = new dao.PhoneDAO();
-            boolean success = phoneDAO.addPhone(phone); // Nếu hàm trong PhoneDAO tên là insert hoặc add, bạn có thể sửa lại cho đúng gợi ý Ctrl+Space của NetBeans
+            boolean success = phoneDAO.insert(phone); 
 
             if (success) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Đăng bán sản phẩm thành công!");
-                this.dispose(); // Đóng form sau khi lưu thành công
+                javax.swing.JOptionPane.showMessageDialog(this, "Đăng bán thành công! Vui lòng chờ Admin duyệt.");
+                this.dispose(); 
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "Đăng bán thất bại!");
+                javax.swing.JOptionPane.showMessageDialog(this, "Đăng bán thất bại! Vui lòng thử lại.");
             }
 
         } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Giá tiền phải là một số hợp lệ!");
+            javax.swing.JOptionPane.showMessageDialog(this, "Giá tiền phải là một số hợp lệ (VD: 15000000)!");
         } catch (Exception e) {
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
         }
-        
     }//GEN-LAST:event_Nut_Luu_ActionPerformed
 
     private void Nut_Huy_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_Huy_ActionPerformed

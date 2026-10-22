@@ -392,9 +392,9 @@ public class Main extends javax.swing.JFrame {
             return; 
         }
         // 2. Mở cửa sổ Chi tiết sản phẩm (ChiTietSP)
-        ChiTietSP chiTiet = new ChiTietSP(this, true);
-        chiTiet.setLocationRelativeTo(this); 
-        chiTiet.setVisible(true); 
+        //ChiTietSP chiTiet = new ChiTietSP(this, true);
+        //chiTiet.setLocationRelativeTo(this); 
+        //chiTiet.setVisible(true); 
         
     }                                        
 
