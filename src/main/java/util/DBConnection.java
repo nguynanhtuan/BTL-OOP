@@ -8,6 +8,7 @@ public class DBConnection {
     private static final String URL =
         "jdbc:mysql://localhost:3306/phone_shop"
         + "?useSSL=false"
+        + "&allowPublicKeyRetrieval=true"
         + "&serverTimezone=Asia/Ho_Chi_Minh"
         + "&characterEncoding=UTF-8";
 
