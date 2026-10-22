@@ -9,6 +9,7 @@ package view;
  * @author Master
  */
 public class DangBanDT extends javax.swing.JDialog {
+    private String imagePath = ""; // Biến lưu đường dẫn file ảnh chọn từ máy
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DangBanDT.class.getName());
 
@@ -68,6 +69,7 @@ public class DangBanDT extends javax.swing.JDialog {
         jLabel6.setText("Ảnh:");
 
         jButton1.setText("Chọn File");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -120,8 +122,10 @@ public class DangBanDT extends javax.swing.JDialog {
         );
 
         jButton2.setText("Lưu");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jButton3.setText("Hủy");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
 
         jButton4.setText("X");
         jButton4.addActionListener(this::jButton4ActionPerformed);
@@ -215,7 +219,81 @@ public class DangBanDT extends javax.swing.JDialog {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+    // Bộ lọc chỉ cho phép chọn các định dạng ảnh phổ biến
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "png", "jpeg"));
+    
+        int result = fileChooser.showOpenDialog(this);
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File selectedFile = fileChooser.getSelectedFile();
+            imagePath = selectedFile.getAbsolutePath(); // Lấy đường dẫn tuyệt đối của ảnh
+        
+            javax.swing.JOptionPane.showMessageDialog(this, "Đã chọn ảnh: " + selectedFile.getName());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        // 1. Lấy dữ liệu từ các ô nhập trên form
+        String tenMay = jTextField1.getText().trim();
+        String hang = jComboBox1.getSelectedItem().toString();
+        String giaStr = jTextField2.getText().trim();
+        String moTa = jTextField3.getText().trim();
+
+        // 2. Kiểm tra dữ liệu rỗng cơ bản
+        if (tenMay.isEmpty() || giaStr.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập tên máy và giá bán!");
+            return;
+        }
+
+        try {
+            double gia = Double.parseDouble(giaStr);
+
+            // 3. Đóng gói vào model Phone của nhóm
+            model.Phone phone = new model.Phone();
+            phone.setName(tenMay);
+            phone.setBrand(hang); // Nếu model Phone dùng hàm khác để lưu hãng, bạn có thể chỉnh lại tên hàm cho khớp (ví dụ: setHang)
+            phone.setPrice(gia);
+            phone.setDescription(moTa);
+            phone.setImage(imagePath); // Gắn đường dẫn ảnh đã chọn từ JFileChooser
+
+            // 4. Gọi PhoneDAO theo đúng chuẩn kiến trúc phân tầng (tuyệt đối không viết câu lệnh SQL ở đây)
+            dao.PhoneDAO phoneDAO = new dao.PhoneDAO();
+            boolean success = phoneDAO.addPhone(phone); // Nếu hàm trong PhoneDAO tên là insert hoặc add, bạn có thể sửa lại cho đúng gợi ý Ctrl+Space của NetBeans
+
+            if (success) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Đăng bán sản phẩm thành công!");
+                this.dispose(); // Đóng form sau khi lưu thành công
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Đăng bán thất bại!");
+            }
+
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Giá tiền phải là một số hợp lệ!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
+        }
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        int chon = javax.swing.JOptionPane.showConfirmDialog(this, 
+        "Bạn có chắc chắn muốn hủy đăng bán?", 
+        "Xác nhận hủy", 
+        javax.swing.JOptionPane.YES_NO_OPTION);
+        
+        if (chon == javax.swing.JOptionPane.YES_OPTION) {
+            this.dispose(); // Chỉ đóng form khi người dùng bấm "Yes"
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments

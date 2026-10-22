@@ -54,6 +54,7 @@ public class ChiTietSP extends javax.swing.JDialog {
         jLabel1.setText("CHI TIẾT SẢN PHẨM");
 
         jButton1.setText("X");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -81,8 +82,10 @@ public class ChiTietSP extends javax.swing.JDialog {
         jLabel7.setText("Số ĐT");
 
         jButton2.setText("Mua Ngay");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jButton3.setText("Đóng");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
 
         jLabel9.setText("Tên sản phẩm");
 
@@ -194,6 +197,44 @@ public class ChiTietSP extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        // 1. Hiển thị hộp thoại xác nhận khi người dùng bấm Mua Ngay
+    int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
+        "Bạn có chắc chắn muốn mua sản phẩm này?", 
+        "Xác nhận mua hàng", 
+        javax.swing.JOptionPane.YES_NO_OPTION);
+        
+    // 2. Nếu người dùng chọn Yes
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+            // (Tùy chọn) Bạn có thể gọi DAO để lưu đơn hàng vào database ở đây
+            // dao.OrderDAO orderDAO = new dao.OrderDAO();
+            // orderDAO.addOrder(...);
+
+            // 3. Hiện thông báo chuyển đến trang mua hàng thành công
+                javax.swing.JOptionPane.showMessageDialog(this, "Chuyển đến trang mua hàng thành công!");
+            
+            // 4. Đóng form chi tiết sản phẩm lại để quay về màn hình chính[cite: 5]
+                this.dispose(); 
+            
+            } catch (Exception e) {
+                e.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi mua hàng: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

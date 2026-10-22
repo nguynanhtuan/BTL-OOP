@@ -55,6 +55,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
         jLabel4.setText("Password:");
 
         jButton1.setText("Đăng nhập");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jButton3.setText("Đăng kí");
         jButton3.addActionListener(this::jButton3ActionPerformed);
@@ -118,11 +119,52 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-// Mở giao diện đăng ký
-DangKi dangKiForm = new DangKi(this, true);
-dangKiForm.setLocationRelativeTo(this); // Canh giữa màn hình
-dangKiForm.setVisible(true);        // TODO add your handling code here:
+    // Mở giao diện đăng ký
+        // TODO add your handling code here:
+        // 1. Khởi tạo form DangKi (DangKi là JDialog)
+        view.DangKi dangKiForm = new view.DangKi(this, true);
+    
+    // 2. Ẩn tạm giao diện Đăng nhập (hoặc dùng this.dispose() nếu muốn đóng hẳn)
+        this.setVisible(false);
+    
+    // 3. Hiển thị form Đăng ký
+        dangKiForm.setVisible(true);
+    
+    // 4. Khi đóng form Đăng ký thì hiện lại giao diện Đăng nhập
+        this.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        // 1. Lấy dữ liệu từ ô tên đăng nhập và ô mật khẩu (jPasswordField2)
+        String username = jTextField1.getText().trim();
+        String password = new String(jPasswordField2.getPassword()).trim();  
+
+        // 2. Kiểm tra rỗng cơ bản
+        if (username.isEmpty() || password.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ tài khoản và mật khẩu!");
+            return;
+        }
+
+        try {
+            // 3. Xử lý logic đăng nhập (bạn có thể thay bằng gọi DAO thực tế ở đây nếu muốn)
+            boolean loginSuccess = true; // Tạm thời để true để test giao diện
+
+            if (loginSuccess) {
+                // Hiển thị thông báo chuyển đến trang chủ đúng như bạn muốn
+                javax.swing.JOptionPane.showMessageDialog(this, "Chuyển đến trang chủ");
+
+                // Đóng form đăng nhập lại
+                this.dispose();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng!");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

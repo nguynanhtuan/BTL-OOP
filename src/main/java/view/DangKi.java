@@ -144,10 +144,56 @@ public class DangKi extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        this.dispose();
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        // 1. Lấy dữ liệu từ các ô nhập trên form
+        String username = jTextField1.getText().trim();
+        String password = new String(jPasswordField1.getPassword()).trim();
+        String confirmPassword = new String(jPasswordField2.getPassword()).trim();
+        String fullName = jTextField2.getText().trim();
+        String phone = jTextField3.getText().trim();
+
+        // 2. Kiểm tra dữ liệu rỗng
+        if (username.isEmpty() || password.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập và mật khẩu!");
+            return;
+        }
+
+        // 3. Kiểm tra mật khẩu xác nhận
+        if (!password.equals(confirmPassword)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Mật khẩu nhập lại không khớp!");
+            return;
+        }
+
+        try {
+            // 4. Đóng gói dữ liệu vào đối tượng model.User của nhóm
+            model.User u = new model.User();
+            u.setUsername(username);
+            u.setPassword(password);
+            // Nếu model.User có các hàm set họ tên hoặc số điện thoại, bạn có thể mở dòng dưới:
+            // u.setFullName(fullName);
+            // u.setPhone(phone);
+
+            // 5. Gọi UserDAO theo đúng chuẩn kiến trúc OOP (tuyệt đối không viết câu lệnh SQL ở đây)
+            dao.UserDAO userDAO = new dao.UserDAO();
+            boolean success = userDAO.register(u); 
+
+            // 6. Xử lý kết quả trả về
+            if (success) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Đăng ký tài khoản thành công!");
+                this.dispose(); // Đóng form đăng ký sau khi thành công
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Đăng ký thất bại! Tên tài khoản có thể đã tồn tại.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
+        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
