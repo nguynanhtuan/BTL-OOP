@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
+
 import dao.OrderDAO;
 import dao.PhoneDAO;
 import dao.UserDAO;
@@ -12,102 +13,134 @@ import model.User;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
 
 public class Main extends javax.swing.JFrame {
      
-    
-    private int currentUserId = 1; 
+    private User currentUser;
+    private int currentUserId = 1;
 
-    private void loadDanhSachMay() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
+    // Constructor nhận thông tin User từ form Đăng nhập
+    public Main(User user) {
+        this.currentUser = user;
+        this.currentUserId = user.getId();
+        initComponents();
         
-        PhoneDAO phoneDAO = new PhoneDAO();
-        UserDAO userDAO = new UserDAO();
-        
-        // Gọi DAO lấy danh sách các máy đã được duyệt
-        List<Phone> list = phoneDAO.findAllApproved(); 
-        
-        for (Phone p : list) {
-            // Lấy thông tin người bán dựa vào user_id của điện thoại
-            User seller = userDAO.findById(p.getUserId());
-            String sellerName = (seller != null) ? seller.getUsername() : "Unknown";
-            
-            Object[] row = {
-                p.getId(),
-                p.getName(),
-                p.getBrand(),
-                String.format("%,.0f", p.getPrice()),
-                sellerName
-            };
-            model.addRow(row);
+        if (user.getFullName() != null) {
+            jLabel1.setText("Xin chào: " + user.getFullName());
         }
+        
+        loadDanhSachMay();
+        loadDonMua();
+        loadDonBan();
     }
-    private void loadDonMua() {
-        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-        model.setRowCount(0);
-        
-        OrderDAO orderDAO = new OrderDAO();
-        PhoneDAO phoneDAO = new PhoneDAO();
-        UserDAO userDAO = new UserDAO();
 
-        // Gọi DAO lấy danh sách đơn của người mua hiện tại
-        List<Order> list = orderDAO.findByBuyer(currentUserId);
-        
-        for (Order o : list) {
-            Phone p = phoneDAO.findById(o.getPhoneId()); 
-            User seller = userDAO.findById(o.getSellerId()); 
-            
-            String phoneName = (p != null) ? p.getName() : "Unknown";
-            String sellerName = (seller != null) ? seller.getUsername() : "Unknown";
-            
-            Object[] row = {
-                o.getId(),
-                phoneName,
-                String.format("%,.0f", o.getPrice()),
-                sellerName,
-                o.getStatus()
-            };
-            model.addRow(row);
-        }
-    }
-    private void loadDonBan() {
-        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
-        model.setRowCount(0);
-        
-        OrderDAO orderDAO = new OrderDAO();
-        PhoneDAO phoneDAO = new PhoneDAO();
-        UserDAO userDAO = new UserDAO();
-
-        // Gọi DAO lấy danh sách đơn mà user hiện tại là người bán
-        List<Order> list = orderDAO.findBySeller(currentUserId);
-        
-        for (Order o : list) {
-            Phone p = phoneDAO.findById(o.getPhoneId()); 
-            User buyer = userDAO.findById(o.getBuyerId()); 
-            
-            String phoneName = (p != null) ? p.getName() : "Unknown";
-            String buyerName = (buyer != null) ? buyer.getUsername() : "Unknown";
-            
-            Object[] row = {
-                o.getId(),
-                phoneName,
-                String.format("%,.0f", o.getPrice()),
-                buyerName,
-                o.getStatus()
-            };
-            model.addRow(row);
-        }
-    }
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
-
-    
+    // Constructor mặc định (dùng để test độc lập)
     public Main() {
         initComponents();
         loadDanhSachMay();
         loadDonMua();
         loadDonBan();
     }
+
+    private void loadDanhSachMay() {
+        // Đưa về 5 cột tiêu chuẩn, không dùng ngày tạo
+        String[] columnNames = {"ID", "Tên máy", "Hãng", "Giá", "Trạng thái"};
+        DefaultTableModel model = new DefaultTableModel(null, columnNames);
+        jTable1.setModel(model);
+        model.setRowCount(0);
+        
+        PhoneDAO phoneDAO = new PhoneDAO();
+        UserDAO userDAO = new UserDAO();
+        
+        List<Phone> list = phoneDAO.findAllApproved(); 
+        
+        for (Phone p : list) {
+            User seller = userDAO.findById(p.getUserId());
+            String sellerName = (seller != null) ? (seller.getFullName() != null ? seller.getFullName() : seller.getUsername()) : "Unknown";
+            
+            Object[] row = {
+                p.getId(),
+                p.getName(),
+                p.getBrand(),
+                String.format("%,.0f", p.getPrice()),
+                p.getStatus() // Dùng trạng thái sẵn có của phone
+            };
+            model.addRow(row);
+        }
+    }
+
+    private void loadDonMua() {
+        String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày tạo"};
+        DefaultTableModel model = new DefaultTableModel(null, columnNames);
+        jTable2.setModel(model);
+        model.setRowCount(0);
+        
+        OrderDAO orderDAO = new OrderDAO();
+        PhoneDAO phoneDAO = new PhoneDAO();
+        UserDAO userDAO = new UserDAO();
+
+        List<Order> list = orderDAO.findByBuyer(currentUserId);
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+        
+        for (Order o : list) {
+            Phone p = phoneDAO.findById(o.getPhoneId()); 
+            User seller = userDAO.findById(o.getSellerId()); 
+            
+            String phoneName = (p != null) ? p.getName() : "Unknown";
+            String sellerName = (seller != null) ? (seller.getFullName() != null ? seller.getFullName() : seller.getUsername()) : "Unknown";
+            
+            // Lấy trực tiếp từ Order.java vừa bổ sung
+            String ngayDat = (o.getCreatedAt() != null) ? sdf.format(o.getCreatedAt()) : "";
+            
+            Object[] row = {
+                o.getId(),
+                phoneName,
+                String.format("%,.0f", o.getPrice()),
+                sellerName,
+                o.getStatus(),
+                ngayDat
+            };
+            model.addRow(row);
+        }
+    }
+
+    private void loadDonBan() {
+        String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo"};
+        DefaultTableModel model = new DefaultTableModel(null, columnNames);
+        jTable3.setModel(model);
+        model.setRowCount(0);
+        
+        OrderDAO orderDAO = new OrderDAO();
+        PhoneDAO phoneDAO = new PhoneDAO();
+        UserDAO userDAO = new UserDAO();
+
+        List<Order> list = orderDAO.findBySeller(currentUserId);
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+        
+        for (Order o : list) {
+            Phone p = phoneDAO.findById(o.getPhoneId()); 
+            User buyer = userDAO.findById(o.getBuyerId()); 
+            
+            String phoneName = (p != null) ? p.getName() : "Unknown";
+            String buyerName = (buyer != null) ? (buyer.getFullName() != null ? buyer.getFullName() : buyer.getUsername()) : "Unknown";
+            
+            // Lấy trực tiếp từ Order.java vừa bổ sung
+            String ngayDat = (o.getCreatedAt() != null) ? sdf.format(o.getCreatedAt()) : "";
+            
+            Object[] row = {
+                o.getId(),
+                phoneName,
+                String.format("%,.0f", o.getPrice()),
+                buyerName,
+                o.getStatus(),
+                ngayDat
+            };
+            model.addRow(row);
+        }
+    }
+
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -235,13 +268,13 @@ public class Main extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", "", ""},
-                {"", "", "", "", ""},
-                {"", "", "", "", ""},
-                {"", "", "", "", ""}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "", "", "", "", ""
+                "ID", "Tên máy", "Hãng", "Giá", "Trạng thái", "Ngày tạo"
             }
         ));
         jTable1.setShowHorizontalLines(true);
@@ -287,13 +320,13 @@ public class Main extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", "", ""},
-                {"", "", "", "", ""},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "", "", "", "", ""
+                "ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày đặt"
             }
         ));
         jTable2.setShowHorizontalLines(true);
@@ -332,13 +365,13 @@ public class Main extends javax.swing.JFrame {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", "", ""},
-                {"", "", "", "", ""},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "", "", "", "", ""
+                "ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày đặt"
             }
         ));
         jTable3.setShowHorizontalLines(true);
@@ -384,36 +417,52 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>                        
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // 1. Kiểm tra xem người dùng đã chọn dòng nào trong bảng (jTable1) chưa
-        
+        // 1. Kiểm tra xem người dùng đã chọn dòng nào trong bảng chưa
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một điện thoại trong danh sách để xem chi tiết!", "Thông báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một điện thoại trong danh sách để xem chi tiết!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return; 
         }
-        // 2. Mở cửa sổ Chi tiết sản phẩm (ChiTietSP)
-        //ChiTietSP chiTiet = new ChiTietSP(this, true);
-        //chiTiet.setLocationRelativeTo(this); 
-        //chiTiet.setVisible(true); 
         
-    }                                        
+        try {
+            // 2. Lấy ID điện thoại từ cột 0 của dòng được chọn
+            int phoneId = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
+            
+            // 3. Gọi DAO để lấy thông tin chi tiết đối tượng Phone
+            PhoneDAO phoneDAO = new PhoneDAO();
+            Phone selectedPhone = phoneDAO.findById(phoneId);
+            
+            if (selectedPhone != null) {
+                // 4. Mở cửa sổ ChiTietSP và truyền đủ 4 tham số: (Parent, modal, Phone, User)
+                ChiTietSP chiTiet = new ChiTietSP(this, true, selectedPhone, currentUser);
+                chiTiet.setLocationRelativeTo(this); 
+                chiTiet.setVisible(true);
+                
+                // Sau khi đóng cửa sổ chi tiết, load lại danh sách để cập nhật (nếu có thay đổi)
+                loadDanhSachMay();
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin sản phẩm trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }                                  
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // 1. Kiểm tra xem người dùng đã chọn dòng nào trong bảng Đơn mua (jTable2) chưa
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn hàng để hủy!", "Thông báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn hàng để hủy!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // 2. Kiểm tra trạng thái đơn hàng (Chỉ cho phép hủy đơn PENDING)
+        // Cột thứ 4 là cột "Trạng thái" trong bảng đơn mua mới
         String status = jTable2.getValueAt(selectedRow, 4).toString();
         if (!status.equals("PENDING")) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Chỉ có thể hủy đơn hàng đang chờ xác nhận (PENDING)!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Chỉ có thể hủy đơn hàng đang chờ xác nhận (PENDING)!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // 3. Xác nhận và gọi DAO cập nhật trạng thái
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn hủy đơn hàng này không?", "Xác nhận hủy", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int orderId = Integer.parseInt(jTable2.getValueAt(selectedRow, 0).toString());
@@ -429,10 +478,9 @@ public class Main extends javax.swing.JFrame {
     }                                        
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-
         DangBanDT dangBanForm = new DangBanDT(this, true);
         dangBanForm.setLocationRelativeTo(this); 
-        dangBanForm.setVisible(true);           
+        dangBanForm.setVisible(true);            
         loadDanhSachMay();
     }                                        
 
@@ -440,11 +488,6 @@ public class Main extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -455,10 +498,14 @@ public class Main extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            User dummyUser = new User();
+            dummyUser.setId(1);
+            dummyUser.setFullName("Quản trị viên");
+            new Main(dummyUser).setVisible(true);
+        });
     }
 
     // Variables declaration - do not modify                     
