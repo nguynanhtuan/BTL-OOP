@@ -106,6 +106,7 @@ public class OrderDAO {
         o.setSellerId(rs.getInt("seller_id"));
         o.setPrice(rs.getDouble("price"));
         o.setStatus(rs.getString("status"));
+        o.setCreatedAt(rs.getTimestamp("created_at"));
         return o;
     }
 }

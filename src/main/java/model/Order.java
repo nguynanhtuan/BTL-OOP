@@ -7,18 +7,22 @@ public class Order {
     private int sellerId;
     private double price;
     private String status;
+    private java.util.Date createdAt;
 
+    
     public Order() {
     }
 
+    
     public Order(int id, int phoneId, int buyerId, int sellerId,
-                 double price, String status) {
+                 double price, String status, java.util.Date createdAt) {
         this.id = id;
         this.phoneId = phoneId;
         this.buyerId = buyerId;
         this.sellerId = sellerId;
         this.price = price;
         this.status = status;
+        this.createdAt = createdAt; // Đã thêm dòng này
     }
 
     public int getId() { return id; }
@@ -38,6 +42,15 @@ public class Order {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    
+    public java.util.Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.util.Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @Override
     public String toString() {
