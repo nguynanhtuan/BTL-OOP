@@ -154,13 +154,21 @@
     <Component class="javax.swing.JComboBox" name="jComboBox1">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="6">
+          <StringArray count="14">
             <StringItem index="0" value="Apple"/>
             <StringItem index="1" value="Samsung"/>
             <StringItem index="2" value="Xiaomi"/>
             <StringItem index="3" value="OPPO"/>
-            <StringItem index="4" value="VIVO"/>
-            <StringItem index="5" value="Kh&#xe1;c"/>
+            <StringItem index="4" value="Vivo"/>
+            <StringItem index="5" value="Realme"/>
+            <StringItem index="6" value="Asus"/>
+            <StringItem index="7" value="Nokia"/>
+            <StringItem index="8" value="Huawei"/>
+            <StringItem index="9" value="Sony"/>
+            <StringItem index="10" value="OnePlus"/>
+            <StringItem index="11" value="Google"/>
+            <StringItem index="12" value="Infinix"/>
+            <StringItem index="13" value="Kh&#xe1;c"/>
           </StringArray>
         </Property>
       </Properties>
