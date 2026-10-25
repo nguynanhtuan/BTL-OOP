@@ -336,6 +336,26 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void DangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DangXuatActionPerformed
         // TODO add your handling code here:
+        // Xác nhận đăng xuất
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn đăng xuất?",
+                "Xác nhận đăng xuất",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        // Nếu chọn Không thì không làm gì
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // Mở giao diện đăng nhập
+        GiaoDienDangNhap login = new GiaoDienDangNhap();
+        login.setLocationRelativeTo(null);
+        login.setVisible(true);
+
+        // Đóng giao diện Admin
+        this.dispose();
     }//GEN-LAST:event_DangXuatActionPerformed
 
     private void LamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LamMoiActionPerformed
@@ -558,7 +578,11 @@ public class AdminFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new AdminFrame().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            AdminFrame frame = new AdminFrame();
+            frame.setLocationRelativeTo(null); // Hiện chính giữa màn hình
+            frame.setVisible(true);
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
