@@ -11,7 +11,7 @@ package view;
 public class GiaoDienDangNhap extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GiaoDienDangNhap.class.getName());
-
+        
     /**
      * Creates new form giaodien
      */
@@ -135,8 +135,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_Dang_Ki_ActionPerformed
 
     private void Dang_Nhap_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Dang_Nhap_ActionPerformed
-        // TODO add your handling code here:
-        // 1. Lấy dữ liệu từ ô tên đăng nhập và ô mật khẩu (jPasswordField2)
+        // 1. Lấy dữ liệu từ ô tên đăng nhập và mật khẩu
         String username = jTextField1.getText().trim();
         String password = new String(jPasswordField2.getPassword()).trim();  
 
@@ -147,22 +146,35 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
         }
 
         try {
-            // 3. Xử lý logic đăng nhập (bạn có thể thay bằng gọi DAO thực tế ở đây nếu muốn)
-            boolean loginSuccess = true; // Tạm thời để true để test giao diện
+            // 3. Gọi đúng hàm login() từ UserDAO để xác thực và trả về đối tượng User
+            dao.UserDAO userDAO = new dao.UserDAO(); 
+            model.User user = userDAO.login(username, password); 
 
-            if (loginSuccess) {
-                // Hiển thị thông báo chuyển đến trang chủ đúng như bạn muốn
+            if (user != null) {
+                // Hiển thị thông báo chuyển đến trang chủ theo đúng yêu cầu
                 javax.swing.JOptionPane.showMessageDialog(this, "Chuyển đến trang chủ");
 
                 // Đóng form đăng nhập lại
                 this.dispose();
+
+                // 4. Kiểm tra phân quyền để mở MainFrame hoặc AdminFrame và truyền User sang theo đúng bảng phân công của nhóm
+                String role = user.getRole(); 
+
+                if (role != null && (role.equalsIgnoreCase("ADMIN") || role.equalsIgnoreCase("quản trị viên"))) {
+                    // Nếu là Admin -> Mở AdminFrame và truyền đối tượng User vào
+                    new view.AdminFrame(user).setVisible(true);
+                } else {
+                    // Nếu là User -> Mở MainFrame và truyền đối tượng User vào
+                    new view.Main(user).setVisible(true);
+                }
+
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng!");
+                javax.swing.JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không chính xác (hoặc tài khoản đã bị khóa)!");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu: " + e.getMessage());
         }
     }//GEN-LAST:event_Dang_Nhap_ActionPerformed
 

@@ -16,6 +16,17 @@ import java.util.List;
  * @author Admin
  */
 public class AdminFrame extends javax.swing.JFrame {
+    // Khai báo biến để lưu thông tin người dùng đang đăng nhập nếu cần dùng sau này
+    private model.User currentUser;
+
+    // Hàm khởi tạo nhận đối tượng User theo đúng quy chuẩn của nhóm
+    public AdminFrame(model.User user) {
+        initComponents();
+        this.currentUser = user;
+        
+        // (Tùy chọn) Bạn có thể hiển thị tên Admin lên tiêu đề form hoặc một Label nào đó:
+        // this.setTitle("Trang Quản Trị - Xin chào: " + user.getFullName());
+    }
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminFrame.class.getName());
     private final PhoneDAO phoneDAO = new PhoneDAO();
