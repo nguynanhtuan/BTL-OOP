@@ -44,7 +44,6 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void loadDanhSachMay() {
-        // Đưa về 5 cột tiêu chuẩn, không dùng ngày tạo
         String[] columnNames = {"ID", "Tên máy", "Hãng", "Giá", "Trạng thái"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
         jTable1.setModel(model);
@@ -64,7 +63,7 @@ public class Main extends javax.swing.JFrame {
                 p.getName(),
                 p.getBrand(),
                 String.format("%,.0f", p.getPrice()),
-                p.getStatus() // Dùng trạng thái sẵn có của phone
+                p.getStatus()
             };
             model.addRow(row);
         }
@@ -81,7 +80,7 @@ public class Main extends javax.swing.JFrame {
         UserDAO userDAO = new UserDAO();
 
         List<Order> list = orderDAO.findByBuyer(currentUserId);
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         
         for (Order o : list) {
             Phone p = phoneDAO.findById(o.getPhoneId()); 
@@ -89,8 +88,6 @@ public class Main extends javax.swing.JFrame {
             
             String phoneName = (p != null) ? p.getName() : "Unknown";
             String sellerName = (seller != null) ? (seller.getFullName() != null ? seller.getFullName() : seller.getUsername()) : "Unknown";
-            
-            // Lấy trực tiếp từ Order.java vừa bổ sung
             String ngayDat = (o.getCreatedAt() != null) ? sdf.format(o.getCreatedAt()) : "";
             
             Object[] row = {
@@ -116,7 +113,7 @@ public class Main extends javax.swing.JFrame {
         UserDAO userDAO = new UserDAO();
 
         List<Order> list = orderDAO.findBySeller(currentUserId);
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         
         for (Order o : list) {
             Phone p = phoneDAO.findById(o.getPhoneId()); 
@@ -124,8 +121,6 @@ public class Main extends javax.swing.JFrame {
             
             String phoneName = (p != null) ? p.getName() : "Unknown";
             String buyerName = (buyer != null) ? (buyer.getFullName() != null ? buyer.getFullName() : buyer.getUsername()) : "Unknown";
-            
-            // Lấy trực tiếp từ Order.java vừa bổ sung
             String ngayDat = (o.getCreatedAt() != null) ? sdf.format(o.getCreatedAt()) : "";
             
             Object[] row = {
@@ -187,6 +182,7 @@ public class Main extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(51, 204, 0));
         jButton1.setText("[ Đăng xuất ]");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -268,13 +264,13 @@ public class Main extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Tên máy", "Hãng", "Giá", "Trạng thái", "Ngày tạo"
+                "ID", "Tên máy", "Hãng", "Giá", "Trạng thái"
             }
         ));
         jTable1.setShowHorizontalLines(true);
@@ -326,7 +322,7 @@ public class Main extends javax.swing.JFrame {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày đặt"
+                "ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày tạo"
             }
         ));
         jTable2.setShowHorizontalLines(true);
@@ -371,7 +367,7 @@ public class Main extends javax.swing.JFrame {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày đặt"
+                "ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo"
             }
         ));
         jTable3.setShowHorizontalLines(true);
@@ -382,9 +378,11 @@ public class Main extends javax.swing.JFrame {
 
         jButton4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton4.setText("[ Xác nhận ]");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
         jButton5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton5.setText("[ Huỷ ]");
+        jButton5.addActionListener(this::jButton5ActionPerformed);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -416,8 +414,26 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
+    // 1. Nút Đăng xuất
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.dispose();
+            // Mở lại form Đăng nhập (tên lớp tùy thuộc vào nhóm đặt, ví dụ: GiaoDienDangNhap hoặc Login)
+            new GiaoDienDangNhap().setVisible(true);
+        }
+    }                                        
+
+    // 2. Nút Đăng bán máy mới (Truyền chuẩn currentUser sang DangBanDT theo yêu cầu nhóm)
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        DangBanDT dangBanForm = new DangBanDT(this, true, currentUser);
+        dangBanForm.setLocationRelativeTo(this); 
+        dangBanForm.setVisible(true);            
+        loadDanhSachMay();
+    }                                        
+
+    // 3. Nút Xem chi tiết (Truyền đủ Phone và User)
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // 1. Kiểm tra xem người dùng đã chọn dòng nào trong bảng chưa
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một điện thoại trong danh sách để xem chi tiết!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -425,30 +441,24 @@ public class Main extends javax.swing.JFrame {
         }
         
         try {
-            // 2. Lấy ID điện thoại từ cột 0 của dòng được chọn
             int phoneId = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
-            
-            // 3. Gọi DAO để lấy thông tin chi tiết đối tượng Phone
             PhoneDAO phoneDAO = new PhoneDAO();
             Phone selectedPhone = phoneDAO.findById(phoneId);
             
             if (selectedPhone != null) {
-                // 4. Mở cửa sổ ChiTietSP và truyền đủ 4 tham số: (Parent, modal, Phone, User)
                 ChiTietSP chiTiet = new ChiTietSP(this, true, selectedPhone, currentUser);
                 chiTiet.setLocationRelativeTo(this); 
                 chiTiet.setVisible(true);
-                
-                // Sau khi đóng cửa sổ chi tiết, load lại danh sách để cập nhật (nếu có thay đổi)
                 loadDanhSachMay();
             } else {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin sản phẩm trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-    }                                  
+    }                                        
 
+    // 4. Nút Huỷ đơn hàng (Tab Đơn mua)
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow == -1) {
@@ -456,7 +466,6 @@ public class Main extends javax.swing.JFrame {
             return;
         }
 
-        // Cột thứ 4 là cột "Trạng thái" trong bảng đơn mua mới
         String status = jTable2.getValueAt(selectedRow, 4).toString();
         if (!status.equals("PENDING")) {
             JOptionPane.showMessageDialog(this, "Chỉ có thể hủy đơn hàng đang chờ xác nhận (PENDING)!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -477,11 +486,58 @@ public class Main extends javax.swing.JFrame {
         }
     }                                        
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        DangBanDT dangBanForm = new DangBanDT(this, true);
-        dangBanForm.setLocationRelativeTo(this); 
-        dangBanForm.setVisible(true);            
-        loadDanhSachMay();
+    // 5. Nút Xác nhận đơn hàng (Tab Đơn bán - Người bán bấm duyệt đơn)
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        int selectedRow = jTable3.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn bán để xác nhận!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String status = jTable3.getValueAt(selectedRow, 4).toString();
+        if (!status.equals("PENDING")) {
+            JOptionPane.showMessageDialog(this, "Chỉ có thể xác nhận đơn hàng đang ở trạng thái PENDING!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xác nhận (chấp nhận) đơn hàng này không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            int orderId = Integer.parseInt(jTable3.getValueAt(selectedRow, 0).toString());
+            OrderDAO orderDAO = new OrderDAO();
+            if (orderDAO.updateStatus(orderId, "CONFIRMED")) {
+                JOptionPane.showMessageDialog(this, "Đã xác nhận đơn hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadDonBan();
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }                                        
+
+    // 6. Nút Huỷ đơn hàng (Tab Đơn bán - Người bán từ chối đơn)
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        int selectedRow = jTable3.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn bán để từ chối/hủy!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String status = jTable3.getValueAt(selectedRow, 4).toString();
+        if (!status.equals("PENDING")) {
+            JOptionPane.showMessageDialog(this, "Chỉ có thể hủy đơn hàng đang ở trạng thái PENDING!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn từ chối đơn hàng này không?", "Xác nhận hủy", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            int orderId = Integer.parseInt(jTable3.getValueAt(selectedRow, 0).toString());
+            OrderDAO orderDAO = new OrderDAO();
+            if (orderDAO.updateStatus(orderId, "CANCELED")) {
+                JOptionPane.showMessageDialog(this, "Đã từ chối đơn hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadDonBan();
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }                                        
 
     /**
