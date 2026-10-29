@@ -95,6 +95,7 @@ CREATE TABLE `users` (
   `full_name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone_number` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `role` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'USER',
+  `status` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT 'ACTIVE',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -106,7 +107,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','123456','Quản trị viên','0901111111','ADMIN');
+INSERT INTO `users` VALUES (1,'admin','123456','Quản trị viên','0901111111','ADMIN','ACTIVE');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
