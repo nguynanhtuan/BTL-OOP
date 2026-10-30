@@ -43,7 +43,14 @@ public class Main extends javax.swing.JFrame {
         loadDonBan();
     }
 
+    // --- CÁC HÀM LOAD DỮ LIỆU LÊN BẢNG ---
+
     private void loadDanhSachMay() {
+        loadDanhSachMay("", "Tất cả");
+    }
+
+    // Hàm load danh sách máy có hỗ trợ bộ lọc Tìm kiếm (Tên và Hãng)
+    private void loadDanhSachMay(String searchName, String searchBrand) {
         String[] columnNames = {"ID", "Tên máy", "Hãng", "Giá", "Trạng thái"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
         jTable1.setModel(model);
@@ -55,17 +62,29 @@ public class Main extends javax.swing.JFrame {
         List<Phone> list = phoneDAO.findAllApproved(); 
         
         for (Phone p : list) {
-            User seller = userDAO.findById(p.getUserId());
-            String sellerName = (seller != null) ? (seller.getFullName() != null ? seller.getFullName() : seller.getUsername()) : "Unknown";
+            boolean matchName = true;
+            if (searchName != null && !searchName.isEmpty() && !searchName.startsWith("[")) {
+                matchName = p.getName() != null && p.getName().toLowerCase().contains(searchName.toLowerCase());
+            }
             
-            Object[] row = {
-                p.getId(),
-                p.getName(),
-                p.getBrand(),
-                String.format("%,.0f", p.getPrice()),
-                p.getStatus()
-            };
-            model.addRow(row);
+            boolean matchBrand = true;
+            if (searchBrand != null && !searchBrand.equals("Tất cả")) {
+                matchBrand = p.getBrand() != null && p.getBrand().equalsIgnoreCase(searchBrand);
+            }
+            
+            if (matchName && matchBrand) {
+                User seller = userDAO.findById(p.getUserId());
+                String sellerName = (seller != null) ? (seller.getFullName() != null ? seller.getFullName() : seller.getUsername()) : "Unknown";
+                
+                Object[] row = {
+                    p.getId(),
+                    p.getName(),
+                    p.getBrand(),
+                    String.format("%,.0f", p.getPrice()),
+                    p.getStatus()
+                };
+                model.addRow(row);
+            }
         }
     }
 
@@ -132,6 +151,45 @@ public class Main extends javax.swing.JFrame {
                 ngayDat
             };
             model.addRow(row);
+        }
+    }
+
+    // --- HÀM PHỤ TRỢ: TRANSACTION CẬP NHẬT ĐƠN HÀNG VÀ CHUYỂN MÁY THÀNH SOLD ---
+    private boolean confirmOrderAndSellPhone(int orderId) {
+        String getPhoneIdQuery = "SELECT phone_id FROM orders WHERE id = ?";
+        String updateOrderQuery = "UPDATE orders SET status = 'CONFIRMED' WHERE id = ?";
+        String updatePhoneQuery = "UPDATE phones SET status = 'SOLD' WHERE id = ?";
+        
+        try (java.sql.Connection conn = util.DBConnection.getConnection()) {
+            conn.setAutoCommit(false); // Bật transaction đảm bảo toàn vẹn dữ liệu
+            
+            int phoneId = -1;
+            try (java.sql.PreparedStatement pstmt = conn.prepareStatement(getPhoneIdQuery)) {
+                pstmt.setInt(1, orderId);
+                try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        phoneId = rs.getInt("phone_id");
+                    }
+                }
+            }
+            
+            try (java.sql.PreparedStatement pstmt = conn.prepareStatement(updateOrderQuery)) {
+                pstmt.setInt(1, orderId);
+                pstmt.executeUpdate();
+            }
+            
+            if (phoneId != -1) {
+                try (java.sql.PreparedStatement pstmt = conn.prepareStatement(updatePhoneQuery)) {
+                    pstmt.setInt(1, phoneId);
+                    pstmt.executeUpdate();
+                }
+            }
+            
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -224,6 +282,7 @@ public class Main extends javax.swing.JFrame {
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setText("[ Tìm kiếm ]");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -414,17 +473,28 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
+    // --- CÁC SỰ KIỆN NÚT BẤM (ACTION LISTENERS) ---
+
     // 1. Nút Đăng xuất
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
-            // Mở lại form Đăng nhập (tên lớp tùy thuộc vào nhóm đặt, ví dụ: GiaoDienDangNhap hoặc Login)
             new GiaoDienDangNhap().setVisible(true);
         }
     }                                        
 
-    // 2. Nút Đăng bán máy mới (Truyền chuẩn currentUser sang DangBanDT theo yêu cầu nhóm)
+    // 2. Nút Tìm kiếm
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        String keyword = jTextField1.getText().trim();
+        if (keyword.startsWith("[") && keyword.endsWith("]")) {
+            keyword = "";
+        }
+        String selectedBrand = jComboBox1.getSelectedItem().toString();
+        loadDanhSachMay(keyword, selectedBrand);
+    }                                        
+
+    // 3. Nút Đăng bán máy mới (Truyền chuẩn currentUser sang DangBanDT)
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         DangBanDT dangBanForm = new DangBanDT(this, true, currentUser);
         dangBanForm.setLocationRelativeTo(this); 
@@ -432,7 +502,7 @@ public class Main extends javax.swing.JFrame {
         loadDanhSachMay();
     }                                        
 
-    // 3. Nút Xem chi tiết (Truyền đủ Phone và User)
+    // 4. Nút Xem chi tiết (Truyền đủ Phone và User)
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
@@ -458,7 +528,7 @@ public class Main extends javax.swing.JFrame {
         }
     }                                        
 
-    // 4. Nút Huỷ đơn hàng (Tab Đơn mua)
+    // 5. Nút Huỷ đơn hàng (Tab Đơn mua)
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow == -1) {
@@ -486,7 +556,7 @@ public class Main extends javax.swing.JFrame {
         }
     }                                        
 
-    // 5. Nút Xác nhận đơn hàng (Tab Đơn bán - Người bán bấm duyệt đơn)
+    // 6. Nút Xác nhận đơn hàng (Tab Đơn bán - Chuyển đơn thành CONFIRMED và máy thành SOLD)
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable3.getSelectedRow();
         if (selectedRow == -1) {
@@ -500,20 +570,21 @@ public class Main extends javax.swing.JFrame {
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xác nhận (chấp nhận) đơn hàng này không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xác nhận đơn hàng này? Sản phẩm sẽ chuyển thành trạng thái Đã bán (SOLD).", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int orderId = Integer.parseInt(jTable3.getValueAt(selectedRow, 0).toString());
-            OrderDAO orderDAO = new OrderDAO();
-            if (orderDAO.updateStatus(orderId, "CONFIRMED")) {
-                JOptionPane.showMessageDialog(this, "Đã xác nhận đơn hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            
+            if (confirmOrderAndSellPhone(orderId)) {
+                JOptionPane.showMessageDialog(this, "Xác nhận đơn hàng và cập nhật sản phẩm thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadDonBan();
+                loadDanhSachMay();
             } else {
                 JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }                                        
 
-    // 6. Nút Huỷ đơn hàng (Tab Đơn bán - Người bán từ chối đơn)
+    // 7. Nút Huỷ đơn hàng (Tab Đơn bán - Người bán từ chối đơn)
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable3.getSelectedRow();
         if (selectedRow == -1) {
