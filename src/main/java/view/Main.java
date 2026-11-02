@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
 
 public class Main extends javax.swing.JFrame {
-     
+    
     private User currentUser;
     private int currentUserId = 1;
 
@@ -34,22 +34,15 @@ public class Main extends javax.swing.JFrame {
         loadDonMua();
         loadDonBan();
     }
-
-    // Constructor mặc định (dùng để test độc lập)
     public Main() {
         initComponents();
         loadDanhSachMay();
         loadDonMua();
         loadDonBan();
     }
-
-    // --- CÁC HÀM LOAD DỮ LIỆU LÊN BẢNG ---
-
     private void loadDanhSachMay() {
         loadDanhSachMay("", "Tất cả");
     }
-
-    // Hàm load danh sách máy có hỗ trợ bộ lọc Tìm kiếm (Tên và Hãng)
     private void loadDanhSachMay(String searchName, String searchBrand) {
         String[] columnNames = {"ID", "Tên máy", "Hãng", "Giá", "Trạng thái"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
@@ -87,7 +80,6 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }
-
     private void loadDonMua() {
         String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày tạo"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
@@ -120,7 +112,6 @@ public class Main extends javax.swing.JFrame {
             model.addRow(row);
         }
     }
-
     private void loadDonBan() {
         String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
@@ -153,8 +144,8 @@ public class Main extends javax.swing.JFrame {
             model.addRow(row);
         }
     }
-
-    // --- HÀM PHỤ TRỢ: TRANSACTION CẬP NHẬT ĐƠN HÀNG VÀ CHUYỂN MÁY THÀNH SOLD ---
+    
+     // --- HÀM PHỤ TRỢ: TRANSACTION CẬP NHẬT ĐƠN HÀNG VÀ CHUYỂN MÁY THÀNH SOLD ---
     private boolean confirmOrderAndSellPhone(int orderId) {
         String getPhoneIdQuery = "SELECT phone_id FROM orders WHERE id = ?";
         String updateOrderQuery = "UPDATE orders SET status = 'CONFIRMED' WHERE id = ?";
@@ -192,7 +183,6 @@ public class Main extends javax.swing.JFrame {
             return false;
         }
     }
-
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
 
     /**
@@ -223,7 +213,6 @@ public class Main extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jPanel8 = new javax.swing.JPanel();
         jButton7 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -238,7 +227,6 @@ public class Main extends javax.swing.JFrame {
         jLabel1.setText("Xin chào: Nguyễn Văn An");
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(51, 204, 0));
         jButton1.setText("[ Đăng xuất ]");
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
@@ -249,7 +237,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 294, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(28, 28, 28))
         );
@@ -272,12 +260,9 @@ public class Main extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Tìm theo tên: ");
 
-        jTextField1.setText("[_____________________________]");
-
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Hãng:");
 
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Samsung", "Iphone", "Xiaomi" }));
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -294,13 +279,13 @@ public class Main extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(49, 49, 49)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(199, Short.MAX_VALUE))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 285, Short.MAX_VALUE)
                         .addComponent(jButton2)
                         .addGap(59, 59, 59))))
         );
@@ -323,13 +308,13 @@ public class Main extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {"", "", "", "", ""},
+                {"", "", "", "", ""},
+                {"", "", "", "", ""},
+                {"", "", "", "", ""}
             },
             new String [] {
-                "ID", "Tên máy", "Hãng", "Giá", "Trạng thái"
+                "", "", "", "", ""
             }
         ));
         jTable1.setShowHorizontalLines(true);
@@ -351,68 +336,64 @@ public class Main extends javax.swing.JFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addGap(95, 95, 95)
                 .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
                 .addComponent(jButton3)
-                .addGap(54, 54, 54))
+                .addGap(68, 68, 68))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addGap(38, 38, 38)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
                     .addComponent(jButton6))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         jPanel2.add(jPanel6, java.awt.BorderLayout.SOUTH);
 
         jTabbedPane1.addTab("Danh sách máy", jPanel2);
 
-        jPanel3.setLayout(new java.awt.BorderLayout());
-
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {"", "", "", "", ""},
+                {"", "", "", "", ""},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày tạo"
+                "", "", "", "", ""
             }
         ));
-        jTable2.setShowHorizontalLines(true);
-        jTable2.setShowVerticalLines(true);
+        jTable2.setRowSelectionAllowed(false);
+        jTable2.setShowGrid(false);
         jScrollPane2.setViewportView(jTable2);
 
-        jPanel3.add(jScrollPane2, java.awt.BorderLayout.CENTER);
-
         jButton7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton7.setForeground(new java.awt.Color(255, 0, 0));
         jButton7.setText("[ Huỷ đơn hàng ]");
+        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.addActionListener(this::jButton7ActionPerformed);
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(180, 180, 180)
-                .addComponent(jButton7)
-                .addContainerGap(195, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(173, 173, 173)
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton7)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap())
         );
-
-        jPanel3.add(jPanel8, java.awt.BorderLayout.SOUTH);
 
         jTabbedPane1.addTab("Đơn mua", jPanel3);
 
@@ -420,13 +401,13 @@ public class Main extends javax.swing.JFrame {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {"", "", "", "", ""},
+                {"", "", "", "", ""},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo"
+                "", "", "", "", ""
             }
         ));
         jTable3.setShowHorizontalLines(true);
@@ -450,7 +431,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(94, 94, 94)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
                 .addComponent(jButton5)
                 .addGap(118, 118, 118))
         );
@@ -473,9 +454,6 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
-    // --- CÁC SỰ KIỆN NÚT BẤM (ACTION LISTENERS) ---
-
-    // 1. Nút Đăng xuất
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
@@ -484,7 +462,6 @@ public class Main extends javax.swing.JFrame {
         }
     }                                        
 
-    // 2. Nút Tìm kiếm
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         String keyword = jTextField1.getText().trim();
         if (keyword.startsWith("[") && keyword.endsWith("]")) {
@@ -494,7 +471,6 @@ public class Main extends javax.swing.JFrame {
         loadDanhSachMay(keyword, selectedBrand);
     }                                        
 
-    // 3. Nút Đăng bán máy mới (Truyền chuẩn currentUser sang DangBanDT)
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         DangBanDT dangBanForm = new DangBanDT(this, true, currentUser);
         dangBanForm.setLocationRelativeTo(this); 
@@ -502,33 +478,6 @@ public class Main extends javax.swing.JFrame {
         loadDanhSachMay();
     }                                        
 
-    // 4. Nút Xem chi tiết (Truyền đủ Phone và User)
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một điện thoại trong danh sách để xem chi tiết!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return; 
-        }
-        
-        try {
-            int phoneId = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
-            PhoneDAO phoneDAO = new PhoneDAO();
-            Phone selectedPhone = phoneDAO.findById(phoneId);
-            
-            if (selectedPhone != null) {
-                ChiTietSP chiTiet = new ChiTietSP(this, true, selectedPhone, currentUser);
-                chiTiet.setLocationRelativeTo(this); 
-                chiTiet.setVisible(true);
-                loadDanhSachMay();
-            } else {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }                                        
-
-    // 5. Nút Huỷ đơn hàng (Tab Đơn mua)
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow == -1) {
@@ -556,7 +505,31 @@ public class Main extends javax.swing.JFrame {
         }
     }                                        
 
-    // 6. Nút Xác nhận đơn hàng (Tab Đơn bán - Chuyển đơn thành CONFIRMED và máy thành SOLD)
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một điện thoại trong danh sách để xem chi tiết!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return; 
+        }
+        
+        try {
+            int phoneId = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
+            PhoneDAO phoneDAO = new PhoneDAO();
+            Phone selectedPhone = phoneDAO.findById(phoneId);
+            
+            if (selectedPhone != null) {
+                ChiTietSP chiTiet = new ChiTietSP(this, true, selectedPhone, currentUser);
+                chiTiet.setLocationRelativeTo(this); 
+                chiTiet.setVisible(true);
+                loadDanhSachMay();
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }                                        
+
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable3.getSelectedRow();
         if (selectedRow == -1) {
@@ -584,7 +557,6 @@ public class Main extends javax.swing.JFrame {
         }
     }                                        
 
-    // 7. Nút Huỷ đơn hàng (Tab Đơn bán - Người bán từ chối đơn)
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTable3.getSelectedRow();
         if (selectedRow == -1) {
@@ -610,7 +582,10 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }                                        
+                       
+                                                                    
 
+   
     /**
      * @param args the command line arguments
      */
@@ -654,7 +629,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
