@@ -3,15 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package view;
-
 /**
  *
  * @author Master
  */
 public class DangBanDT extends javax.swing.JDialog {
     private String imagePath = ""; 
-      private java.io.File selectedImageFile;
-    private int currentUserId = 1;
+    private java.io.File selectedImageFile;
+
+    private model.User currentUser; // <--- THÊM DÒNG NÀY
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DangBanDT.class.getName());
 
     /**
@@ -19,6 +19,16 @@ public class DangBanDT extends javax.swing.JDialog {
      */
     public DangBanDT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        
+        initComponents();
+        setLocationRelativeTo(null);
+    }
+    public DangBanDT(java.awt.Frame parent, boolean modal, model.User user) {
+        super(parent, modal);
+        this.currentUser = user;
+        if (user != null) {
+
+        }
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -216,9 +226,8 @@ public class DangBanDT extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-      jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { 
-    "Apple", "Samsung", "Xiaomi", "OPPO", "Vivo", "Realme", "Huawei", "Nokia", "Asus", "Khác" 
-}));
+      
+
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void Nut_X_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_X_ActionPerformed
@@ -295,7 +304,7 @@ public class DangBanDT extends javax.swing.JDialog {
             phone.setDescription(moTa);
             
             phone.setImagePath(imagePath);   
-            phone.setUserId(currentUserId);  
+            phone.setUserId(currentUser.getId());
             phone.setStatus("PENDING");      
 
             dao.PhoneDAO phoneDAO = new dao.PhoneDAO();
