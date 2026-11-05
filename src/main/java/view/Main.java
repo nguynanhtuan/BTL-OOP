@@ -39,6 +39,7 @@ public class Main extends javax.swing.JFrame {
         loadDanhSachMay();
         loadDonMua();
         loadDonBan();
+        loadTinDaDang();
     }
     private void loadDanhSachMay() {
         loadDanhSachMay("", "Tất cả");
@@ -197,6 +198,7 @@ public class Main extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -220,6 +222,14 @@ public class Main extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblQuanLyTin = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
+        cbLocTrangThaiTin = new javax.swing.JComboBox<>();
+        btnXemChiTietTin = new javax.swing.JButton();
+        btnSuaTin = new javax.swing.JButton();
+        btnXoaTin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -230,6 +240,10 @@ public class Main extends javax.swing.JFrame {
         jButton1.setText("[ Đăng xuất ]");
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
+        jButton8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton8.setText("[ Làm mới ]");
+        jButton8.addActionListener(this::jButton8ActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -237,7 +251,9 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 294, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 309, Short.MAX_VALUE)
+                .addComponent(jButton8)
+                .addGap(35, 35, 35)
                 .addComponent(jButton1)
                 .addGap(28, 28, 28))
         );
@@ -247,7 +263,8 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jButton8))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -263,7 +280,8 @@ public class Main extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Hãng:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Samsung", "Iphone", "Xiaomi" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Apple", "Samsung", "Xiaomi", "OPPO", "Vivo", "Realme", "Asus", "Nokia", "Huawei", "Sony", "OnePlus", "Google", "Infinix", "Khác", " " }));
+        jComboBox1.addActionListener(this::jComboBox1ActionPerformed);
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setText("[ Tìm kiếm ]");
@@ -285,7 +303,7 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 285, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 429, Short.MAX_VALUE)
                         .addComponent(jButton2)
                         .addGap(59, 59, 59))))
         );
@@ -338,7 +356,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(95, 95, 95)
                 .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 303, Short.MAX_VALUE)
                 .addComponent(jButton3)
                 .addGap(68, 68, 68))
         );
@@ -380,9 +398,9 @@ public class Main extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(173, 173, 173)
+                .addGap(255, 255, 255)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -431,7 +449,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(94, 94, 94)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 350, Short.MAX_VALUE)
                 .addComponent(jButton5)
                 .addGap(118, 118, 118))
         );
@@ -448,6 +466,72 @@ public class Main extends javax.swing.JFrame {
         jPanel4.add(jPanel7, java.awt.BorderLayout.SOUTH);
 
         jTabbedPane1.addTab("Đơn bán", jPanel4);
+
+        tblQuanLyTin.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(tblQuanLyTin);
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel4.setText("Lọc trạng thái :");
+
+        cbLocTrangThaiTin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Chờ duyệt", "Đang bán", "Đã bán" }));
+        cbLocTrangThaiTin.addActionListener(this::cbLocTrangThaiTinActionPerformed);
+
+        btnXemChiTietTin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnXemChiTietTin.setText("[ Xem chi tiết ]");
+        btnXemChiTietTin.addActionListener(this::btnXemChiTietTinActionPerformed);
+
+        btnSuaTin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnSuaTin.setText("[ Chỉnh sửa tin ]");
+        btnSuaTin.addActionListener(this::btnSuaTinActionPerformed);
+
+        btnXoaTin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnXoaTin.setText("[ Xoá tin/ Ngừng bán ]");
+        btnXoaTin.addActionListener(this::btnXoaTinActionPerformed);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbLocTrangThaiTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(100, 100, 100)
+                .addComponent(btnXemChiTietTin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnSuaTin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnXoaTin)
+                .addContainerGap(12, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(cbLocTrangThaiTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnXemChiTietTin)
+                    .addComponent(btnSuaTin)
+                    .addComponent(btnXoaTin))
+                .addContainerGap(197, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Quản lý tin đăng", jPanel8);
 
         getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
@@ -582,6 +666,148 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }                                        
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        // TODO add your handling code here:
+    }                                          
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // 1. (Tùy chọn) Xóa dữ liệu cũ đang nhập trong ô tìm kiếm để lấy toàn bộ danh sách
+    jTextField1.setText("");
+    jComboBox1.setSelectedIndex(0);
+
+    // 2. Gọi lại 3 hàm lấy dữ liệu từ cơ sở dữ liệu để làm mới cả 3 bảng
+    loadDanhSachMay();
+    loadDonMua();
+    loadDonBan();
+    loadTinDaDang();
+    }                                        
+
+    private void cbLocTrangThaiTinActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+        loadTinDaDang();
+    }                                                 
+
+    private void btnXoaTinActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        int selectedRow = tblQuanLyTin.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một tin trên bảng để xóa/ngừng bán!");
+            return;
+        }
+
+        // Lấy trạng thái hiện tại
+        String currentStatus = tblQuanLyTin.getValueAt(selectedRow, 4).toString();
+        if (currentStatus.equals("SOLD")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Máy đã bán thành công, không thể xóa!");
+            return;
+        }
+
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc chắn muốn ngừng bán sản phẩm này?", "Xác nhận", javax.swing.JOptionPane.YES_NO_OPTION);
+
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
+
+            try (java.sql.Connection conn = util.DBConnection.getConnection();
+                 java.sql.PreparedStatement pst = conn.prepareStatement("UPDATE phones SET status = 'CANCELED' WHERE id = ?")) {
+
+                pst.setInt(1, phoneId);
+                pst.executeUpdate();
+
+                javax.swing.JOptionPane.showMessageDialog(this, "Đã ngừng bán thành công!");
+                loadTinDaDang(); // Cập nhật lại bảng quản lý tin
+                loadDanhSachMay(); // Cập nhật lại danh sách mua chung
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi xóa tin: " + e.getMessage());
+            }
+        }
+    }                                         
+
+    private void btnXemChiTietTinActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        int selectedRow = tblQuanLyTin.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một tin trên bảng để xem chi tiết!");
+            return;
+        }
+
+        int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
+
+        try {
+            // Truy vấn lấy thông tin chi tiết của phone theo ID từ database
+            model.Phone selectedPhone = null;
+            try (java.sql.Connection conn = util.DBConnection.getConnection();
+                 java.sql.PreparedStatement pst = conn.prepareStatement("SELECT * FROM phones WHERE id = ?")) {
+                pst.setInt(1, phoneId);
+                java.sql.ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    selectedPhone = new model.Phone();
+                    selectedPhone.setId(rs.getInt("id"));
+                    selectedPhone.setName(rs.getString("name"));
+                    selectedPhone.setBrand(rs.getString("brand"));
+                    selectedPhone.setPrice(rs.getDouble("price"));
+                    selectedPhone.setDescription(rs.getString("description"));
+                    selectedPhone.setStatus(rs.getString("status"));
+                }
+            }
+
+            if (selectedPhone != null) {
+                // Mở cửa sổ ChiTietSP truyền đúng các tham số mà form đang yêu cầu (Ví dụ: truyền frame cha, modal, và đối tượng phone, currentUser)              
+                new view.ChiTietSP(this, true, selectedPhone, this.currentUser).setVisible(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi mở chi tiết: " + e.getMessage());
+        }
+    }                                                
+
+    private void btnSuaTinActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        int selectedRow = tblQuanLyTin.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một tin để chỉnh sửa!");
+            return;
+        }
+
+        // Kiểm tra trạng thái: Không cho sửa nếu đã bán hoặc đã hủy
+        String status = tblQuanLyTin.getValueAt(selectedRow, 4).toString();
+        if (status.equals("SOLD") || status.equals("CANCELED") || status.equals("HIDDEN")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Chỉ có thể sửa giá cho tin đang chờ duyệt hoặc đang bán!");
+            return;
+        }
+
+        int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
+        // Lấy giá hiện tại và xóa dấu phẩy để đưa vào ô nhập liệu
+        String currentPrice = tblQuanLyTin.getValueAt(selectedRow, 3).toString().replace(",", "");
+
+        // Hiển thị hộp thoại yêu cầu nhập giá mới
+        String newPriceStr = javax.swing.JOptionPane.showInputDialog(this, "Nhập giá bán mới (VND):", currentPrice);
+
+        if (newPriceStr != null && !newPriceStr.trim().isEmpty()) {
+            try {
+                double newPrice = Double.parseDouble(newPriceStr);
+
+                // Cập nhật giá vào Database
+                try (java.sql.Connection conn = util.DBConnection.getConnection();
+                     java.sql.PreparedStatement pst = conn.prepareStatement("UPDATE phones SET price = ? WHERE id = ?")) {
+
+                    pst.setDouble(1, newPrice);
+                    pst.setInt(2, phoneId);
+                    pst.executeUpdate();
+
+                    javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật giá thành công!");
+
+                    // Làm mới lại các bảng
+                    loadTinDaDang();
+                    loadDanhSachMay();
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ! Vui lòng chỉ nhập số (ví dụ: 15000000).");
+            } catch (Exception e) {
+                e.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi cập nhật cơ sở dữ liệu: " + e.getMessage());
+            }
+        }
+    }                                         
                        
                                                                     
 
@@ -609,8 +835,57 @@ public class Main extends javax.swing.JFrame {
             new Main(dummyUser).setVisible(true);
         });
     }
+    
+    private void loadTinDaDang() {
+    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblQuanLyTin.getModel();
+    model.setRowCount(0); // Xóa dữ liệu cũ trên bảng
+
+    // Nếu chưa đăng nhập thì không làm gì cả
+    if (this.currentUser == null) return; 
+
+    // Lấy điều kiện lọc từ ComboBox
+    String trangThaiLoc = cbLocTrangThaiTin.getSelectedItem().toString();
+    
+    // Truy vấn lấy các máy do chính user này đăng
+    String sql = "SELECT id, name, brand, price, status, created_at FROM phones WHERE user_id = ?";
+    
+    // Thêm điều kiện lọc theo ComboBox
+    if (trangThaiLoc.equals("Chờ duyệt")) {
+        sql += " AND status = 'PENDING'";
+    } else if (trangThaiLoc.equals("Đang bán")) {
+        sql += " AND status = 'APPROVED'";
+    } else if (trangThaiLoc.equals("Đã bán")) {
+        sql += " AND status = 'SOLD'";
+    }
+
+    try (java.sql.Connection conn = util.DBConnection.getConnection();
+         java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+         
+        pst.setInt(1, currentUser.getId()); // Truyền ID của user đang đăng nhập
+        java.sql.ResultSet rs = pst.executeQuery();
+        
+        while (rs.next()) {
+            Object[] row = {
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("brand"),
+                String.format("%,.0f", rs.getDouble("price")), // Format giá tiền
+                rs.getString("status"),
+                rs.getDate("created_at")
+            };
+            model.addRow(row);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        javax.swing.JOptionPane.showMessageDialog(this, "Lỗi tải danh sách tin đăng: " + e.getMessage());
+    }
+}
 
     // Variables declaration - do not modify                     
+    private javax.swing.JButton btnSuaTin;
+    private javax.swing.JButton btnXemChiTietTin;
+    private javax.swing.JButton btnXoaTin;
+    private javax.swing.JComboBox<String> cbLocTrangThaiTin;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -618,10 +893,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -629,13 +906,16 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tblQuanLyTin;
     // End of variables declaration                   
 }
