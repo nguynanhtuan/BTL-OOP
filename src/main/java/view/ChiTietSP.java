@@ -23,7 +23,13 @@ public class ChiTietSP extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(parent); 
         
-        loadData();     
+        loadData();   
+        
+        
+    }
+       // Hàm ẩn nút Mua Ngay
+    public void hideBuyButton() {
+        Mua_Ngay_.setVisible(false); 
     }
             // Hàm chính: Đổ dữ liệu chữ và gọi hàm hiển thị ảnh
     private void loadData() {
