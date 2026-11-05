@@ -33,6 +33,7 @@ public class Main extends javax.swing.JFrame {
         loadDanhSachMay();
         loadDonMua();
         loadDonBan();
+        loadTinDaDang();
     }
     public Main() {
         initComponents();
@@ -739,45 +740,45 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void loadTinDaDang() {
-    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblQuanLyTin.getModel();
-    anCotID(tblQuanLyTin);
-    model.setRowCount(0); // Xóa dữ liệu cũ trên bảng
+        String[] columnNames = {"Mã tin", "Tên máy", "Hãng", "Giá (VND)", "Trạng thái", "Ngày đăng"};
+        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(null, columnNames);
+        tblQuanLyTin.setModel(model);
+        anCotID(tblQuanLyTin);
 
-    // Nếu chưa đăng nhập thì không làm gì cả
-    if (this.currentUser == null) return; 
+        if (this.currentUser == null) return; 
 
-    // Lấy điều kiện lọc từ ComboBox
-    String trangThaiLoc = cbLocTrangThaiTin.getSelectedItem().toString();
-    
-    // Truy vấn lấy các máy do chính user này đăng
-    String sql = "SELECT id, name, brand, price, status, created_at FROM phones WHERE user_id = ?";
-    
-    // Thêm điều kiện lọc theo ComboBox
-    if (trangThaiLoc.equals("Chờ duyệt")) {
-        sql += " AND status = 'PENDING'";
-    } else if (trangThaiLoc.equals("Đang bán")) {
-        sql += " AND status = 'APPROVED'";
-    } else if (trangThaiLoc.equals("Đã bán")) {
-        sql += " AND status = 'SOLD'";
-    }
+        String trangThaiLoc = cbLocTrangThaiTin.getSelectedItem().toString();
 
-    try (java.sql.Connection conn = util.DBConnection.getConnection();
-         java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
-         
-        pst.setInt(1, currentUser.getId()); // Truyền ID của user đang đăng nhập
-        java.sql.ResultSet rs = pst.executeQuery();
-        
-        while (rs.next()) {
-            Object[] row = {
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("brand"),
-                String.format("%,.0f", rs.getDouble("price")), // Format giá tiền
-                rs.getString("status"),
-                rs.getDate("created_at")
-            };
-            model.addRow(row);
+        String sql = "SELECT id, name, brand, price, status, created_at FROM phones WHERE user_id = ?";
+
+        // Cập nhật điều kiện lọc
+        if (trangThaiLoc.equals("Tất cả")) {
+            sql += " AND status != 'CANCELED'"; // <-- LOẠI BỎ TIN ĐÃ HỦY/XÓA KHỎI DANH SÁCH TẤT CẢ
+        } else if (trangThaiLoc.equals("Chờ duyệt")) {
+            sql += " AND status = 'PENDING'";
+        } else if (trangThaiLoc.equals("Đang bán")) {
+            sql += " AND status = 'APPROVED'";
+        } else if (trangThaiLoc.equals("Đã bán")) {
+            sql += " AND status = 'SOLD'";
         }
+
+        try (java.sql.Connection conn = util.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setInt(1, currentUser.getId());
+            java.sql.ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("brand"),
+                    String.format("%,.0f", rs.getDouble("price")),
+                    rs.getString("status"),
+                    rs.getDate("created_at")
+                };
+                model.addRow(row);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, "Lỗi tải danh sách tin đăng: " + e.getMessage());
