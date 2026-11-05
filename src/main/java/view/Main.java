@@ -48,6 +48,7 @@ public class Main extends javax.swing.JFrame {
         String[] columnNames = {"ID", "Tên máy", "Hãng", "Giá", "Trạng thái"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
         jTable1.setModel(model);
+        anCotID(jTable1);
         model.setRowCount(0);
         
         PhoneDAO phoneDAO = new PhoneDAO();
@@ -85,6 +86,7 @@ public class Main extends javax.swing.JFrame {
         String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày tạo"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
         jTable2.setModel(model);
+        anCotID(jTable2);
         model.setRowCount(0);
         
         OrderDAO orderDAO = new OrderDAO();
@@ -117,6 +119,7 @@ public class Main extends javax.swing.JFrame {
         String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
         jTable3.setModel(model);
+        anCotID(jTable3);
         model.setRowCount(0);
         
         OrderDAO orderDAO = new OrderDAO();
@@ -227,8 +230,6 @@ public class Main extends javax.swing.JFrame {
         tblQuanLyTin = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         cbLocTrangThaiTin = new javax.swing.JComboBox<>();
-        btnXemChiTietTin = new javax.swing.JButton();
-        btnSuaTin = new javax.swing.JButton();
         btnXoaTin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -486,14 +487,6 @@ public class Main extends javax.swing.JFrame {
         cbLocTrangThaiTin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Chờ duyệt", "Đang bán", "Đã bán" }));
         cbLocTrangThaiTin.addActionListener(this::cbLocTrangThaiTinActionPerformed);
 
-        btnXemChiTietTin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnXemChiTietTin.setText("[ Xem chi tiết ]");
-        btnXemChiTietTin.addActionListener(this::btnXemChiTietTinActionPerformed);
-
-        btnSuaTin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnSuaTin.setText("[ Chỉnh sửa tin ]");
-        btnSuaTin.addActionListener(this::btnSuaTinActionPerformed);
-
         btnXoaTin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnXoaTin.setText("[ Xoá tin/ Ngừng bán ]");
         btnXoaTin.addActionListener(this::btnXoaTinActionPerformed);
@@ -502,19 +495,15 @@ public class Main extends javax.swing.JFrame {
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbLocTrangThaiTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100)
-                .addComponent(btnXemChiTietTin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSuaTin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnXoaTin)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addGap(132, 132, 132))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -525,8 +514,6 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cbLocTrangThaiTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnXemChiTietTin)
-                    .addComponent(btnSuaTin)
                     .addComponent(btnXoaTin))
                 .addContainerGap(197, Short.MAX_VALUE))
         );
@@ -723,91 +710,6 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }                                         
-
-    private void btnXemChiTietTinActionPerformed(java.awt.event.ActionEvent evt) {                                                 
-        int selectedRow = tblQuanLyTin.getSelectedRow();
-        if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một tin trên bảng để xem chi tiết!");
-            return;
-        }
-
-        int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
-
-        try {
-            // Truy vấn lấy thông tin chi tiết của phone theo ID từ database
-            model.Phone selectedPhone = null;
-            try (java.sql.Connection conn = util.DBConnection.getConnection();
-                 java.sql.PreparedStatement pst = conn.prepareStatement("SELECT * FROM phones WHERE id = ?")) {
-                pst.setInt(1, phoneId);
-                java.sql.ResultSet rs = pst.executeQuery();
-                if (rs.next()) {
-                    selectedPhone = new model.Phone();
-                    selectedPhone.setId(rs.getInt("id"));
-                    selectedPhone.setName(rs.getString("name"));
-                    selectedPhone.setBrand(rs.getString("brand"));
-                    selectedPhone.setPrice(rs.getDouble("price"));
-                    selectedPhone.setDescription(rs.getString("description"));
-                    selectedPhone.setStatus(rs.getString("status"));
-                }
-            }
-
-            if (selectedPhone != null) {
-                // Mở cửa sổ ChiTietSP truyền đúng các tham số mà form đang yêu cầu (Ví dụ: truyền frame cha, modal, và đối tượng phone, currentUser)              
-                new view.ChiTietSP(this, true, selectedPhone, this.currentUser).setVisible(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi mở chi tiết: " + e.getMessage());
-        }
-    }                                                
-
-    private void btnSuaTinActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        int selectedRow = tblQuanLyTin.getSelectedRow();
-        if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một tin để chỉnh sửa!");
-            return;
-        }
-
-        // Kiểm tra trạng thái: Không cho sửa nếu đã bán hoặc đã hủy
-        String status = tblQuanLyTin.getValueAt(selectedRow, 4).toString();
-        if (status.equals("SOLD") || status.equals("CANCELED") || status.equals("HIDDEN")) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Chỉ có thể sửa giá cho tin đang chờ duyệt hoặc đang bán!");
-            return;
-        }
-
-        int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
-        // Lấy giá hiện tại và xóa dấu phẩy để đưa vào ô nhập liệu
-        String currentPrice = tblQuanLyTin.getValueAt(selectedRow, 3).toString().replace(",", "");
-
-        // Hiển thị hộp thoại yêu cầu nhập giá mới
-        String newPriceStr = javax.swing.JOptionPane.showInputDialog(this, "Nhập giá bán mới (VND):", currentPrice);
-
-        if (newPriceStr != null && !newPriceStr.trim().isEmpty()) {
-            try {
-                double newPrice = Double.parseDouble(newPriceStr);
-
-                // Cập nhật giá vào Database
-                try (java.sql.Connection conn = util.DBConnection.getConnection();
-                     java.sql.PreparedStatement pst = conn.prepareStatement("UPDATE phones SET price = ? WHERE id = ?")) {
-
-                    pst.setDouble(1, newPrice);
-                    pst.setInt(2, phoneId);
-                    pst.executeUpdate();
-
-                    javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật giá thành công!");
-
-                    // Làm mới lại các bảng
-                    loadTinDaDang();
-                    loadDanhSachMay();
-                }
-            } catch (NumberFormatException e) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ! Vui lòng chỉ nhập số (ví dụ: 15000000).");
-            } catch (Exception e) {
-                e.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi cập nhật cơ sở dữ liệu: " + e.getMessage());
-            }
-        }
-    }                                         
                        
                                                                     
 
@@ -838,6 +740,7 @@ public class Main extends javax.swing.JFrame {
     
     private void loadTinDaDang() {
     javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblQuanLyTin.getModel();
+    anCotID(tblQuanLyTin);
     model.setRowCount(0); // Xóa dữ liệu cũ trên bảng
 
     // Nếu chưa đăng nhập thì không làm gì cả
@@ -875,15 +778,20 @@ public class Main extends javax.swing.JFrame {
             };
             model.addRow(row);
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        javax.swing.JOptionPane.showMessageDialog(this, "Lỗi tải danh sách tin đăng: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi tải danh sách tin đăng: " + e.getMessage());
+        }
     }
-}
+    private void anCotID(javax.swing.JTable table) {
+    // Ép chiều rộng của cột đầu tiên (cột 0 - chứa ID) về 0 pixel để ẩn đi
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setPreferredWidth(0);
+    }
 
     // Variables declaration - do not modify                     
-    private javax.swing.JButton btnSuaTin;
-    private javax.swing.JButton btnXemChiTietTin;
     private javax.swing.JButton btnXoaTin;
     private javax.swing.JComboBox<String> cbLocTrangThaiTin;
     private javax.swing.JButton jButton1;
