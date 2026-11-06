@@ -23,7 +23,11 @@ public class AdminFrame extends javax.swing.JFrame {
     public AdminFrame(model.User user) {
         initComponents();
         this.currentUser = user;
-        
+        jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+
+        loadDataToTable1("Tất cả");
+        loadDataToTable2();
         // (Tùy chọn) Bạn có thể hiển thị tên Admin lên tiêu đề form hoặc một Label nào đó:
         // this.setTitle("Trang Quản Trị - Xin chào: " + user.getFullName());
     }
@@ -126,6 +130,7 @@ public class AdminFrame extends javax.swing.JFrame {
         Duyet = new javax.swing.JButton();
         Tuchoi = new javax.swing.JButton();
         Xóa = new javax.swing.JButton();
+        Xemchitiet = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         LamMoi2 = new javax.swing.JButton();
@@ -188,6 +193,12 @@ public class AdminFrame extends javax.swing.JFrame {
         Xóa.setText("Xóa");
         Xóa.addActionListener(this::XóaActionPerformed);
 
+        Xemchitiet.setBackground(new java.awt.Color(0, 51, 255));
+        Xemchitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Xemchitiet.setForeground(new java.awt.Color(255, 255, 255));
+        Xemchitiet.setText("Xem chi tiết ");
+        Xemchitiet.addActionListener(this::XemchitietActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -197,6 +208,8 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(Xemchitiet)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Duyet)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Tuchoi)
@@ -208,7 +221,7 @@ public class AdminFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(ThanhTim1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(LamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(LamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -217,17 +230,21 @@ public class AdminFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(ThanhTim1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(ThanhTim1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(LamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Xóa)
                     .addComponent(Tuchoi)
-                    .addComponent(Duyet)))
+                    .addComponent(Duyet)
+                    .addComponent(Xemchitiet)))
         );
 
         jTabbedPane1.addTab("Quản lý tin", jPanel1);
@@ -567,6 +584,28 @@ public class AdminFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_KhoaTKActionPerformed
 
+    private void XemchitietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XemchitietActionPerformed
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm!");
+            return;
+        }
+
+        int id = getSelectedId(row, jTable1);
+        Phone phone = phoneDAO.findById(id);
+
+        if (phone == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm!");
+            return;
+        }
+
+        ChiTietSP dialog = new ChiTietSP(this, true, phone, currentUser);
+        dialog.hideBuyButton();
+        dialog.setVisible(true);
+    }//GEN-LAST:event_XemchitietActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -605,6 +644,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JButton MoKhoa;
     private javax.swing.JComboBox<String> ThanhTim1;
     private javax.swing.JButton Tuchoi;
+    private javax.swing.JButton Xemchitiet;
     private javax.swing.JButton Xóa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
