@@ -232,6 +232,7 @@ public class Main extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         cbLocTrangThaiTin = new javax.swing.JComboBox<>();
         btnXoaTin = new javax.swing.JButton();
+        btnXemChiTietTin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -492,6 +493,10 @@ public class Main extends javax.swing.JFrame {
         btnXoaTin.setText("[ Xoá tin/ Ngừng bán ]");
         btnXoaTin.addActionListener(this::btnXoaTinActionPerformed);
 
+        btnXemChiTietTin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnXemChiTietTin.setText("[ Xem chi tiết ]");
+        btnXemChiTietTin.addActionListener(this::btnXemChiTietTinActionPerformed);
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -503,8 +508,10 @@ public class Main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbLocTrangThaiTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnXemChiTietTin)
+                .addGap(18, 18, 18)
                 .addComponent(btnXoaTin)
-                .addGap(132, 132, 132))
+                .addGap(55, 55, 55))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -515,7 +522,8 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cbLocTrangThaiTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnXoaTin))
+                    .addComponent(btnXoaTin)
+                    .addComponent(btnXemChiTietTin))
                 .addContainerGap(197, Short.MAX_VALUE))
         );
 
@@ -711,6 +719,51 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }                                         
+
+    private void btnXemChiTietTinActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        int selectedRow = tblQuanLyTin.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một tin trên bảng để xem chi tiết!");
+            return;
+        }
+
+        int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
+
+        try {
+            // Truy vấn lấy thông tin chi tiết của phone theo ID từ database
+            model.Phone selectedPhone = null;
+            try (java.sql.Connection conn = util.DBConnection.getConnection();
+                 java.sql.PreparedStatement pst = conn.prepareStatement("SELECT * FROM phones WHERE id = ?")) {
+                pst.setInt(1, phoneId);
+                java.sql.ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    selectedPhone = new model.Phone();
+                    selectedPhone.setId(rs.getInt("id"));
+                    selectedPhone.setName(rs.getString("name"));
+                    selectedPhone.setBrand(rs.getString("brand"));
+                    selectedPhone.setPrice(rs.getDouble("price"));
+                    selectedPhone.setDescription(rs.getString("description"));
+                    selectedPhone.setStatus(rs.getString("status"));
+                    selectedPhone.setUserId(rs.getInt("user_id")); // Đừng quên lấy cả user_id
+                }
+            }
+
+            if (selectedPhone != null) {
+                // Khởi tạo cửa sổ ChiTietSP
+                view.ChiTietSP chiTiet = new view.ChiTietSP(this, true, selectedPhone, this.currentUser);
+
+                // Gọi hàm ẩn nút mua
+                chiTiet.hideBuyButton(); 
+
+                // Đặt vị trí ra giữa màn hình và hiển thị
+                chiTiet.setLocationRelativeTo(this);
+                chiTiet.setVisible(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi mở chi tiết: " + e.getMessage());
+        }
+    }                                                
                        
                                                                     
 
@@ -793,6 +846,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify                     
+    private javax.swing.JButton btnXemChiTietTin;
     private javax.swing.JButton btnXoaTin;
     private javax.swing.JComboBox<String> cbLocTrangThaiTin;
     private javax.swing.JButton jButton1;
