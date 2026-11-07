@@ -675,8 +675,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cbLocTrangThaiTin" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="btnXemChiTietTin" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btnXoaTin" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -690,6 +692,7 @@
                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cbLocTrangThaiTin" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnXoaTin" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnXemChiTietTin" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="197" max="32767" attributes="0"/>
                   </Group>
@@ -753,6 +756,17 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnXoaTinActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnXemChiTietTin">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="12" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="[ Xem chi ti&#x1ebf;t ]"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnXemChiTietTinActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
