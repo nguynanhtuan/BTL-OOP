@@ -710,8 +710,8 @@ public class Main extends javax.swing.JFrame {
                 pst.executeUpdate();
 
                 javax.swing.JOptionPane.showMessageDialog(this, "Đã ngừng bán thành công!");
-                loadTinDaDang(); // Cập nhật lại bảng quản lý tin
-                loadDanhSachMay(); // Cập nhật lại danh sách mua chung
+                loadTinDaDang(); 
+                loadDanhSachMay(); 
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -744,7 +744,8 @@ public class Main extends javax.swing.JFrame {
                     selectedPhone.setPrice(rs.getDouble("price"));
                     selectedPhone.setDescription(rs.getString("description"));
                     selectedPhone.setStatus(rs.getString("status"));
-                    selectedPhone.setUserId(rs.getInt("user_id")); // Đừng quên lấy cả user_id
+                    selectedPhone.setUserId(rs.getInt("user_id")); 
+                    selectedPhone.setImagePath(rs.getString("image_path"));
                 }
             }
 
