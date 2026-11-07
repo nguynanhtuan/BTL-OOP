@@ -17,6 +17,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
      */
     public GiaoDienDangNhap() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

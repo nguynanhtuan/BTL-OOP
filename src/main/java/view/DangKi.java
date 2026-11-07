@@ -18,6 +18,7 @@ public class DangKi extends javax.swing.JDialog {
     public DangKi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
