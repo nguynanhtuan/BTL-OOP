@@ -176,8 +176,8 @@ public class DangKi extends javax.swing.JDialog {
             u.setUsername(username);
             u.setPassword(password);
             // Nếu model.User có các hàm set họ tên hoặc số điện thoại, bạn có thể mở dòng dưới:
-            // u.setFullName(fullName);
-            // u.setPhone(phone);
+             u.setFullName(fullName);
+             u.setPhoneNumber(phone);
 
             // 5. Gọi UserDAO theo đúng chuẩn kiến trúc OOP (tuyệt đối không viết câu lệnh SQL ở đây)
             dao.UserDAO userDAO = new dao.UserDAO();

@@ -25,7 +25,6 @@ public class Main extends javax.swing.JFrame {
         this.currentUser = user;
         this.currentUserId = user.getId();
         initComponents();
-        this.setLocationRelativeTo(null);
         
         if (user.getFullName() != null) {
             jLabel1.setText("Xin chào: " + user.getFullName());
@@ -38,7 +37,6 @@ public class Main extends javax.swing.JFrame {
     }
     public Main() {
         initComponents();
-        this.setLocationRelativeTo(null);
         loadDanhSachMay();
         loadDonMua();
         loadDonBan();
@@ -712,8 +710,8 @@ public class Main extends javax.swing.JFrame {
                 pst.executeUpdate();
 
                 javax.swing.JOptionPane.showMessageDialog(this, "Đã ngừng bán thành công!");
-                loadTinDaDang(); 
-                loadDanhSachMay(); 
+                loadTinDaDang(); // Cập nhật lại bảng quản lý tin
+                loadDanhSachMay(); // Cập nhật lại danh sách mua chung
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -746,8 +744,7 @@ public class Main extends javax.swing.JFrame {
                     selectedPhone.setPrice(rs.getDouble("price"));
                     selectedPhone.setDescription(rs.getString("description"));
                     selectedPhone.setStatus(rs.getString("status"));
-                    selectedPhone.setUserId(rs.getInt("user_id")); 
-                    selectedPhone.setImagePath(rs.getString("image_path"));
+                    selectedPhone.setUserId(rs.getInt("user_id")); // Đừng quên lấy cả user_id
                 }
             }
 
