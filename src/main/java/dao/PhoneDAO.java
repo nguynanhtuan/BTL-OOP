@@ -214,6 +214,7 @@ public class PhoneDAO {
         p.setImagePath(rs.getString("image_path"));
         p.setStatus(rs.getString("status"));
         p.setUserId(rs.getInt("user_id"));
+        p.setCreatedAt(rs.getTimestamp("created_at")); 
         return p;
     }
 }

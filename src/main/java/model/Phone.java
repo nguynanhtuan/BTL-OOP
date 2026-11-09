@@ -9,12 +9,13 @@ public class Phone {
     private String imagePath;
     private String status;
     private int userId;
+    private java.util.Date createdAt; 
 
     public Phone() {
     }
 
     public Phone(int id, String name, String brand, double price,
-                 String description, String imagePath, String status, int userId) {
+                 String description, String imagePath, String status, int userId, java.util.Date createdAt) {
         this.id = id;
         this.name = name;
         this.brand = brand;
@@ -23,6 +24,7 @@ public class Phone {
         this.imagePath = imagePath;
         this.status = status;
         this.userId = userId;
+        this.createdAt = createdAt; // 2. GÁN TRONG CONSTRUCTOR
     }
 
     public int getId() { return id; }
@@ -49,10 +51,17 @@ public class Phone {
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
 
+    // 3. THÊM GETTER VÀ SETTER CHO NGÀY ĐĂNG
+    public java.util.Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.util.Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return name;
     }
-
-   
 }
