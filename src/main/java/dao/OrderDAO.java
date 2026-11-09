@@ -97,6 +97,46 @@ public class OrderDAO {
         return list;
     }
 
+    // ==================== XÁC NHẬN ĐƠN HÀNG VÀ CHUYỂN MÁY THÀNH SOLD (TRANSACTION) ====================
+    public boolean confirmOrderAndSellPhone(int orderId) {
+        String getPhoneIdQuery = "SELECT phone_id FROM orders WHERE id = ?";
+        // Thêm confirmed_at = NOW() vào câu lệnh
+        String updateOrderQuery = "UPDATE orders SET status = 'CONFIRMED', confirmed_at = NOW() WHERE id = ?";
+        String updatePhoneQuery = "UPDATE phones SET status = 'SOLD' WHERE id = ?";
+        
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); // Bật transaction
+            
+            int phoneId = -1;
+            try (PreparedStatement pstmt = conn.prepareStatement(getPhoneIdQuery)) {
+                pstmt.setInt(1, orderId);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        phoneId = rs.getInt("phone_id");
+                    }
+                }
+            }
+            
+            try (PreparedStatement pstmt = conn.prepareStatement(updateOrderQuery)) {
+                pstmt.setInt(1, orderId);
+                pstmt.executeUpdate();
+            }
+            
+            if (phoneId != -1) {
+                try (PreparedStatement pstmt = conn.prepareStatement(updatePhoneQuery)) {
+                    pstmt.setInt(1, phoneId);
+                    pstmt.executeUpdate();
+                }
+            }
+            
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // ==================== HÀM PHỤ ====================
     private Order mapRow(ResultSet rs) throws Exception {
         Order o = new Order();
@@ -107,6 +147,7 @@ public class OrderDAO {
         o.setPrice(rs.getDouble("price"));
         o.setStatus(rs.getString("status"));
         o.setCreatedAt(rs.getTimestamp("created_at"));
+        o.setConfirmedAt(rs.getTimestamp("confirmed_at")); // Lấy ngày xác nhận
         return o;
     }
 }
