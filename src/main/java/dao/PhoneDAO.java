@@ -12,8 +12,9 @@ public class PhoneDAO {
 
     // ==================== THÊM TIN ĐĂNG ====================
     public boolean insert(Phone p) {
-        String sql = "INSERT INTO phones (name, brand, price, description, image_path, status, user_id) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // Đã thêm cột video_path
+        String sql = "INSERT INTO phones (name, brand, price, description, image_path, video_path, status, user_id) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -22,8 +23,9 @@ public class PhoneDAO {
             ps.setDouble(3, p.getPrice());
             ps.setString(4, p.getDescription());
             ps.setString(5, p.getImagePath());
-            ps.setString(6, p.getStatus());
-            ps.setInt(7, p.getUserId());
+            ps.setString(6, p.getVideoPath()); // Thêm video
+            ps.setString(7, p.getStatus());
+            ps.setInt(8, p.getUserId());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,8 +35,9 @@ public class PhoneDAO {
 
     // ==================== CẬP NHẬT TIN ====================
     public boolean update(Phone p) {
+        // Đã thêm cột video_path
         String sql = "UPDATE phones SET name=?, brand=?, price=?, description=?, "
-                   + "image_path=?, status=? WHERE id=?";
+                   + "image_path=?, video_path=?, status=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -43,8 +46,9 @@ public class PhoneDAO {
             ps.setDouble(3, p.getPrice());
             ps.setString(4, p.getDescription());
             ps.setString(5, p.getImagePath());
-            ps.setString(6, p.getStatus());
-            ps.setInt(7, p.getId());
+            ps.setString(6, p.getVideoPath()); // Thêm video
+            ps.setString(7, p.getStatus());
+            ps.setInt(8, p.getId());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -212,6 +216,7 @@ public class PhoneDAO {
         p.setPrice(rs.getDouble("price"));
         p.setDescription(rs.getString("description"));
         p.setImagePath(rs.getString("image_path"));
+        p.setVideoPath(rs.getString("video_path")); // Thêm dòng lấy video
         p.setStatus(rs.getString("status"));
         p.setUserId(rs.getInt("user_id"));
         p.setCreatedAt(rs.getTimestamp("created_at")); 

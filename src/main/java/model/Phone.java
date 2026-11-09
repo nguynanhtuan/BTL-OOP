@@ -10,7 +10,7 @@ public class Phone {
     private String status;
     private int userId;
     private java.util.Date createdAt; 
-
+     private String videoPath;
     public Phone() {
     }
 
@@ -59,7 +59,8 @@ public class Phone {
     public void setCreatedAt(java.util.Date createdAt) {
         this.createdAt = createdAt;
     }
-
+       public String getVideoPath() { return videoPath; }
+    public void setVideoPath(String videoPath) { this.videoPath = videoPath; }
     @Override
     public String toString() {
         return name;
