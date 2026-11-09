@@ -10,6 +10,7 @@ import dao.UserDAO;
 import model.Phone;
 import model.User;
 import java.util.List;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -23,6 +24,9 @@ public class AdminFrame extends javax.swing.JFrame {
     public AdminFrame(model.User user) {
         initComponents();
         this.currentUser = user;
+        
+        khoaSuaBang();
+        
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
 
@@ -40,6 +44,7 @@ public class AdminFrame extends javax.swing.JFrame {
      */
     public AdminFrame() {
         initComponents();
+        khoaSuaBang();
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         loadDataToTable1("Tất cả");
@@ -49,8 +54,7 @@ public class AdminFrame extends javax.swing.JFrame {
     
     // Hiển thị danh sách tin đăng trên jTable1
     private void loadDataToTable1(String statusFilter) {
-        DefaultTableModel model =
-                (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
         model.setRowCount(0);
 
@@ -62,21 +66,29 @@ public class AdminFrame extends javax.swing.JFrame {
             list = phoneDAO.findByStatus(statusFilter);
         }
 
+        // Định dạng ngày/tháng/năm
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
         for (Phone p : list) {
-            // Tìm người đăng dựa vào user_id của tin
             User u = userDAO.findById(p.getUserId());
 
-            // Lấy tên người đăng
             String tenNguoiDang = (u != null)
                     ? u.getUsername()
                     : "Không xác định";
+
+            // Lấy ngày đăng từ Phone
+            String ngayDang = "";
+
+            if (p.getCreatedAt() != null) {
+                ngayDang = sdf.format(p.getCreatedAt());
+            }
 
             Object[] row = {
                 p.getId(),
                 p.getName(),
                 tenNguoiDang,
                 p.getStatus(),
-                null
+                ngayDang
             };
 
             model.addRow(row);
@@ -105,7 +117,41 @@ public class AdminFrame extends javax.swing.JFrame {
             model.addRow(row);
         }
     }
+    
+    private void khoaSuaBang() {
+        DefaultTableModel model1 = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
+        DefaultTableModel old1 =
+                (DefaultTableModel) jTable1.getModel();
+
+        for (int i = 0; i < old1.getColumnCount(); i++) {
+            model1.addColumn(old1.getColumnName(i));
+        }
+
+        jTable1.setModel(model1);
+
+        DefaultTableModel model2 = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        DefaultTableModel old2 =
+                (DefaultTableModel) jTable2.getModel();
+
+        for (int i = 0; i < old2.getColumnCount(); i++) {
+            model2.addColumn(old2.getColumnName(i));
+        }
+
+        jTable2.setModel(model2);
+    }
+    
     // Hàm phụ trợ lấy ID của dòng đang chọn trên JTable
     private int getSelectedId(int row, javax.swing.JTable table) {
         return Integer.parseInt(table.getValueAt(row, 0).toString());
