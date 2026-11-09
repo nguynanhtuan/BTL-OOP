@@ -25,7 +25,7 @@ public class Main extends javax.swing.JFrame {
         this.currentUser = user;
         this.currentUserId = user.getId();
         initComponents();
-        
+        setLocationRelativeTo(null);
         if (user.getFullName() != null) {
             jLabel1.setText("Xin chào: " + user.getFullName());
         }
@@ -41,6 +41,7 @@ public class Main extends javax.swing.JFrame {
         loadDonMua();
         loadDonBan();
         loadTinDaDang();
+        
     }
     private void loadDanhSachMay() {
         loadDanhSachMay("", "Tất cả");
