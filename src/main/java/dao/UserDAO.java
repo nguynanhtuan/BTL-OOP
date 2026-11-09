@@ -3,6 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import model.User;
 import util.DBConnection;
 
@@ -10,7 +12,6 @@ public class UserDAO {
 
     // ==================== ĐĂNG NHẬP ====================
     public User login(String username, String password) {
-        
         String sql = "SELECT * FROM users WHERE username = ? AND password = ? AND status != 'LOCKED'";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -33,7 +34,6 @@ public class UserDAO {
         if (findByUsername(u.getUsername()) != null) {
             return false;
         }
-        // Thêm status mặc định khi đăng ký mới là ACTIVE
         String sql = "INSERT INTO users (username, password, full_name, phone_number, role, status) "
                    + "VALUES (?, ?, ?, ?, 'USER', 'ACTIVE')";
         try (Connection conn = DBConnection.getConnection();
@@ -85,8 +85,8 @@ public class UserDAO {
     }
 
     // ==================== LẤY TẤT CẢ USER ====================
-    public java.util.List<User> findAll() {
-        java.util.List<User> list = new java.util.ArrayList<>();
+    public List<User> findAll() {
+        List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM users ORDER BY id";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -101,7 +101,7 @@ public class UserDAO {
         return list;
     }
 
-    // ==================== CẬP NHẬT TRẠNG THÁI (Dùng cho Admin) ====================
+    // ==================== CẬP NHẬT TRẠNG THÁI (Khóa/Mở khóa) ====================
     public boolean updateStatus(int userId, String status) {
         String sql = "UPDATE users SET status = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -109,6 +109,22 @@ public class UserDAO {
 
             ps.setString(1, status);
             ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // ==================== CẬP NHẬT THÔNG TIN NGÂN HÀNG ====================
+    public boolean updateBankInfo(int userId, String bankAccount, String bankName) {
+        String sql = "UPDATE users SET bank_account = ?, bank_name = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, bankAccount);
+            ps.setString(2, bankName);
+            ps.setInt(3, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,7 +141,12 @@ public class UserDAO {
         u.setFullName(rs.getString("full_name"));
         u.setPhoneNumber(rs.getString("phone_number"));
         u.setRole(rs.getString("role"));
-        u.setStatus(rs.getString("status")); // 
+        u.setStatus(rs.getString("status")); 
+        
+        // Lấy thông tin ngân hàng từ Database
+        u.setBankAccount(rs.getString("bank_account"));
+        u.setBankName(rs.getString("bank_name"));
+        
         return u;
     }
 }
