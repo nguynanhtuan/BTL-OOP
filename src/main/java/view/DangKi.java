@@ -188,6 +188,8 @@ public class DangKi extends javax.swing.JDialog {
         String confirmPassword = new String(jPasswordField2.getPassword()).trim();
         String fullName = jTextField2.getText().trim();
         String phone = jTextField3.getText().trim();
+        String bankName = jComboBox1.getSelectedItem().toString();
+        String bankAccount = jTextField4.getText().trim();
 
         // 2. Kiểm tra dữ liệu rỗng
         if (username.isEmpty() || password.isEmpty()) {
@@ -200,6 +202,19 @@ public class DangKi extends javax.swing.JDialog {
             javax.swing.JOptionPane.showMessageDialog(this, "Mật khẩu nhập lại không khớp!");
             return;
         }
+        if (!bankAccount.isEmpty()) {
+            // Kiểm tra xem số tài khoản có phải toàn là số không (Dùng biểu thức chính quy \\d+)
+            if (!bankAccount.matches("\\d+")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Số tài khoản ngân hàng chỉ được phép chứa các chữ số!");
+                return;
+            }
+            
+            // Kiểm tra độ dài số tài khoản (thông thường từ 8 đến 19 chữ số)
+            if (bankAccount.length() < 8 || bankAccount.length() > 19) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Số tài khoản ngân hàng không hợp lệ (phải từ 8 đến 19 chữ số)!");
+                return;
+            }
+        }
 
         try {
             // 4. Đóng gói dữ liệu vào đối tượng model.User của nhóm
@@ -207,8 +222,10 @@ public class DangKi extends javax.swing.JDialog {
             u.setUsername(username);
             u.setPassword(password);
             // Nếu model.User có các hàm set họ tên hoặc số điện thoại, bạn có thể mở dòng dưới:
-             u.setFullName(fullName);
-             u.setPhoneNumber(phone);
+            u.setFullName(fullName);
+            u.setPhoneNumber(phone);
+            u.setBankName(bankName);
+            u.setBankAccount(bankAccount);
 
             // 5. Gọi UserDAO theo đúng chuẩn kiến trúc OOP (tuyệt đối không viết câu lệnh SQL ở đây)
             dao.UserDAO userDAO = new dao.UserDAO();
