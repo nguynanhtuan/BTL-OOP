@@ -7,10 +7,18 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import dao.PhoneDAO;
 import dao.UserDAO;
+import dao.OrderDAO;
 import model.Phone;
 import model.User;
+import model.Order;
 import java.util.List;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Comparator;
+import java.text.DecimalFormat;
+
 
 /**
  *
@@ -29,9 +37,10 @@ public class AdminFrame extends javax.swing.JFrame {
         
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-
+        jTable3.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         loadDataToTable1("Tất cả");
         loadDataToTable2();
+        loadDataToTable3("Tất cả");
         // (Tùy chọn) Bạn có thể hiển thị tên Admin lên tiêu đề form hoặc một Label nào đó:
         // this.setTitle("Trang Quản Trị - Xin chào: " + user.getFullName());
     }
@@ -39,6 +48,32 @@ public class AdminFrame extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminFrame.class.getName());
     private final PhoneDAO phoneDAO = new PhoneDAO();
     private final UserDAO userDAO = new UserDAO();
+    private final OrderDAO orderDAO = new OrderDAO();
+    
+    private List<Order> getAllOrders() {
+        Map<Integer, Order> orders = new LinkedHashMap<>();
+
+        List<User> users = userDAO.findAll();
+
+        for (User user : users) {
+            // Lấy đơn hàng người dùng mua
+            for (Order order : orderDAO.findByBuyer(user.getId())) {
+                orders.put(order.getId(), order);
+            }
+
+            // Lấy đơn hàng người dùng bán
+            for (Order order : orderDAO.findBySeller(user.getId())) {
+                orders.put(order.getId(), order);
+            }
+        }
+
+        List<Order> list = new ArrayList<>(orders.values());
+
+        // Sắp xếp ID đơn hàng giảm dần
+        list.sort(Comparator.comparingInt(Order::getId).reversed());
+
+        return list;
+    }
     /**
      * Creates new form AdminFrame
      */
@@ -47,8 +82,10 @@ public class AdminFrame extends javax.swing.JFrame {
         khoaSuaBang();
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTable3.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         loadDataToTable1("Tất cả");
         loadDataToTable2();
+        loadDataToTable3("Tất cả");
     }
 
     
@@ -117,6 +154,61 @@ public class AdminFrame extends javax.swing.JFrame {
             model.addRow(row);
         }
     }
+    private void loadDataToTable3(String statusFilter) {
+        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+        model.setRowCount(0);
+
+        DecimalFormat df = new DecimalFormat("#,##0");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        List<Order> list = getAllOrders();
+
+        for (Order order : list) {
+            String status = order.getStatus();
+
+            // Lọc trạng thái
+            if (!"Tất cả".equals(statusFilter)) {
+                boolean khop =
+                        statusFilter.equalsIgnoreCase(status)
+                        || (statusFilter.equalsIgnoreCase("CONFIRM")
+                        && status.equalsIgnoreCase("CONFIRMED"));
+
+                if (!khop) {
+                    continue;
+                }
+            }
+
+            // Lấy thông tin sản phẩm và người dùng
+            Phone phone = phoneDAO.findById(order.getPhoneId());
+            User seller = userDAO.findById(order.getSellerId());
+            User buyer = userDAO.findById(order.getBuyerId());
+
+            String tenSanPham = phone != null
+                    ? phone.getName() : "Không xác định";
+
+            String nguoiBan = seller != null
+                    ? seller.getUsername() : "Không xác định";
+
+            String nguoiMua = buyer != null
+                    ? buyer.getUsername() : "Không xác định";
+
+            String ngayXacNhan = order.getConfirmedAt() != null
+                    ? sdf.format(order.getConfirmedAt())
+                    : "Chưa xác nhận";
+
+            Object[] row = {
+                order.getId(),
+                tenSanPham,
+                nguoiBan,
+                nguoiMua,
+                df.format(order.getPrice()) + " VNĐ",
+                status,
+                ngayXacNhan
+            };
+
+            model.addRow(row);
+        }
+    }
     
     private void khoaSuaBang() {
         DefaultTableModel model1 = new DefaultTableModel() {
@@ -150,6 +242,20 @@ public class AdminFrame extends javax.swing.JFrame {
         }
 
         jTable2.setModel(model2);
+        DefaultTableModel model3 = new DefaultTableModel(
+            new Object[][] {},
+            new String[] {
+                "ID đơn", "Sản phẩm", "Người bán",
+                "Người mua", "Giá", "Trạng thái", "Ngày xác nhận"
+            }
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        jTable3.setModel(model3);
     }
     
     // Hàm phụ trợ lấy ID của dòng đang chọn trên JTable
@@ -184,6 +290,14 @@ public class AdminFrame extends javax.swing.JFrame {
         jTable2 = new javax.swing.JTable();
         KhoaTK = new javax.swing.JButton();
         MoKhoa = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        Tatcadonhang = new javax.swing.JComboBox<>();
+        Lammoi3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        Thatbai = new javax.swing.JButton();
+        Xemchitiet2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         DangXuat = new javax.swing.JButton();
@@ -261,7 +375,7 @@ public class AdminFrame extends javax.swing.JFrame {
                         .addComponent(Tuchoi)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Xóa))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -338,7 +452,7 @@ public class AdminFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -368,6 +482,91 @@ public class AdminFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Quản lý user", jPanel2);
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setText("Lọc trạng thái:");
+
+        Tatcadonhang.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Tatcadonhang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "CONFIRM", "CHECKING", "CHECKED", "SOLD", "CANCELED", "FAILED" }));
+        Tatcadonhang.addActionListener(this::TatcadonhangActionPerformed);
+
+        Lammoi3.setBackground(new java.awt.Color(51, 51, 255));
+        Lammoi3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Lammoi3.setForeground(new java.awt.Color(255, 255, 255));
+        Lammoi3.setText("Làm mới");
+        Lammoi3.addActionListener(this::Lammoi3ActionPerformed);
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID đơn", "Sản phẩm", "Người bán", "Người mua", "Giá", "Trạng thái", "Ngày xác nhận"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable3);
+
+        Thatbai.setBackground(new java.awt.Color(255, 0, 0));
+        Thatbai.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Thatbai.setForeground(new java.awt.Color(255, 255, 255));
+        Thatbai.setText("Thất bại");
+        Thatbai.addActionListener(this::ThatbaiActionPerformed);
+
+        Xemchitiet2.setBackground(new java.awt.Color(51, 51, 255));
+        Xemchitiet2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Xemchitiet2.setForeground(new java.awt.Color(255, 255, 255));
+        Xemchitiet2.setText("Xem chi tiết");
+        Xemchitiet2.addActionListener(this::Xemchitiet2ActionPerformed);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(Tatcadonhang, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Lammoi3, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(Xemchitiet2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Thatbai, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(Tatcadonhang)
+                    .addComponent(Lammoi3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Xemchitiet2)
+                    .addComponent(Thatbai)))
+        );
+
+        jTabbedPane1.addTab("Quản lý đơn hàng", jPanel4);
+
         getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -387,7 +586,7 @@ public class AdminFrame extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 506, Short.MAX_VALUE)
                 .addComponent(DangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -652,6 +851,91 @@ public class AdminFrame extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_XemchitietActionPerformed
 
+    private void TatcadonhangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TatcadonhangActionPerformed
+        // TODO add your handling code here:
+        String status = (String) Tatcadonhang.getSelectedItem();
+        loadDataToTable3(status);
+    }//GEN-LAST:event_TatcadonhangActionPerformed
+
+    private void Xemchitiet2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Xemchitiet2ActionPerformed
+        // TODO add your handling code here:
+         // Lấy dòng đang chọn
+        int row = jTable3.getSelectedRow();
+
+        // Kiểm tra đã chọn đơn hàng chưa
+        if (row == -1) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui lòng chọn đơn hàng cần xem chi tiết!"
+            );
+            return;
+        }
+
+        // Lấy ID đơn hàng ở cột đầu tiên
+        int orderId = getSelectedId(row, jTable3);
+
+        // Mở cửa sổ chi tiết đơn hàng
+        ChiTietDonHang dialog = new ChiTietDonHang(this, true, orderId);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_Xemchitiet2ActionPerformed
+
+    private void Lammoi3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Lammoi3ActionPerformed
+        // TODO add your handling code here:
+        Tatcadonhang.setSelectedIndex(0);
+        loadDataToTable3("Tất cả");
+
+        JOptionPane.showMessageDialog(
+                this, "Đã làm mới danh sách đơn hàng!");
+    }//GEN-LAST:event_Lammoi3ActionPerformed
+
+    private void ThatbaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThatbaiActionPerformed
+        // TODO add your handling code here:
+        int row = jTable3.getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng chọn đơn hàng!");
+            return;
+        }
+
+        int id = getSelectedId(row, jTable3);
+        String status = jTable3.getValueAt(row, 5).toString();
+
+        if (status.equalsIgnoreCase("SOLD")) {
+            JOptionPane.showMessageDialog(this,
+                    "Đơn hàng đã bán, không thể chuyển thành thất bại!");
+            return;
+        }
+
+        if (status.equalsIgnoreCase("FAILED")) {
+            JOptionPane.showMessageDialog(this,
+                    "Đơn hàng này đã thất bại!");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn chuyển đơn hàng thành thất bại?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (orderDAO.updateStatus(id, "FAILED")) {
+            loadDataToTable3(
+                    (String) Tatcadonhang.getSelectedItem());
+
+            JOptionPane.showMessageDialog(this,
+                    "Cập nhật đơn hàng thành thất bại thành công!");
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Cập nhật thất bại!");
+        }
+    }//GEN-LAST:event_ThatbaiActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -687,21 +971,29 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JButton KhoaTK;
     private javax.swing.JButton LamMoi;
     private javax.swing.JButton LamMoi2;
+    private javax.swing.JButton Lammoi3;
     private javax.swing.JButton MoKhoa;
+    private javax.swing.JComboBox<String> Tatcadonhang;
     private javax.swing.JComboBox<String> ThanhTim1;
+    private javax.swing.JButton Thatbai;
     private javax.swing.JButton Tuchoi;
     private javax.swing.JButton Xemchitiet;
+    private javax.swing.JButton Xemchitiet2;
     private javax.swing.JButton Xóa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
     // End of variables declaration//GEN-END:variables
 }
