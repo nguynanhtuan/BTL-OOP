@@ -203,6 +203,7 @@ public class Main extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        btnThongTinTaiKhoan = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -249,6 +250,10 @@ public class Main extends javax.swing.JFrame {
         jButton8.setText("[ Làm mới ]");
         jButton8.addActionListener(this::jButton8ActionPerformed);
 
+        btnThongTinTaiKhoan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnThongTinTaiKhoan.setText("[ Thông tin tài khoản ]");
+        btnThongTinTaiKhoan.addActionListener(this::btnThongTinTaiKhoanActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -256,9 +261,11 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 309, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
+                .addComponent(btnThongTinTaiKhoan)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
                 .addComponent(jButton8)
-                .addGap(35, 35, 35)
+                .addGap(18, 18, 18)
                 .addComponent(jButton1)
                 .addGap(28, 28, 28))
         );
@@ -269,7 +276,8 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jButton1)
-                    .addComponent(jButton8))
+                    .addComponent(jButton8)
+                    .addComponent(btnThongTinTaiKhoan))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -825,6 +833,10 @@ public class Main extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Lỗi định dạng ID đơn hàng.");
         }
     }                                                   
+
+    private void btnThongTinTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+        // TODO add your handling code here:
+    }                                                   
                        
                                                                     
 
@@ -907,6 +919,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify                     
+    private javax.swing.JButton btnThongTinTaiKhoan;
     private javax.swing.JButton btnXemChiTietDonBan;
     private javax.swing.JButton btnXemChiTietDonMua;
     private javax.swing.JButton btnXemChiTietTin;
