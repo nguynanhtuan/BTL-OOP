@@ -165,6 +165,9 @@ public class AdminFrame extends javax.swing.JFrame {
 
         for (Order order : list) {
             String status = order.getStatus();
+            if ("PENDING".equalsIgnoreCase(order.getStatus())) {
+                continue;
+            }
 
             // Lọc trạng thái
             if (!"Tất cả".equals(statusFilter)) {
@@ -298,6 +301,8 @@ public class AdminFrame extends javax.swing.JFrame {
         jTable3 = new javax.swing.JTable();
         Thatbai = new javax.swing.JButton();
         Xemchitiet2 = new javax.swing.JButton();
+        BanHang = new javax.swing.JButton();
+        Kiemtra = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         DangXuat = new javax.swing.JButton();
@@ -353,10 +358,10 @@ public class AdminFrame extends javax.swing.JFrame {
         Xóa.setText("Xóa");
         Xóa.addActionListener(this::XóaActionPerformed);
 
-        Xemchitiet.setBackground(new java.awt.Color(0, 51, 255));
+        Xemchitiet.setBackground(new java.awt.Color(51, 51, 255));
         Xemchitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         Xemchitiet.setForeground(new java.awt.Color(255, 255, 255));
-        Xemchitiet.setText("Xem chi tiết ");
+        Xemchitiet.setText("Chi tiết");
         Xemchitiet.addActionListener(this::XemchitietActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -486,7 +491,7 @@ public class AdminFrame extends javax.swing.JFrame {
         jLabel4.setText("Lọc trạng thái:");
 
         Tatcadonhang.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        Tatcadonhang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "CONFIRM", "CHECKING", "CHECKED", "SOLD", "CANCELED", "FAILED", "RECEIVED" }));
+        Tatcadonhang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "CONFIRM", "CHECKING", "CHECKED", "SOLD", "CANCELED", "FAILED" }));
         Tatcadonhang.addActionListener(this::TatcadonhangActionPerformed);
 
         Lammoi3.setBackground(new java.awt.Color(51, 51, 255));
@@ -523,8 +528,20 @@ public class AdminFrame extends javax.swing.JFrame {
         Xemchitiet2.setBackground(new java.awt.Color(51, 51, 255));
         Xemchitiet2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         Xemchitiet2.setForeground(new java.awt.Color(255, 255, 255));
-        Xemchitiet2.setText("Xem chi tiết");
+        Xemchitiet2.setText("Chi tiết");
         Xemchitiet2.addActionListener(this::Xemchitiet2ActionPerformed);
+
+        BanHang.setBackground(new java.awt.Color(0, 255, 0));
+        BanHang.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        BanHang.setForeground(new java.awt.Color(255, 255, 255));
+        BanHang.setText("Đã bán ");
+        BanHang.addActionListener(this::BanHangActionPerformed);
+
+        Kiemtra.setBackground(new java.awt.Color(51, 51, 255));
+        Kiemtra.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Kiemtra.setForeground(new java.awt.Color(255, 255, 255));
+        Kiemtra.setText("Kiểm tra");
+        Kiemtra.addActionListener(this::KiemtraActionPerformed);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -544,7 +561,11 @@ public class AdminFrame extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(Xemchitiet2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Kiemtra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(BanHang)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Thatbai, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE))
                 .addContainerGap())
@@ -558,11 +579,14 @@ public class AdminFrame extends javax.swing.JFrame {
                     .addComponent(Tatcadonhang)
                     .addComponent(Lammoi3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Thatbai)
                     .addComponent(Xemchitiet2)
-                    .addComponent(Thatbai)))
+                    .addComponent(BanHang)
+                    .addComponent(Kiemtra))
+                .addGap(14, 14, 14))
         );
 
         jTabbedPane1.addTab("Quản lý đơn hàng", jPanel4);
@@ -901,15 +925,12 @@ public class AdminFrame extends javax.swing.JFrame {
         int id = getSelectedId(row, jTable3);
         String status = jTable3.getValueAt(row, 5).toString();
 
-        if (status.equalsIgnoreCase("SOLD")) {
-            JOptionPane.showMessageDialog(this,
-                    "Đơn hàng đã bán, không thể chuyển thành thất bại!");
-            return;
-        }
+        if (!status.equalsIgnoreCase("CONFIRMED")
+                && !status.equalsIgnoreCase("CHECKING")
+                && !status.equalsIgnoreCase("CHECKED")) {
 
-        if (status.equalsIgnoreCase("FAILED")) {
             JOptionPane.showMessageDialog(this,
-                    "Đơn hàng này đã thất bại!");
+                    "Trạng thái đơn hàng không thể chuyển thành thất bại!");
             return;
         }
 
@@ -935,6 +956,95 @@ public class AdminFrame extends javax.swing.JFrame {
                     "Cập nhật thất bại!");
         }
     }//GEN-LAST:event_ThatbaiActionPerformed
+
+    private void BanHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BanHangActionPerformed
+        // TODO add your handling code here:
+        int row = jTable3.getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn đơn hàng!");
+            return;
+        }
+
+        int id = getSelectedId(row, jTable3);
+        String status = jTable3.getValueAt(row, 5).toString();
+
+        if (status.equalsIgnoreCase("SOLD")
+                || status.equalsIgnoreCase("CANCELED")
+                || status.equalsIgnoreCase("FAILED")) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Đơn hàng không thể chuyển sang trạng thái đã bán!");
+            return;
+        }
+
+        if (!status.equalsIgnoreCase("CHECKED")) {
+            JOptionPane.showMessageDialog(this,
+                    "Chỉ có thể xác nhận bán khi đơn hàng đã kiểm tra xong!");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn chuyển đơn hàng thành ĐÃ BÁN?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (orderDAO.updateStatus(id, "SOLD")) {
+            loadDataToTable3((String) Tatcadonhang.getSelectedItem());
+
+            JOptionPane.showMessageDialog(this,
+                    "Đã cập nhật đơn hàng thành ĐÃ BÁN!");
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Cập nhật đơn hàng thất bại!");
+        }
+    }//GEN-LAST:event_BanHangActionPerformed
+
+    private void KiemtraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KiemtraActionPerformed
+        // TODO add your handling code here:
+        int row = jTable3.getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn đơn hàng!");
+            return;
+        }
+
+        int id = getSelectedId(row, jTable3);
+        String status = jTable3.getValueAt(row, 5).toString();
+
+        String newStatus;
+
+        if (status.equalsIgnoreCase("CONFIRMED")) {
+            newStatus = "CHECKING";
+        } else if (status.equalsIgnoreCase("CHECKING")) {
+            newStatus = "CHECKED";
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Đơn hàng không thể chuyển sang bước tiếp theo!");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn muốn chuyển trạng thái sang " + newStatus + "?",
+                "Xác nhận", JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (orderDAO.updateStatus(id, newStatus)) {
+            loadDataToTable3((String) Tatcadonhang.getSelectedItem());
+            JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+        }
+    }//GEN-LAST:event_KiemtraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -966,9 +1076,11 @@ public class AdminFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BanHang;
     private javax.swing.JButton DangXuat;
     private javax.swing.JButton Duyet;
     private javax.swing.JButton KhoaTK;
+    private javax.swing.JButton Kiemtra;
     private javax.swing.JButton LamMoi;
     private javax.swing.JButton LamMoi2;
     private javax.swing.JButton Lammoi3;
