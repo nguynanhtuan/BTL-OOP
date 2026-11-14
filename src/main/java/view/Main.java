@@ -117,38 +117,61 @@ public class Main extends javax.swing.JFrame {
         }
     }
     private void loadDonBan() {
-        String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo"};
+    // 1. Thêm tiêu đề "Ngày xác nhận" vào cuối mảng
+        String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo", "Ngày xác nhận"};
         DefaultTableModel model = new DefaultTableModel(null, columnNames);
         jTableDonBan.setModel(model);
         anCotID(jTableDonBan);
         model.setRowCount(0);
-        
+
         OrderDAO orderDAO = new OrderDAO();
         PhoneDAO phoneDAO = new PhoneDAO();
         UserDAO userDAO = new UserDAO();
 
         List<Order> list = orderDAO.findBySeller(currentUserId);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        
+
         for (Order o : list) {
             Phone p = phoneDAO.findById(o.getPhoneId()); 
             User buyer = userDAO.findById(o.getBuyerId()); 
-            
+
             String phoneName = (p != null) ? p.getName() : "Unknown";
             String buyerName = (buyer != null) ? (buyer.getFullName() != null ? buyer.getFullName() : buyer.getUsername()) : "Unknown";
             String ngayDat = (o.getCreatedAt() != null) ? sdf.format(o.getCreatedAt()) : "";
-            
+
+            // 2. Lấy ngày xác nhận từ database
+            String ngayXacNhan = getNgayXacNhan(o.getId(), sdf);
+
             Object[] row = {
                 o.getId(),
                 phoneName,
                 String.format("%,.0f", o.getPrice()),
                 buyerName,
                 o.getStatus(),
-                ngayDat
+                ngayDat,
+                ngayXacNhan // 3. Đổ dữ liệu vào cột mới
             };
             model.addRow(row);
         }
     }
+    private String getNgayXacNhan(int orderId, SimpleDateFormat sdf) {
+        String sql = "SELECT confirmed_at FROM orders WHERE id = ?";
+        try (java.sql.Connection conn = util.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, orderId);
+            java.sql.ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                java.sql.Timestamp ts = rs.getTimestamp("confirmed_at");
+                if (ts != null) {
+                    return sdf.format(ts);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Chưa xác nhận";
+    }
+    
     
      // --- HÀM PHỤ TRỢ: TRANSACTION CẬP NHẬT ĐƠN HÀNG VÀ CHUYỂN MÁY THÀNH SOLD ---
     private boolean confirmOrderAndSellPhone(int orderId) {
@@ -226,7 +249,7 @@ public class Main extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableDonBan = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
+        btnXacNhanDonBan = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         btnXemChiTietDonBan = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
@@ -439,13 +462,13 @@ public class Main extends javax.swing.JFrame {
 
         jTableDonBan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", "", ""},
-                {"", "", "", "", ""},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {"", "", "", "", "", null},
+                {"", "", "", "", "", null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "", "", "", "", ""
+                "", "", "", "", "", ""
             }
         ));
         jTableDonBan.setShowHorizontalLines(true);
@@ -454,9 +477,9 @@ public class Main extends javax.swing.JFrame {
 
         jPanel4.add(jScrollPane3, java.awt.BorderLayout.CENTER);
 
-        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton4.setText("[ Xác nhận ]");
-        jButton4.addActionListener(this::jButton4ActionPerformed);
+        btnXacNhanDonBan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnXacNhanDonBan.setText("[ Xác nhận ]");
+        btnXacNhanDonBan.addActionListener(this::btnXacNhanDonBanActionPerformed);
 
         jButton5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton5.setText("[ Huỷ ]");
@@ -474,7 +497,7 @@ public class Main extends javax.swing.JFrame {
                 .addGap(62, 62, 62)
                 .addComponent(btnXemChiTietDonBan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE)
-                .addComponent(jButton4)
+                .addComponent(btnXacNhanDonBan)
                 .addGap(29, 29, 29)
                 .addComponent(jButton5)
                 .addGap(40, 40, 40))
@@ -484,7 +507,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
+                    .addComponent(btnXacNhanDonBan)
                     .addComponent(jButton5)
                     .addComponent(btnXemChiTietDonBan))
                 .addContainerGap(42, Short.MAX_VALUE))
@@ -634,7 +657,7 @@ public class Main extends javax.swing.JFrame {
         }
     }                                        
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void btnXacNhanDonBanActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         int selectedRow = jTableDonBan.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn bán để xác nhận!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -650,8 +673,12 @@ public class Main extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xác nhận đơn hàng này? Sản phẩm sẽ chuyển thành trạng thái Đã bán (SOLD).", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int orderId = Integer.parseInt(jTableDonBan.getValueAt(selectedRow, 0).toString());
-            
+
             if (confirmOrderAndSellPhone(orderId)) {
+                // --- BỔ SUNG: Ghi nhận thời điểm bấm xác nhận vào database ---
+                capNhatNgayXacNhan(orderId);
+                // -------------------------------------------------------------
+
                 JOptionPane.showMessageDialog(this, "Xác nhận đơn hàng và cập nhật sản phẩm thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadDonBan();
                 loadDanhSachMay();
@@ -659,8 +686,17 @@ public class Main extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }                                        
-
+    }                                                
+    private void capNhatNgayXacNhan(int orderId) {
+        String sql = "UPDATE orders SET confirmed_at = NOW() WHERE id = ?";
+        try (java.sql.Connection conn = util.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, orderId);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         int selectedRow = jTableDonBan.getSelectedRow();
         if (selectedRow == -1) {
@@ -920,6 +956,7 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnThongTinTaiKhoan;
+    private javax.swing.JButton btnXacNhanDonBan;
     private javax.swing.JButton btnXemChiTietDonBan;
     private javax.swing.JButton btnXemChiTietDonMua;
     private javax.swing.JButton btnXemChiTietTin;
@@ -928,7 +965,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
