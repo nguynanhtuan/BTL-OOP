@@ -486,7 +486,7 @@ public class AdminFrame extends javax.swing.JFrame {
         jLabel4.setText("Lọc trạng thái:");
 
         Tatcadonhang.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        Tatcadonhang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "CONFIRM", "CHECKING", "CHECKED", "SOLD", "CANCELED", "FAILED" }));
+        Tatcadonhang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "CONFIRM", "CHECKING", "CHECKED", "SOLD", "CANCELED", "FAILED", "RECEIVED" }));
         Tatcadonhang.addActionListener(this::TatcadonhangActionPerformed);
 
         Lammoi3.setBackground(new java.awt.Color(51, 51, 255));
