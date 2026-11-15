@@ -835,8 +835,9 @@ public class Main extends javax.swing.JFrame {
         }
 
         try {
-            // Lấy ID đơn hàng ở cột số 0
-            int orderId = Integer.parseInt(jTableDonMua.getValueAt(selectedRow, 0).toString());
+            
+            int modelRow = jTableDonMua.convertRowIndexToModel(selectedRow);
+            int orderId = Integer.parseInt(jTableDonMua.getModel().getValueAt(modelRow, 0).toString());
 
             // Mở Dialog chi tiết đơn hàng
             view.ChiTietDonHang dialog = new view.ChiTietDonHang(this, true, orderId);
@@ -858,7 +859,8 @@ public class Main extends javax.swing.JFrame {
 
         try {
             // Lấy ID đơn hàng ở cột số 0
-            int orderId = Integer.parseInt(jTableDonMua.getValueAt(selectedRow, 0).toString());
+            int modelRow = jTableDonBan.convertRowIndexToModel(selectedRow);
+            int orderId = Integer.parseInt(jTableDonBan.getModel().getValueAt(modelRow, 0).toString());
 
             // Mở Dialog chi tiết đơn hàng
             view.ChiTietDonHang dialog = new view.ChiTietDonHang(this, true, orderId);
@@ -872,11 +874,6 @@ public class Main extends javax.swing.JFrame {
 
     private void btnThongTinTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {                                                    
         // TODO add your handling code here:
-        // Khởi tạo form Hồ sơ và truyền đối tượng 'currentUser' đang đăng nhập sang
-        view.HoSo hosoForm = new view.HoSo(this, true, this.currentUser);
-
-        // Hiển thị form Hồ sơ lên màn hình
-        hosoForm.setVisible(true);
     }                                                   
                        
                                                                     
