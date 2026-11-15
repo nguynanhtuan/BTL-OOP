@@ -34,8 +34,8 @@ public class UserDAO {
         if (findByUsername(u.getUsername()) != null) {
             return false;
         }
-        String sql = "INSERT INTO users (username, password, full_name, phone_number, role, status) "
-                   + "VALUES (?, ?, ?, ?, 'USER', 'ACTIVE')";
+        String sql = "INSERT INTO users (username, password, full_name, phone_number, bank_account, bank_name, role, status) "
+               + "VALUES (?, ?, ?, ?, ?, ?, 'USER', 'ACTIVE')";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -43,6 +43,8 @@ public class UserDAO {
             ps.setString(2, u.getPassword());
             ps.setString(3, u.getFullName());
             ps.setString(4, u.getPhoneNumber());
+            ps.setString(5, u.getBankAccount()); // Thêm số tài khoản
+            ps.setString(6, u.getBankName());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,6 +133,23 @@ public class UserDAO {
         }
         return false;
     }
+    public boolean updateProfile(User user) {
+    String sql = "UPDATE users SET full_name = ?, phone_number = ?, bank_account = ?, bank_name = ? WHERE id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, user.getFullName());
+        ps.setString(2, user.getPhoneNumber());
+        ps.setString(3, user.getBankAccount());
+        ps.setString(4, user.getBankName());
+        ps.setInt(5, user.getId());
+        
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+        return false;
+    }   
 
     // ==================== HÀM PHỤ ====================
     private User mapRow(ResultSet rs) throws Exception {
