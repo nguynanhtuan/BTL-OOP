@@ -320,7 +320,7 @@ public class DangBanDT extends javax.swing.JDialog {
             phone.setVideoPath(videoLink);
             phone.setUserId(currentUser.getId());
             phone.setStatus("PENDING");      
-
+               System.out.println("USER ID HIỆN TẠI LÀ: " + currentUser.getId());
             dao.PhoneDAO phoneDAO = new dao.PhoneDAO();
             boolean success = phoneDAO.insert(phone); 
 

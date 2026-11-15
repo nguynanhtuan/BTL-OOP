@@ -397,6 +397,8 @@ public class ChiTietSP extends javax.swing.JDialog {
                 if (orderDAO.create(order)) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Đặt mua thành công! Vui lòng chờ người bán xác nhận.");
                     this.dispose(); // Đóng form
+                    view.ThanhToan thanhToanForm = new view.ThanhToan((java.awt.Frame) null, true, currentPhone);
+                    thanhToanForm.setVisible(true);
                 } else {
                     javax.swing.JOptionPane.showMessageDialog(this, "Đặt mua thất bại! Vui lòng thử lại.");
                 }
