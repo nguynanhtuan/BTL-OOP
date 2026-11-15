@@ -15,9 +15,53 @@ public class HoSo extends javax.swing.JDialog {
     /**
      * Creates new form HoSo
      */
-    public HoSo(java.awt.Frame parent, boolean modal) {
+    private model.User currentUser;
+
+    public HoSo(java.awt.Frame parent, boolean modal, model.User user) {
         super(parent, modal);
         initComponents();
+        this.currentUser = user;
+        setLocationRelativeTo(parent);
+        
+        // Đổ dữ liệu lên form ngay khi mở
+        loadUserData();
+        
+        // Khóa form ban đầu theo đúng yêu cầu
+        setEditableAll(false);
+    }
+    // ==================== ĐỔ DỮ LIỆU LÊN GIAO DIỆN ====================
+    private void loadUserData() {
+        if (currentUser != null) {
+            // Đổ dữ liệu vào các JLabel tương ứng
+            jTextField1.setText(currentUser.getFullName() != null ? currentUser.getFullName() : "");
+            jTextField2.setText(currentUser.getPhoneNumber() != null ? currentUser.getPhoneNumber() : "");
+            
+            jTextField4.setText(currentUser.getBankAccount() != null ? currentUser.getBankAccount() : "");
+            String bankName = currentUser.getBankName();
+            if (bankName != null && !bankName.isEmpty()) {
+            jComboBox1.setSelectedItem(bankName);
+           
+            
+        }
+    }
+    }
+    private void setEditableAll(boolean enabled) {
+    jTextField1.setEditable(enabled);
+    jTextField2.setEditable(enabled);
+    jTextField4.setEditable(enabled);
+    jComboBox1.setEnabled(enabled);
+    
+    jButton3.setEnabled(!enabled); // Nút Sửa
+    jButton4.setEnabled(enabled);  // Nút Cập nhật
+}
+    private void styleSelectedButton(javax.swing.JButton btn, boolean isSelected) {
+        if (isSelected) {
+            btn.setBackground(new java.awt.Color(0, 122, 204)); // Màu xanh nổi bật
+            btn.setForeground(java.awt.Color.WHITE);
+        } else {
+            btn.setBackground(new java.awt.Color(240, 240, 240));
+            btn.setForeground(java.awt.Color.BLACK);
+        }
     }
 
     /**
@@ -33,18 +77,15 @@ public class HoSo extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         jLabel8.setText("jLabel8");
 
@@ -55,22 +96,23 @@ public class HoSo extends javax.swing.JDialog {
 
         jLabel2.setText("Tên:");
 
-        jLabel3.setText("Giới tính:");
-
-        jLabel4.setText("Ngày Sinh");
-
         jLabel5.setText("Số điện thoại:");
 
-        jLabel6.setText("Enail:");
+        jLabel7.setText("Ngân hàng:");
 
-        jLabel7.setText("Ngân hàng liên kết:");
+        jLabel4.setText("Số TK:");
+
+        jButton3.setText("Sửa");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
+
+        jButton4.setText("Cập nhật");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
         jTextField1.addActionListener(this::jTextField1ActionPerformed);
 
-        jButton1.setText("Nam");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        jTextField4.addActionListener(this::jTextField4ActionPerformed);
 
-        jButton2.setText("Nữ");
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MB Bank", "Agri Bank", "Sacom Bank", "VietCom Bank", "VietTin Bank" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -84,24 +126,23 @@ public class HoSo extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
-                        .addGap(8, 8, 8)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)
-                            .addComponent(jTextField5)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton2)))))
-                .addContainerGap(113, Short.MAX_VALUE))
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jTextField2)
+                                .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(89, 89, 89)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,39 +154,69 @@ public class HoSo extends javax.swing.JDialog {
                     .addComponent(jLabel2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(81, Short.MAX_VALUE))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        setEditableAll(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        try {
+            // Lấy dữ liệu mới từ các ô JTextField gán ngược lại cho currentUser
+            currentUser.setFullName(jTextField1.getText().trim());
+            currentUser.setPhoneNumber(jTextField2.getText().trim());
+            if (jComboBox1.getSelectedItem() != null) {
+            currentUser.setBankName(jComboBox1.getSelectedItem().toString());
+            }
+            currentUser.setBankAccount(jTextField4.getText().trim());
+
+            dao.UserDAO userDAO = new dao.UserDAO();
+            boolean success = userDAO.updateProfile(currentUser); // Lưu thay đổi vào Database
+
+            if (success) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật hồ sơ thành công!");
+                
+                // Khóa lại thông tin sau khi cập nhật thành công
+                setEditableAll(false);
+                
+                // Load lại dữ liệu
+                loadUserData();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jTextField4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -172,7 +243,7 @@ public class HoSo extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                HoSo dialog = new HoSo(new javax.swing.JFrame(), true);
+                HoSo dialog = new HoSo(new javax.swing.JFrame(), true, new model.User());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -185,21 +256,18 @@ public class HoSo extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     // End of variables declaration//GEN-END:variables
 }

@@ -872,6 +872,11 @@ public class Main extends javax.swing.JFrame {
 
     private void btnThongTinTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {                                                    
         // TODO add your handling code here:
+        // Khởi tạo form Hồ sơ và truyền đối tượng 'currentUser' đang đăng nhập sang
+        view.HoSo hosoForm = new view.HoSo(this, true, this.currentUser);
+
+        // Hiển thị form Hồ sơ lên màn hình
+        hosoForm.setVisible(true);
     }                                                   
                        
                                                                     
