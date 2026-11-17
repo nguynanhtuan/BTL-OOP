@@ -245,6 +245,7 @@ public class Main extends javax.swing.JFrame {
         jTableDonMua = new javax.swing.JTable();
         jButton7 = new javax.swing.JButton();
         btnXemChiTietDonMua = new javax.swing.JButton();
+        btnThanhToan = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableDonBan = new javax.swing.JTable();
@@ -433,6 +434,10 @@ public class Main extends javax.swing.JFrame {
         btnXemChiTietDonMua.setText("[ Xem chi tiết đơn ]");
         btnXemChiTietDonMua.addActionListener(this::btnXemChiTietDonMuaActionPerformed);
 
+        btnThanhToan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnThanhToan.setText("[ Thanh toán ]");
+        btnThanhToan.addActionListener(this::btnThanhToanActionPerformed);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -441,6 +446,8 @@ public class Main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(69, 69, 69)
                 .addComponent(btnXemChiTietDonMua)
+                .addGap(98, 98, 98)
+                .addComponent(btnThanhToan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
@@ -452,7 +459,8 @@ public class Main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
-                    .addComponent(btnXemChiTietDonMua))
+                    .addComponent(btnXemChiTietDonMua)
+                    .addComponent(btnThanhToan))
                 .addGap(50, 50, 50))
         );
 
@@ -664,25 +672,41 @@ public class Main extends javax.swing.JFrame {
             return;
         }
 
-        String status = jTableDonBan.getValueAt(selectedRow, 4).toString();
+        int modelRow = jTableDonBan.convertRowIndexToModel(selectedRow);
+        String status = jTableDonBan.getModel().getValueAt(modelRow, 4).toString();
+
         if (!status.equals("PENDING")) {
             JOptionPane.showMessageDialog(this, "Chỉ có thể xác nhận đơn hàng đang ở trạng thái PENDING!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xác nhận đơn hàng này? Sản phẩm sẽ chuyển thành trạng thái Đã bán (SOLD).", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, 
+                "Xác nhận đơn hàng này? Đơn sẽ chuyển sang trạng thái Chờ thanh toán (WAITING_PAYMENT).", 
+                "Xác nhận", JOptionPane.YES_NO_OPTION);
+
         if (confirm == JOptionPane.YES_OPTION) {
-            int orderId = Integer.parseInt(jTableDonBan.getValueAt(selectedRow, 0).toString());
+            int orderId = Integer.parseInt(jTableDonBan.getModel().getValueAt(modelRow, 0).toString());
 
-            if (confirmOrderAndSellPhone(orderId)) {
-                // --- BỔ SUNG: Ghi nhận thời điểm bấm xác nhận vào database ---
-                capNhatNgayXacNhan(orderId);
-                // -------------------------------------------------------------
+            String sqlOrder = "UPDATE orders SET status = 'WAITING_PAYMENT', confirmed_at = NOW() WHERE id = ?";
+            String sqlPhone = "UPDATE phones SET status = 'SOLD' WHERE id = (SELECT phone_id FROM orders WHERE id = ?)";
 
-                JOptionPane.showMessageDialog(this, "Xác nhận đơn hàng và cập nhật sản phẩm thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                loadDonBan();
-                loadDanhSachMay();
-            } else {
+            try (java.sql.Connection conn = util.DBConnection.getConnection();
+                 java.sql.PreparedStatement pstOrder = conn.prepareStatement(sqlOrder);
+                 java.sql.PreparedStatement pstPhone = conn.prepareStatement(sqlPhone)) {
+
+                pstOrder.setInt(1, orderId);
+                int updated = pstOrder.executeUpdate();
+
+                if (updated > 0) {
+                    pstPhone.setInt(1, orderId);
+                    pstPhone.executeUpdate();
+
+                    JOptionPane.showMessageDialog(this, "Đã xác nhận đơn! Đang chờ người mua thanh toán.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    loadDonBan();
+                    loadDanhSachMay();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -875,6 +899,75 @@ public class Main extends javax.swing.JFrame {
     private void btnThongTinTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {                                                    
         // TODO add your handling code here:
     }                                                   
+
+    private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        int selectedRow = jTableDonMua.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn hàng cần thanh toán!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int modelRow = jTableDonMua.convertRowIndexToModel(selectedRow);
+        String status = jTableDonMua.getModel().getValueAt(modelRow, 4).toString();
+
+        // Chỉ cho phép thanh toán khi người bán đã xác nhận (WAITING_PAYMENT)
+        if (!status.equals("WAITING_PAYMENT")) {
+            JOptionPane.showMessageDialog(this, 
+                    "Chỉ có thể thanh toán cho đơn hàng ở trạng thái WAITING_PAYMENT (Chờ thanh toán)!", 
+                    "Không thể thanh toán", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int orderId = Integer.parseInt(jTableDonMua.getModel().getValueAt(modelRow, 0).toString());
+
+            // 1. Lấy giá tiền từ cột 2 trên bảng Đơn mua
+            Phone phone = new Phone();
+            String priceStr = jTableDonMua.getModel().getValueAt(modelRow, 2).toString().replace(",", "").trim();
+            phone.setPrice(Double.parseDouble(priceStr));
+
+            // 2. Mở dialog ThanhToan với tham số thứ 4 là true (cho phép hiện nút Huỷ thanh toán)
+            view.ThanhToan dialog = new view.ThanhToan(this, true, phone, true);
+            dialog.setVisible(true);
+
+            // 3. Kiểm tra hành động của người mua sau khi cửa sổ ThanhToan đóng lại
+            if (dialog.isCanceled()) {
+                // Người mua chọn Huỷ -> Đổi đơn thành CANCELED và mở bán lại máy (SOLD -> APPROVED)
+                String sqlCancelOrder = "UPDATE orders SET status = 'CANCELED' WHERE id = ?";
+                String sqlRestorePhone = "UPDATE phones SET status = 'APPROVED' WHERE id = (SELECT phone_id FROM orders WHERE id = ?)";
+
+                try (java.sql.Connection conn = util.DBConnection.getConnection()) {
+                    conn.setAutoCommit(false);
+                    try (java.sql.PreparedStatement pstOrder = conn.prepareStatement(sqlCancelOrder);
+                         java.sql.PreparedStatement pstPhone = conn.prepareStatement(sqlRestorePhone)) {
+
+                        pstPhone.setInt(1, orderId);
+                        pstPhone.executeUpdate();
+
+                        pstOrder.setInt(1, orderId);
+                        pstOrder.executeUpdate();
+
+                        conn.commit();
+                        JOptionPane.showMessageDialog(this, "Đã huỷ đơn hàng thành công!");
+                        loadDonMua();
+                        loadDanhSachMay(); // Cập nhật lại danh sách máy đang bán
+                    } catch (Exception ex) {
+                        conn.rollback();
+                        throw ex;
+                    }
+                }
+            } else {
+                // Người mua chỉ bấm [ Đóng ] hoặc dấu X
+                JOptionPane.showMessageDialog(this, 
+                        "Nếu bạn đã chuyển khoản thành công, vui lòng chờ Admin kiểm tra và duyệt đơn hàng!", 
+                        "Chờ xác nhận giao dịch", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi xử lý thanh toán: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }                                            
                        
                                                                     
 
@@ -957,6 +1050,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify                     
+    private javax.swing.JButton btnThanhToan;
     private javax.swing.JButton btnThongTinTaiKhoan;
     private javax.swing.JButton btnXacNhanDonBan;
     private javax.swing.JButton btnXemChiTietDonBan;
