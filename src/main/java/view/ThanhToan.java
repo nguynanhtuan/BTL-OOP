@@ -17,7 +17,7 @@ public class ThanhToan extends javax.swing.JDialog {
         return isCanceled;
     }
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ThanhToan.class.getName());
-
+    
     
     public ThanhToan(java.awt.Frame parent, boolean modal, Phone phone) {
         super(parent, modal);
@@ -74,7 +74,6 @@ public class ThanhToan extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(236, 244, 251));
 
-        lblQRCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/qr1.jpg"))); // NOI18N
         lblQRCode.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         btnHuyThanhToan.setBackground(new java.awt.Color(255, 102, 0));

@@ -7,211 +7,202 @@ package view;
 import dao.OrderDAO;
 import dao.PhoneDAO;
 import dao.UserDAO;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import javax.swing.JOptionPane;
 import model.Order;
 import model.Phone;
 import model.User;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import java.text.SimpleDateFormat;
+import util.ReadOnlyTableModel;
 
+/**
+ * Giao diện chính của người dùng: xem máy, đơn mua, đơn bán, quản lý tin đăng.
+ */
 public class Main extends javax.swing.JFrame {
-    
-    private User currentUser;
-    private int currentUserId = 1;
 
-    // Constructor nhận thông tin User từ form Đăng nhập
+    // ==================== HẰNG SỐ ====================
+    private static final String ALL = "Tất cả";
+    private static final String UNKNOWN = "Unknown";
+
+    private static final java.util.logging.Logger logger =
+            java.util.logging.Logger.getLogger(Main.class.getName());
+
+    // ==================== THUỘC TÍNH ====================
+    private final PhoneDAO phoneDAO = new PhoneDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final OrderDAO orderDAO = new OrderDAO();
+
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+    private final User currentUser;
+    private final int currentUserId;
+
+    // ==================== KHỞI TẠO ====================
+
+    /** Dùng khi chạy thử trực tiếp (không có thông tin đăng nhập). */
+    public Main() {
+        this((User) null);
+    }
+
+    /** Constructor nhận thông tin User từ form Đăng nhập. */
     public Main(User user) {
         this.currentUser = user;
-        this.currentUserId = user.getId();
+        this.currentUserId = (user != null) ? user.getId() : -1;
         initComponents();
-        
-        if (user.getFullName() != null) {
+
+        if (user != null && user.getFullName() != null) {
             jLabel1.setText("Xin chào: " + user.getFullName());
         }
-        
+        refreshAll();
+    }
+
+    /** Nạp dữ liệu cho tất cả các tab. */
+    private void refreshAll() {
         loadDanhSachMay();
         loadDonMua();
         loadDonBan();
         loadTinDaDang();
     }
-    public Main() {
-        initComponents();
-        loadDanhSachMay();
-        loadDonMua();
-        loadDonBan();
-        loadTinDaDang();
+
+    /** Tên hiển thị của người dùng: họ tên nếu có, không thì username. */
+    private String displayName(User u) {
+        if (u == null) {
+            return UNKNOWN;
+        }
+        return u.getFullName() != null ? u.getFullName() : u.getUsername();
     }
+
+    // ==================== TAB DANH SÁCH MÁY ====================
+
     private void loadDanhSachMay() {
-        loadDanhSachMay("", "Tất cả");
+        loadDanhSachMay("", ALL);
     }
+
     private void loadDanhSachMay(String searchName, String searchBrand) {
-        String[] columnNames = {"ID", "Tên máy", "Hãng", "Giá", "Trạng thái"};
-        DefaultTableModel model = new DefaultTableModel(null, columnNames);
+        ReadOnlyTableModel model =
+                new ReadOnlyTableModel("ID", "Tên máy", "Hãng", "Giá", "Trạng thái");
         jTable1.setModel(model);
         anCotID(jTable1);
-        model.setRowCount(0);
-        
-        PhoneDAO phoneDAO = new PhoneDAO();
-        UserDAO userDAO = new UserDAO();
-        
-        List<Phone> list = phoneDAO.findAllApproved(); 
-        
-        for (Phone p : list) {
-            boolean matchName = true;
-            if (searchName != null && !searchName.isEmpty() && !searchName.startsWith("[")) {
-                matchName = p.getName() != null && p.getName().toLowerCase().contains(searchName.toLowerCase());
+
+        for (Phone p : phoneDAO.findAllApproved()) {
+            if (!matchesKeyword(p, searchName) || !matchesBrand(p, searchBrand)) {
+                continue;
             }
-            
-            boolean matchBrand = true;
-            if (searchBrand != null && !searchBrand.equals("Tất cả")) {
-                matchBrand = p.getBrand() != null && p.getBrand().equalsIgnoreCase(searchBrand);
-            }
-            
-            if (matchName && matchBrand) {
-                User seller = userDAO.findById(p.getUserId());
-                String sellerName = (seller != null) ? (seller.getFullName() != null ? seller.getFullName() : seller.getUsername()) : "Unknown";
-                
-                Object[] row = {
-                    p.getId(),
-                    p.getName(),
-                    p.getBrand(),
-                    String.format("%,.0f", p.getPrice()),
-                    p.getStatus()
-                };
-                model.addRow(row);
-            }
+            model.addRow(new Object[]{
+                p.getId(),
+                p.getName(),
+                p.getBrand(),
+                String.format("%,.0f", p.getPrice()),
+                p.getStatus()
+            });
         }
     }
+
+    private boolean matchesKeyword(Phone p, String keyword) {
+        if (keyword == null || keyword.isEmpty() || keyword.startsWith("[")) {
+            return true;
+        }
+        return p.getName() != null
+                && p.getName().toLowerCase().contains(keyword.toLowerCase());
+    }
+
+    private boolean matchesBrand(Phone p, String brand) {
+        if (brand == null || ALL.equals(brand)) {
+            return true;
+        }
+        return p.getBrand() != null && p.getBrand().equalsIgnoreCase(brand);
+    }
+
+    // ==================== TAB ĐƠN MUA ====================
+
     private void loadDonMua() {
-        String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày tạo"};
-        DefaultTableModel model = new DefaultTableModel(null, columnNames);
+        ReadOnlyTableModel model = new ReadOnlyTableModel(
+                "ID đơn", "Tên máy", "Giá", "Người bán", "Trạng thái", "Ngày tạo");
         jTableDonMua.setModel(model);
         anCotID(jTableDonMua);
-        model.setRowCount(0);
-        
-        OrderDAO orderDAO = new OrderDAO();
-        PhoneDAO phoneDAO = new PhoneDAO();
-        UserDAO userDAO = new UserDAO();
 
-        List<Order> list = orderDAO.findByBuyer(currentUserId);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        
-        for (Order o : list) {
-            Phone p = phoneDAO.findById(o.getPhoneId()); 
-            User seller = userDAO.findById(o.getSellerId()); 
-            
-            String phoneName = (p != null) ? p.getName() : "Unknown";
-            String sellerName = (seller != null) ? (seller.getFullName() != null ? seller.getFullName() : seller.getUsername()) : "Unknown";
-            String ngayDat = (o.getCreatedAt() != null) ? sdf.format(o.getCreatedAt()) : "";
-            
-            Object[] row = {
+        for (Order o : orderDAO.findByBuyer(currentUserId)) {
+            Phone p = phoneDAO.findById(o.getPhoneId());
+            User seller = userDAO.findById(o.getSellerId());
+
+            model.addRow(new Object[]{
                 o.getId(),
-                phoneName,
+                p != null ? p.getName() : UNKNOWN,
                 String.format("%,.0f", o.getPrice()),
-                sellerName,
+                displayName(seller),
                 o.getStatus(),
-                ngayDat
-            };
-            model.addRow(row);
+                o.getCreatedAt() != null ? dateTimeFormat.format(o.getCreatedAt()) : ""
+            });
         }
     }
+
+    // ==================== TAB ĐƠN BÁN ====================
+
     private void loadDonBan() {
-    // 1. Thêm tiêu đề "Ngày xác nhận" vào cuối mảng
-        String[] columnNames = {"ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo", "Ngày xác nhận"};
-        DefaultTableModel model = new DefaultTableModel(null, columnNames);
+        ReadOnlyTableModel model = new ReadOnlyTableModel(
+                "ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", "Ngày tạo", "Ngày xác nhận");
         jTableDonBan.setModel(model);
         anCotID(jTableDonBan);
-        model.setRowCount(0);
 
-        OrderDAO orderDAO = new OrderDAO();
-        PhoneDAO phoneDAO = new PhoneDAO();
-        UserDAO userDAO = new UserDAO();
+        for (Order o : orderDAO.findBySeller(currentUserId)) {
+            Phone p = phoneDAO.findById(o.getPhoneId());
+            User buyer = userDAO.findById(o.getBuyerId());
 
-        List<Order> list = orderDAO.findBySeller(currentUserId);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
-        for (Order o : list) {
-            Phone p = phoneDAO.findById(o.getPhoneId()); 
-            User buyer = userDAO.findById(o.getBuyerId()); 
-
-            String phoneName = (p != null) ? p.getName() : "Unknown";
-            String buyerName = (buyer != null) ? (buyer.getFullName() != null ? buyer.getFullName() : buyer.getUsername()) : "Unknown";
-            String ngayDat = (o.getCreatedAt() != null) ? sdf.format(o.getCreatedAt()) : "";
-
-            // 2. Lấy ngày xác nhận từ database
-            String ngayXacNhan = getNgayXacNhan(o.getId(), sdf);
-
-            Object[] row = {
+            model.addRow(new Object[]{
                 o.getId(),
-                phoneName,
+                p != null ? p.getName() : UNKNOWN,
                 String.format("%,.0f", o.getPrice()),
-                buyerName,
+                displayName(buyer),
                 o.getStatus(),
-                ngayDat,
-                ngayXacNhan // 3. Đổ dữ liệu vào cột mới
-            };
-            model.addRow(row);
+                o.getCreatedAt() != null ? dateTimeFormat.format(o.getCreatedAt()) : "",
+                o.getConfirmedAt() != null ? dateTimeFormat.format(o.getConfirmedAt()) : "Chưa xác nhận"
+            });
         }
     }
-    private String getNgayXacNhan(int orderId, SimpleDateFormat sdf) {
-        String sql = "SELECT confirmed_at FROM orders WHERE id = ?";
-        try (java.sql.Connection conn = util.DBConnection.getConnection();
-             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, orderId);
-            java.sql.ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                java.sql.Timestamp ts = rs.getTimestamp("confirmed_at");
-                if (ts != null) {
-                    return sdf.format(ts);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+    // ==================== TAB QUẢN LÝ TIN ĐĂNG ====================
+
+    private void loadTinDaDang() {
+        ReadOnlyTableModel model = new ReadOnlyTableModel(
+                "Mã tin", "Tên máy", "Hãng", "Giá (VND)", "Trạng thái", "Ngày đăng");
+        tblQuanLyTin.setModel(model);
+        anCotID(tblQuanLyTin);
+
+        if (currentUser == null) {
+            return;
         }
-        return "Chưa xác nhận";
-    }
-    
-    
-     // --- HÀM PHỤ TRỢ: TRANSACTION CẬP NHẬT ĐƠN HÀNG VÀ CHUYỂN MÁY THÀNH SOLD ---
-    private boolean confirmOrderAndSellPhone(int orderId) {
-        String getPhoneIdQuery = "SELECT phone_id FROM orders WHERE id = ?";
-        String updateOrderQuery = "UPDATE orders SET status = 'CONFIRMED' WHERE id = ?";
-        String updatePhoneQuery = "UPDATE phones SET status = 'SOLD' WHERE id = ?";
-        
-        try (java.sql.Connection conn = util.DBConnection.getConnection()) {
-            conn.setAutoCommit(false); // Bật transaction đảm bảo toàn vẹn dữ liệu
-            
-            int phoneId = -1;
-            try (java.sql.PreparedStatement pstmt = conn.prepareStatement(getPhoneIdQuery)) {
-                pstmt.setInt(1, orderId);
-                try (java.sql.ResultSet rs = pstmt.executeQuery()) {
-                    if (rs.next()) {
-                        phoneId = rs.getInt("phone_id");
-                    }
-                }
+
+        String filter = cbLocTrangThaiTin.getSelectedItem().toString();
+
+        for (Phone p : phoneDAO.findByUser(currentUser.getId())) {
+            if (!matchesPostFilter(p.getStatus(), filter)) {
+                continue;
             }
-            
-            try (java.sql.PreparedStatement pstmt = conn.prepareStatement(updateOrderQuery)) {
-                pstmt.setInt(1, orderId);
-                pstmt.executeUpdate();
-            }
-            
-            if (phoneId != -1) {
-                try (java.sql.PreparedStatement pstmt = conn.prepareStatement(updatePhoneQuery)) {
-                    pstmt.setInt(1, phoneId);
-                    pstmt.executeUpdate();
-                }
-            }
-            
-            conn.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            model.addRow(new Object[]{
+                p.getId(),
+                p.getName(),
+                p.getBrand(),
+                String.format("%,.0f", p.getPrice()),
+                p.getStatus(),
+                p.getCreatedAt() != null ? dateFormat.format(p.getCreatedAt()) : ""
+            });
         }
     }
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
+
+    /** Lọc tin theo combobox. "Tất cả" không gồm tin đã ngừng bán (CANCELED). */
+    private boolean matchesPostFilter(String status, String filter) {
+        switch (filter) {
+            case "Chờ duyệt":
+                return "PENDING".equals(status);
+            case "Đang bán":
+                return "APPROVED".equals(status);
+            case "Đã bán":
+                return "SOLD".equals(status);
+            default:
+                return !"CANCELED".equals(status);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -630,7 +621,7 @@ public class Main extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             int orderId = Integer.parseInt(jTableDonMua.getValueAt(selectedRow, 0).toString());
 
-            OrderDAO orderDAO = new OrderDAO();
+        
             if (orderDAO.updateStatus(orderId, "CANCELED")) { 
                 JOptionPane.showMessageDialog(this, "Hủy đơn hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadDonMua(); 
@@ -649,7 +640,7 @@ public class Main extends javax.swing.JFrame {
         
         try {
             int phoneId = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
-            PhoneDAO phoneDAO = new PhoneDAO();
+            
             Phone selectedPhone = phoneDAO.findById(phoneId);
             
             if (selectedPhone != null) {
@@ -685,31 +676,18 @@ public class Main extends javax.swing.JFrame {
                 "Xác nhận", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            int orderId = Integer.parseInt(jTableDonBan.getModel().getValueAt(modelRow, 0).toString());
+    int orderId = Integer.parseInt(jTableDonBan.getModel().getValueAt(modelRow, 0).toString());
 
-            String sqlOrder = "UPDATE orders SET status = 'WAITING_PAYMENT', confirmed_at = NOW() WHERE id = ?";
-            String sqlPhone = "UPDATE phones SET status = 'SOLD' WHERE id = (SELECT phone_id FROM orders WHERE id = ?)";
-
-            try (java.sql.Connection conn = util.DBConnection.getConnection();
-                 java.sql.PreparedStatement pstOrder = conn.prepareStatement(sqlOrder);
-                 java.sql.PreparedStatement pstPhone = conn.prepareStatement(sqlPhone)) {
-
-                pstOrder.setInt(1, orderId);
-                int updated = pstOrder.executeUpdate();
-
-                if (updated > 0) {
-                    pstPhone.setInt(1, orderId);
-                    pstPhone.executeUpdate();
-
-                    JOptionPane.showMessageDialog(this, "Đã xác nhận đơn! Đang chờ người mua thanh toán.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    loadDonBan();
-                    loadDanhSachMay();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    if (orderDAO.sellerConfirmOrder(orderId)) {
+        JOptionPane.showMessageDialog(this, "Đã xác nhận đơn! Đang chờ người mua thanh toán.",
+            "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        loadDonBan();
+        loadDanhSachMay();
+    } else {
+        JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!",
+            "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
     }//GEN-LAST:event_btnXacNhanDonBanActionPerformed
     private void capNhatNgayXacNhan(int orderId) {
         String sql = "UPDATE orders SET confirmed_at = NOW() WHERE id = ?";
@@ -737,7 +715,7 @@ public class Main extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn từ chối đơn hàng này không?", "Xác nhận hủy", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int orderId = Integer.parseInt(jTableDonBan.getValueAt(selectedRow, 0).toString());
-            OrderDAO orderDAO = new OrderDAO();
+            
             if (orderDAO.updateStatus(orderId, "CANCELED")) {
                 JOptionPane.showMessageDialog(this, "Đã từ chối đơn hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadDonBan();
@@ -784,24 +762,17 @@ public class Main extends javax.swing.JFrame {
         int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
                 "Bạn có chắc chắn muốn ngừng bán sản phẩm này?", "Xác nhận", javax.swing.JOptionPane.YES_NO_OPTION);
 
-        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
+        if (confirm == JOptionPane.YES_OPTION) {
+    int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
 
-            try (java.sql.Connection conn = util.DBConnection.getConnection();
-                 java.sql.PreparedStatement pst = conn.prepareStatement("UPDATE phones SET status = 'CANCELED' WHERE id = ?")) {
-
-                pst.setInt(1, phoneId);
-                pst.executeUpdate();
-
-                javax.swing.JOptionPane.showMessageDialog(this, "Đã ngừng bán thành công!");
-                loadTinDaDang(); 
-                loadDanhSachMay(); 
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi xóa tin: " + e.getMessage());
-            }
-        }
+    if (phoneDAO.updateStatus(phoneId, "CANCELED")) {
+        JOptionPane.showMessageDialog(this, "Đã ngừng bán thành công!");
+        loadTinDaDang();
+        loadDanhSachMay();
+    } else {
+        JOptionPane.showMessageDialog(this, "Ngừng bán thất bại!");
+    }
+}
     }//GEN-LAST:event_btnXoaTinActionPerformed
 
     private void btnXemChiTietTinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemChiTietTinActionPerformed
@@ -813,41 +784,16 @@ public class Main extends javax.swing.JFrame {
 
         int phoneId = Integer.parseInt(tblQuanLyTin.getValueAt(selectedRow, 0).toString());
 
-        try {
-            // Truy vấn lấy thông tin chi tiết của phone theo ID từ database
-            model.Phone selectedPhone = null;
-            try (java.sql.Connection conn = util.DBConnection.getConnection();
-                 java.sql.PreparedStatement pst = conn.prepareStatement("SELECT * FROM phones WHERE id = ?")) {
-                pst.setInt(1, phoneId);
-                java.sql.ResultSet rs = pst.executeQuery();
-                if (rs.next()) {
-                    selectedPhone = new model.Phone();
-                    selectedPhone.setId(rs.getInt("id"));
-                    selectedPhone.setName(rs.getString("name"));
-                    selectedPhone.setBrand(rs.getString("brand"));
-                    selectedPhone.setPrice(rs.getDouble("price"));
-                    selectedPhone.setDescription(rs.getString("description"));
-                    selectedPhone.setStatus(rs.getString("status"));
-                    selectedPhone.setUserId(rs.getInt("user_id")); 
-                    selectedPhone.setImagePath(rs.getString("image_path"));
-                }
-            }
+Phone selectedPhone = phoneDAO.findById(phoneId);
+if (selectedPhone == null) {
+    JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin sản phẩm!");
+    return;
+}
 
-            if (selectedPhone != null) {
-                // Khởi tạo cửa sổ ChiTietSP
-                view.ChiTietSP chiTiet = new view.ChiTietSP(this, true, selectedPhone, this.currentUser);
-
-                // Gọi hàm ẩn nút mua
-                chiTiet.hideBuyButton(); 
-
-                // Đặt vị trí ra giữa màn hình và hiển thị
-                chiTiet.setLocationRelativeTo(this);
-                chiTiet.setVisible(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi mở chi tiết: " + e.getMessage());
-        }
+ChiTietSP chiTiet = new ChiTietSP(this, true, selectedPhone, currentUser);
+chiTiet.hideBuyButton();
+chiTiet.setLocationRelativeTo(this);
+chiTiet.setVisible(true);
     }//GEN-LAST:event_btnXemChiTietTinActionPerformed
 
     private void btnXemChiTietDonMuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemChiTietDonMuaActionPerformed
@@ -921,47 +867,31 @@ public class Main extends javax.swing.JFrame {
         try {
             int orderId = Integer.parseInt(jTableDonMua.getModel().getValueAt(modelRow, 0).toString());
 
-            // 1. Lấy giá tiền từ cột 2 trên bảng Đơn mua
-            Phone phone = new Phone();
-            String priceStr = jTableDonMua.getModel().getValueAt(modelRow, 2).toString().replace(",", "").trim();
-            phone.setPrice(Double.parseDouble(priceStr));
+Order order = orderDAO.findById(orderId);
+if (order == null) {
+    JOptionPane.showMessageDialog(this, "Không tìm thấy đơn hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    return;
+}
 
-            // 2. Mở dialog ThanhToan với tham số thứ 4 là true (cho phép hiện nút Huỷ thanh toán)
-            view.ThanhToan dialog = new view.ThanhToan(this, true, phone, true);
-            dialog.setVisible(true);
+Phone phone = new Phone();
+phone.setPrice(order.getPrice());
 
-            // 3. Kiểm tra hành động của người mua sau khi cửa sổ ThanhToan đóng lại
-            if (dialog.isCanceled()) {
-                // Người mua chọn Huỷ -> Đổi đơn thành CANCELED và mở bán lại máy (SOLD -> APPROVED)
-                String sqlCancelOrder = "UPDATE orders SET status = 'CANCELED' WHERE id = ?";
-                String sqlRestorePhone = "UPDATE phones SET status = 'APPROVED' WHERE id = (SELECT phone_id FROM orders WHERE id = ?)";
+ThanhToan dialog = new ThanhToan(this, true, phone, true);
+dialog.setVisible(true);
 
-                try (java.sql.Connection conn = util.DBConnection.getConnection()) {
-                    conn.setAutoCommit(false);
-                    try (java.sql.PreparedStatement pstOrder = conn.prepareStatement(sqlCancelOrder);
-                         java.sql.PreparedStatement pstPhone = conn.prepareStatement(sqlRestorePhone)) {
-
-                        pstPhone.setInt(1, orderId);
-                        pstPhone.executeUpdate();
-
-                        pstOrder.setInt(1, orderId);
-                        pstOrder.executeUpdate();
-
-                        conn.commit();
-                        JOptionPane.showMessageDialog(this, "Đã huỷ đơn hàng thành công!");
-                        loadDonMua();
-                        loadDanhSachMay(); // Cập nhật lại danh sách máy đang bán
-                    } catch (Exception ex) {
-                        conn.rollback();
-                        throw ex;
-                    }
-                }
-            } else {
-                // Người mua chỉ bấm [ Đóng ] hoặc dấu X
-                JOptionPane.showMessageDialog(this, 
-                        "Nếu bạn đã chuyển khoản thành công, vui lòng chờ Admin kiểm tra và duyệt đơn hàng!", 
-                        "Chờ xác nhận giao dịch", JOptionPane.INFORMATION_MESSAGE);
-            }
+if (dialog.isCanceled()) {
+    if (orderDAO.cancelWaitingPaymentOrder(orderId)) {
+        JOptionPane.showMessageDialog(this, "Đã huỷ đơn hàng thành công!");
+        loadDonMua();
+        loadDanhSachMay();
+    } else {
+        JOptionPane.showMessageDialog(this, "Huỷ đơn thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+} else {
+    JOptionPane.showMessageDialog(this,
+        "Nếu bạn đã chuyển khoản thành công, vui lòng chờ Admin kiểm tra và duyệt đơn hàng!",
+        "Chờ xác nhận giao dịch", JOptionPane.INFORMATION_MESSAGE);
+}
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -996,51 +926,7 @@ public class Main extends javax.swing.JFrame {
         });
     }
     
-    private void loadTinDaDang() {
-        String[] columnNames = {"Mã tin", "Tên máy", "Hãng", "Giá (VND)", "Trạng thái", "Ngày đăng"};
-        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(null, columnNames);
-        tblQuanLyTin.setModel(model);
-        anCotID(tblQuanLyTin);
 
-        if (this.currentUser == null) return; 
-
-        String trangThaiLoc = cbLocTrangThaiTin.getSelectedItem().toString();
-
-        String sql = "SELECT id, name, brand, price, status, created_at FROM phones WHERE user_id = ?";
-
-        // Cập nhật điều kiện lọc
-        if (trangThaiLoc.equals("Tất cả")) {
-            sql += " AND status != 'CANCELED'"; // <-- LOẠI BỎ TIN ĐÃ HỦY/XÓA KHỎI DANH SÁCH TẤT CẢ
-        } else if (trangThaiLoc.equals("Chờ duyệt")) {
-            sql += " AND status = 'PENDING'";
-        } else if (trangThaiLoc.equals("Đang bán")) {
-            sql += " AND status = 'APPROVED'";
-        } else if (trangThaiLoc.equals("Đã bán")) {
-            sql += " AND status = 'SOLD'";
-        }
-
-        try (java.sql.Connection conn = util.DBConnection.getConnection();
-             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
-
-            pst.setInt(1, currentUser.getId());
-            java.sql.ResultSet rs = pst.executeQuery();
-
-            while (rs.next()) {
-                Object[] row = {
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("brand"),
-                    String.format("%,.0f", rs.getDouble("price")),
-                    rs.getString("status"),
-                    rs.getDate("created_at")
-                };
-                model.addRow(row);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi tải danh sách tin đăng: " + e.getMessage());
-        }
-    }
     private void anCotID(javax.swing.JTable table) {
     // Ép chiều rộng của cột đầu tiên (cột 0 - chứa ID) về 0 pixel để ẩn đi
         table.getColumnModel().getColumn(0).setMinWidth(0);
