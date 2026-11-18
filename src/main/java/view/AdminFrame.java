@@ -310,6 +310,8 @@ public class AdminFrame extends javax.swing.JFrame {
         jTableDuyetThanhToan = new javax.swing.JTable();
         DuyetThanhToan = new javax.swing.JButton();
         btnHuyDonQuaHan = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        Lammoi4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         DangXuat = new javax.swing.JButton();
@@ -410,7 +412,7 @@ public class AdminFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(LamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Xóa)
@@ -484,7 +486,7 @@ public class AdminFrame extends javax.swing.JFrame {
                     .addComponent(LamMoi2)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(MoKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
@@ -586,7 +588,7 @@ public class AdminFrame extends javax.swing.JFrame {
                     .addComponent(Tatcadonhang)
                     .addComponent(Lammoi3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Thatbai)
@@ -611,13 +613,26 @@ public class AdminFrame extends javax.swing.JFrame {
         ));
         jScrollPane4.setViewportView(jTableDuyetThanhToan);
 
+        DuyetThanhToan.setBackground(new java.awt.Color(51, 255, 51));
         DuyetThanhToan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        DuyetThanhToan.setText("[ Duyệt thanh toán ]");
+        DuyetThanhToan.setForeground(new java.awt.Color(255, 255, 255));
+        DuyetThanhToan.setText("Duyệt thanh toán");
         DuyetThanhToan.addActionListener(this::DuyetThanhToanActionPerformed);
 
+        btnHuyDonQuaHan.setBackground(new java.awt.Color(255, 0, 0));
         btnHuyDonQuaHan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnHuyDonQuaHan.setText("[ Huỷ đơn quá hạn ]");
+        btnHuyDonQuaHan.setForeground(new java.awt.Color(255, 255, 255));
+        btnHuyDonQuaHan.setText("Hủy đơn quá hạn");
         btnHuyDonQuaHan.addActionListener(this::btnHuyDonQuaHanActionPerformed);
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setText("Danh sách thanh toán");
+
+        Lammoi4.setBackground(new java.awt.Color(51, 51, 255));
+        Lammoi4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Lammoi4.setForeground(new java.awt.Color(255, 255, 255));
+        Lammoi4.setText("Làm mới");
+        Lammoi4.addActionListener(this::Lammoi4ActionPerformed);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -627,15 +642,26 @@ public class AdminFrame extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(64, 64, 64)
                 .addComponent(DuyetThanhToan)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 167, Short.MAX_VALUE)
                 .addComponent(btnHuyDonQuaHan)
                 .addGap(127, 127, 127))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Lammoi4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(Lammoi4))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DuyetThanhToan)
                     .addComponent(btnHuyDonQuaHan))
@@ -1182,6 +1208,18 @@ public class AdminFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnHuyDonQuaHanActionPerformed
+
+    private void Lammoi4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Lammoi4ActionPerformed
+        // TODO add your handling code here:
+        loadDonChoThanhToan();
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Đã làm mới danh sách thanh toán!",
+                "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }//GEN-LAST:event_Lammoi4ActionPerformed
     
     private void loadDonChoThanhToan() {
         String[] columnNames = {"ID đơn", "Tên máy", "Người mua", "Người bán", "Giá máy", "Phí 1% cần nhận", "Ngày xác nhận"};
@@ -1266,6 +1304,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JButton LamMoi;
     private javax.swing.JButton LamMoi2;
     private javax.swing.JButton Lammoi3;
+    private javax.swing.JButton Lammoi4;
     private javax.swing.JButton MoKhoa;
     private javax.swing.JComboBox<String> Tatcadonhang;
     private javax.swing.JComboBox<String> ThanhTim1;
@@ -1279,6 +1318,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
