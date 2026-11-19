@@ -54,7 +54,8 @@ public class AdminFrame extends javax.swing.JFrame {
         initComponents();
         setupTables();
         refreshAll();
-        pack();                      // tự tính kích thước vừa đủ theo nội dung
+        pack();        
+        setLocationRelativeTo(null);// tự tính kích thước vừa đủ theo nội dung
 setLocationRelativeTo(null);
         // this.setTitle("Trang Quản Trị - Xin chào: " + user.getFullName());
     }
