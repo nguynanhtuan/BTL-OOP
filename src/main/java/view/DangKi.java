@@ -182,29 +182,52 @@ public class DangKi extends javax.swing.JDialog {
         String bankAccount = jTextField4.getText().trim();
 
         // 2. Kiểm tra dữ liệu rỗng
-        if (username.isEmpty() || password.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập và mật khẩu!");
+        if (username.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập Username!");
             return;
         }
-
-        // 3. Kiểm tra mật khẩu xác nhận
+        if (password.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập Password!");
+            return;
+        }
+        if (confirmPassword.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập lại mật khẩu!");
+            return;
+        }
         if (!password.equals(confirmPassword)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Mật khẩu nhập lại không khớp!");
             return;
         }
-        if (!bankAccount.isEmpty()) {
-            // Kiểm tra xem số tài khoản có phải toàn là số không (Dùng biểu thức chính quy \\d+)
-            if (!bankAccount.matches("\\d+")) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Số tài khoản ngân hàng chỉ được phép chứa các chữ số!");
-                return;
-            }
-            
+        if (fullName.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập Họ Tên!");
+            return;
+        }
+        if (phone.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập Số ĐT!");
+            return;
+        }
+        if (!phone.matches("\\d{9,11}")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Số ĐT phải gồm 9 đến 11 chữ số!");
+            return;
+        }
+        if (bankName.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn Ngân hàng!");
+            return;
+        }
+        if (bankAccount.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập Số tài khoản!");
+            return;
+        }
+
+        // 3. Kiểm tra mật khẩu xác nhận
+        
+        
             // Kiểm tra độ dài số tài khoản (thông thường từ 8 đến 19 chữ số)
             if (bankAccount.length() < 8 || bankAccount.length() > 19) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Số tài khoản ngân hàng không hợp lệ (phải từ 8 đến 19 chữ số)!");
                 return;
             }
-        }
+        
 
         try {
             // 4. Đóng gói dữ liệu vào đối tượng model.User của nhóm

@@ -76,6 +76,8 @@ public class DangBanDT extends javax.swing.JDialog {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Apple", "Samsung", "Xiaomi", "OPPO", "Vivo", "Realme", "Asus", "Nokia", "Huawei", "Sony", "OnePlus", "Google", "Infinix", "Khác" }));
         jComboBox1.addActionListener(this::jComboBox1ActionPerformed);
 
+        jTextField2.addActionListener(this::jTextField2ActionPerformed);
+
         Chon_File_.setText("Chọn File");
         Chon_File_.addActionListener(this::Chon_File_ActionPerformed);
 
@@ -231,14 +233,42 @@ public class DangBanDT extends javax.swing.JDialog {
         String giaStr = jTextField2.getText().trim();
         String moTa = jTextField3.getText().trim();
         String videoLink = jTextField4.getText().trim();
-        if (tenMay.isEmpty() || giaStr.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập tên máy và giá bán!");
+        
+        if (tenMay.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập tên máy!");
+            return;
+        }
+        if (giaStr.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập giá bán!");
+            return;
+        }
+        if (jComboBox1.getSelectedItem() == null || jComboBox1.getSelectedItem().toString().trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn hãng điện thoại!");
+            return;
+        }
+        if (moTa.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập mô tả sản phẩm!");
+            return;
+        }
+        if (selectedImageFile == null || imagePath.trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn ảnh điện thoại!");
+            return;
+        }
+        if (videoLink.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập link video!");
+            return;
+        }
+        if (currentUser == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin người dùng đăng nhập!");
             return;
         }
 
         try {
             double gia = Double.parseDouble(giaStr);
-
+            if (gia <= 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Giá tiền phải lớn hơn 0!");
+            return;
+        }
             // --- BẮT ĐẦU ĐOẠN CODE COPY ẢNH VÀO PROJECT ---
             if (selectedImageFile != null) {
                 // 1. Tạo thư mục 'images' nếu chưa có
@@ -307,6 +337,10 @@ public class DangBanDT extends javax.swing.JDialog {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
 
     /**
      * @param args the command line arguments
