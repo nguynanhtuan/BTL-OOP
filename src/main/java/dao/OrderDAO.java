@@ -218,4 +218,37 @@ public class OrderDAO {
         o.setConfirmedAt(rs.getTimestamp("confirmed_at"));
         return o;
     }
+    public model.OrderDetail getOrderDetail(int orderId) {
+    String sql = "SELECT p.name AS phone_name, p.price, p.image_path, o.status, "
+               + "b.full_name AS buyer_name, "
+               + "s.full_name AS seller_name, s.bank_name, s.bank_account "
+               + "FROM orders o "
+               + "JOIN phones p ON o.phone_id = p.id "
+               + "JOIN users b ON o.buyer_id = b.id "
+               + "JOIN users s ON o.seller_id = s.id "
+               + "WHERE o.id = ?";
+
+    try (java.sql.Connection conn = util.DBConnection.getConnection();
+         java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+
+        pst.setInt(1, orderId);
+        try (java.sql.ResultSet rs = pst.executeQuery()) {
+            if (rs.next()) {
+                model.OrderDetail d = new model.OrderDetail();
+                d.setPhoneName(rs.getString("phone_name"));
+                d.setPrice(rs.getDouble("price"));
+                d.setImagePath(rs.getString("image_path"));
+                d.setStatus(rs.getString("status"));
+                d.setBuyerName(rs.getString("buyer_name"));
+                d.setSellerName(rs.getString("seller_name"));
+                d.setBankName(rs.getString("bank_name"));
+                d.setBankAccount(rs.getString("bank_account"));
+                return d;
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 }

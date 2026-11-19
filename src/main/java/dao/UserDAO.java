@@ -28,6 +28,26 @@ public class UserDAO {
         }
         return null;
     }
+    public User getUserById(int id) {
+    String sql = "SELECT * FROM users WHERE id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            User u = new User();
+            u.setId(rs.getInt("id"));
+            u.setFullName(rs.getString("full_name"));
+            u.setPhoneNumber(rs.getString("phone_number"));
+            u.setBankName(rs.getString("bank_name"));
+            u.setBankAccount(rs.getString("bank_account"));
+            return u;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
     // ==================== ĐĂNG KÝ ====================
     public boolean register(User u) {

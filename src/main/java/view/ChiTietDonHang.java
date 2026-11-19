@@ -4,9 +4,6 @@
  */
 package view;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.io.File;
@@ -26,61 +23,53 @@ public class ChiTietDonHang extends javax.swing.JDialog {
         loadDuLieuDonHang(orderId); // Gọi hàm tải dữ liệu
     }
     
-    private void loadDuLieuDonHang(int orderId) {
-        // Truy vấn gộp 3 bảng: orders, phones, users
-        
-        String sql = "SELECT p.name AS phone_name, p.price, p.image_path, o.status, "
-                   + "b.full_name AS buyer_name, "
-                   + "s.full_name AS seller_name, s.bank_name, s.bank_account " // Đã đổi tên cột cho khớp với MySQL
-                   + "FROM orders o "
-                   + "JOIN phones p ON o.phone_id = p.id "
-                   + "JOIN users b ON o.buyer_id = b.id "
-                   + "JOIN users s ON o.seller_id = s.id "
-                   + "WHERE o.id = ?";
+   private void loadDuLieuDonHang(int orderId) {
+    model.OrderDetail d = new dao.OrderDAO().getOrderDetail(orderId);
 
-        try (Connection conn = util.DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
-             
-            pst.setInt(1, orderId);
-            ResultSet rs = pst.executeQuery();
-            
-            if (rs.next()) {
-                // 1. Điền thông tin máy
-                lblTenMay.setText("Tên máy: " + rs.getString("phone_name"));
-                lblGia.setText("Giá: " + String.format("%,.0f VNĐ", rs.getDouble("price")));
-                lblTrangThai.setText("Trạng thái đơn: " + rs.getString("status"));
-                
-                // 2. Điền thông tin người mua/bán
-                lblNguoiMua.setText("Người mua: " + rs.getString("buyer_name"));
-                lblNguoiBan.setText("Người bán: " + rs.getString("seller_name"));
-                
-                // 3. Điền thông tin ngân hàng (xử lý trường hợp bị null)
-                String nganHang = rs.getString("bank_name");
-                String stk = rs.getString("bank_account");
-
-                lblNganHang.setText("Ngân hàng: " + (nganHang != null ? nganHang : "Chưa cập nhật"));
-                lblSTK.setText("Số tài khoản: " + (stk != null ? stk : "Chưa cập nhật"));
-
-                // 4. Hiển thị ảnh (Giống hàm hienThiAnh bạn đã viết rất chuẩn trước đó)
-                String imgName = rs.getString("image_path");
-                if (imgName != null && !imgName.trim().isEmpty()) {
-                    File fileAnh = new File("images/" + imgName);
-                    if (fileAnh.exists()) {
-                        Image img = new ImageIcon(fileAnh.getAbsolutePath()).getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-                        lblAnh.setIcon(new ImageIcon(img));
-                        lblAnh.setText("");
-                    } else {
-                        lblAnh.setText("Lỗi file ảnh");
-                    }
-                } else {
-                    lblAnh.setText("Không có ảnh");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải thông tin chi tiết đơn!");
-        }
+    if (d == null) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin đơn hàng!");
+        dispose();
+        return;
     }
+
+    lblTenMay.setText("Tên máy: " + d.getPhoneName());
+    lblGia.setText("Giá: " + String.format("%,.0f VNĐ", d.getPrice()));
+    lblTrangThai.setText("Trạng thái đơn: " + d.getStatus());
+
+    lblNguoiMua.setText("Người mua: " + d.getBuyerName());
+    lblNguoiBan.setText("Người bán: " + d.getSellerName());
+
+    String nganHang = d.getBankName();
+    String stk = d.getBankAccount();
+    lblNganHang.setText("Ngân hàng: " + (nganHang != null ? nganHang : "Chưa cập nhật"));
+    lblSTK.setText("Số tài khoản: " + (stk != null ? stk : "Chưa cập nhật"));
+
+    String imgName = d.getImagePath();
+    if (imgName != null && !imgName.trim().isEmpty()) {
+        File fileAnh = new File("images/" + imgName);
+        if (fileAnh.exists()) {
+    ImageIcon goc = new ImageIcon(fileAnh.getAbsolutePath());
+    int khungW = 140;
+    int khungH = 187;
+
+    // Giữ tỉ lệ: co ảnh vừa trong khung, không bị méo
+    double tiLe = Math.min((double) khungW / goc.getIconWidth(),
+                           (double) khungH / goc.getIconHeight());
+    int w = (int) (goc.getIconWidth() * tiLe);
+    int h = (int) (goc.getIconHeight() * tiLe);
+
+    Image img = goc.getImage().getScaledInstance(140, 187, Image.SCALE_SMOOTH);
+    lblAnh.setIcon(new ImageIcon(img));
+    lblAnh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblAnh.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+    lblAnh.setText("");
+} else {
+            lblAnh.setText("Lỗi file ảnh");
+        }
+    } else {
+        lblAnh.setText("Không có ảnh");
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -170,14 +159,14 @@ public class ChiTietDonHang extends javax.swing.JDialog {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblAnh, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblTenMay)
                         .addGap(18, 18, 18)
                         .addComponent(lblGia)
                         .addGap(18, 18, 18)
-                        .addComponent(lblTrangThai)))
-                .addGap(27, 27, 27)
+                        .addComponent(lblTrangThai))
+                    .addComponent(lblAnh, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNguoiMua)
                     .addComponent(lblNguoiBan))

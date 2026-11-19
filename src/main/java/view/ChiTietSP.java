@@ -395,38 +395,6 @@ public class ChiTietSP extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-           
-        // (Phần look and feel giữ nguyên...)
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(ChiTietSP.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(() -> {
-            // TẠO DỮ LIỆU GIẢ ĐỂ TEST
-            model.Phone fakePhone = new model.Phone();
-            fakePhone.setId(1);
-            fakePhone.setName("iPhone 15 Pro Max");
-            fakePhone.setBrand("Apple");
-            fakePhone.setPrice(30000000);
-            fakePhone.setDescription("Máy mới 100%, nguyên seal");
-            fakePhone.setImagePath("z8074113878470_332a663d94baaf5cf929bf4b6126181d.jpg"); 
-            fakePhone.setUserId(2); // Người bán ID = 2
-
-            model.User fakeUser = new model.User();
-            fakeUser.setId(3); // Người mua (đang đăng nhập) ID = 3
-            fakeUser.setFullName("Nguyễn Văn Test");
-
-            // Mở form
-            ChiTietSP dialog = new ChiTietSP(new javax.swing.JFrame(), true, fakePhone, fakeUser);
-            dialog.setVisible(true);
-        });
     
     }
 
