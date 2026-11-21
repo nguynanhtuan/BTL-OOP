@@ -9,13 +9,15 @@ public class Order {
     private String status;
     private java.util.Date createdAt;
     private java.util.Date confirmedAt; // Ngày xác nhận đơn
+    private java.util.Date paidAt;
+    private java.util.Date checkedAt;
 
     public Order() {
     }
 
     // Đã thêm confirmedAt vào Constructor đầy đủ
     public Order(int id, int phoneId, int buyerId, int sellerId,
-                 double price, String status, java.util.Date createdAt, java.util.Date confirmedAt) {
+                 double price, String status, java.util.Date createdAt, java.util.Date confirmedAt,java.util.Date paidAt,java.util.Date checkedAt) {
         this.id = id;
         this.phoneId = phoneId;
         this.buyerId = buyerId;
@@ -24,6 +26,8 @@ public class Order {
         this.status = status;
         this.createdAt = createdAt;
         this.confirmedAt = confirmedAt;
+        this.paidAt = paidAt;
+        this.checkedAt = checkedAt;
     }
 
     public int getId() { return id; }
@@ -59,6 +63,21 @@ public class Order {
 
     public void setConfirmedAt(java.util.Date confirmedAt) {
         this.confirmedAt = confirmedAt;
+    }
+    public java.util.Date getPaidAt() {
+        return paidAt;
+    }
+
+    public void setPaidAt(java.util.Date paidAt) {
+        this.paidAt = paidAt;
+    }
+
+    public java.util.Date getCheckedAt() {
+        return checkedAt;
+    }
+
+    public void setCheckedAt(java.util.Date checkedAt) {
+        this.checkedAt = checkedAt;
     }
     // ---------------------------------------------
 
