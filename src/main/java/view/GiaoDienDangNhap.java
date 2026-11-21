@@ -18,6 +18,14 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
     public GiaoDienDangNhap() {
         initComponents();
         setLocationRelativeTo(null);
+        try {
+            java.net.URL iconURL = getClass().getResource("/icons/logo.png");
+            if (iconURL != null) {
+                this.setIconImage(new javax.swing.ImageIcon(iconURL).getImage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
