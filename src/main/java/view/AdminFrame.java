@@ -35,14 +35,11 @@ public class AdminFrame extends javax.swing.JFrame {
         this.currentUser = user;
         
         khoaSuaBang();
+        jScrollPane1.getViewport().setBackground(new java.awt.Color(217, 234, 247));
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable1.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        jTable2.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable3.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        jTable3.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
-        jTableDuyetThanhToan.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        jTableDuyetThanhToan.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         loadDataToTable1("Tất cả");
         loadDataToTable2();
         loadDataToTable3("Tất cả");
@@ -87,13 +84,8 @@ public class AdminFrame extends javax.swing.JFrame {
         loadDonChoThanhToan();
         khoaSuaBang();
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        jTable1.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        jTable2.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable3.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        jTable3.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
-        jTableDuyetThanhToan.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        jTableDuyetThanhToan.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         loadDataToTable1("Tất cả");
         loadDataToTable2();
         loadDataToTable3("Tất cả");
@@ -340,7 +332,7 @@ public class AdminFrame extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableDuyetThanhToan = new javax.swing.JTable();
-        DuyetThanhToan = new javax.swing.JButton();
+        btnDuyetThanhToan = new javax.swing.JButton();
         btnHuyDonQuaHan = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         Lammoi4 = new javax.swing.JButton();
@@ -384,10 +376,7 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID", "Tên máy", "Người dùng", "Trạng thái", "Ngày"
             }
         ));
-        jTable1.setGridColor(new java.awt.Color(190, 195, 205));
-        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTable1.setRowHeight(28);
-        jTable1.setShowHorizontalLines(true);
+        jTable1.setGridColor(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(jTable1);
 
         Duyet.setBackground(new java.awt.Color(51, 255, 51));
@@ -485,10 +474,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID", "Username", "Họ tên", "SDT", "Vai trò", "Trạng thái"
             }
         ));
-        jTable2.setGridColor(new java.awt.Color(190, 195, 205));
-        jTable2.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTable2.setRowHeight(28);
-        jTable2.setShowHorizontalLines(true);
         jScrollPane2.setViewportView(jTable2);
 
         KhoaTK.setBackground(new java.awt.Color(255, 0, 0));
@@ -573,9 +558,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID đơn", "Sản phẩm", "Người bán", "Người mua", "Giá", "Trạng thái", "Ngày xác nhận"
             }
         ));
-        jTable3.setGridColor(new java.awt.Color(190, 195, 205));
-        jTable3.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTable3.setShowHorizontalLines(true);
         jScrollPane3.setViewportView(jTable3);
 
         Thatbai.setBackground(new java.awt.Color(255, 0, 0));
@@ -664,16 +646,13 @@ public class AdminFrame extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTableDuyetThanhToan.setGridColor(new java.awt.Color(190, 195, 205));
-        jTableDuyetThanhToan.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTableDuyetThanhToan.setShowHorizontalLines(true);
         jScrollPane4.setViewportView(jTableDuyetThanhToan);
 
-        DuyetThanhToan.setBackground(new java.awt.Color(51, 255, 51));
-        DuyetThanhToan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        DuyetThanhToan.setForeground(new java.awt.Color(255, 255, 255));
-        DuyetThanhToan.setText("Duyệt thanh toán");
-        DuyetThanhToan.addActionListener(this::DuyetThanhToanActionPerformed);
+        btnDuyetThanhToan.setBackground(new java.awt.Color(51, 255, 51));
+        btnDuyetThanhToan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnDuyetThanhToan.setForeground(new java.awt.Color(255, 255, 255));
+        btnDuyetThanhToan.setText("Duyệt thanh toán");
+        btnDuyetThanhToan.addActionListener(this::btnDuyetThanhToanActionPerformed);
 
         btnHuyDonQuaHan.setBackground(new java.awt.Color(255, 0, 0));
         btnHuyDonQuaHan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -700,7 +679,7 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(DuyetThanhToan)
+                        .addComponent(btnDuyetThanhToan)
                         .addGap(18, 18, 18)
                         .addComponent(btnHuyDonQuaHan))
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -710,7 +689,7 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel5Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {DuyetThanhToan, btnHuyDonQuaHan});
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnDuyetThanhToan, btnHuyDonQuaHan});
 
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -723,7 +702,7 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(DuyetThanhToan)
+                    .addComponent(btnDuyetThanhToan)
                     .addComponent(btnHuyDonQuaHan))
                 .addGap(23, 23, 23))
         );
@@ -1147,7 +1126,6 @@ public class AdminFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_BanHangActionPerformed
 
     private void KiemtraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KiemtraActionPerformed
-        // TODO add your handling code here:
         int row = jTable3.getSelectedRow();
 
         if (row == -1) {
@@ -1178,7 +1156,24 @@ public class AdminFrame extends javax.swing.JFrame {
             return;
         }
 
-        if (orderDAO.updateStatus(id, newStatus)) {
+        boolean isUpdated = false;
+
+        if (newStatus.equals("CHECKED")) {
+            // Khi chuyển sang CHECKED thì lưu thêm ngày giờ kiểm tra xong (checked_at = NOW())
+            String sql = "UPDATE orders SET status = 'CHECKED', checked_at = NOW() WHERE id = ?";
+            try (java.sql.Connection conn = util.DBConnection.getConnection();
+                 java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setInt(1, id);
+                isUpdated = pst.executeUpdate() > 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Khi chuyển sang CHECKING thì dùng hàm có sẵn của OrderDAO
+            isUpdated = orderDAO.updateStatus(id, newStatus);
+        }
+
+        if (isUpdated) {
             loadDataToTable3((String) Tatcadonhang.getSelectedItem());
             JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
         } else {
@@ -1186,7 +1181,7 @@ public class AdminFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_KiemtraActionPerformed
 
-    private void DuyetThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DuyetThanhToanActionPerformed
+    private void btnDuyetThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuyetThanhToanActionPerformed
         int selectedRow = jTableDuyetThanhToan.getSelectedRow();
         if (selectedRow == -1) {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn hàng cần duyệt thanh toán!");
@@ -1202,20 +1197,23 @@ public class AdminFrame extends javax.swing.JFrame {
                 "Duyệt thanh toán", javax.swing.JOptionPane.YES_NO_OPTION);
 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            dao.OrderDAO orderDAO = new dao.OrderDAO();
-            if (orderDAO.updateStatus(orderId, "CONFIRMED")) {
-                        javax.swing.JOptionPane.showMessageDialog(this,
-                         "Đã duyệt thanh toán! Đơn hàng chuyển sang CONFIRMED.");
+            // ---> ĐẶT ĐOẠN CODE 1 VÀO ĐÂY <---
+            String sql = "UPDATE orders SET status = 'CONFIRMED', paid_at = NOW() WHERE id = ?";
+            try (java.sql.Connection conn = util.DBConnection.getConnection();
+                 java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setInt(1, orderId);
+                int updated = pst.executeUpdate();
 
-                loadDonChoThanhToan();
-
-                // Cập nhật bảng quản lý đơn hàng
-                loadDataToTable3((String) Tatcadonhang.getSelectedItem());
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật trạng thái đơn hàng!");
+                if (updated > 0) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Đã duyệt thanh toán! Đơn hàng chuyển sang CONFIRMED.");
+                    loadDonChoThanhToan();
+                    loadDataToTable3((String) Tatcadonhang.getSelectedItem());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-    }//GEN-LAST:event_DuyetThanhToanActionPerformed
+    }//GEN-LAST:event_btnDuyetThanhToanActionPerformed
 
     private void btnHuyDonQuaHanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyDonQuaHanActionPerformed
         int selectedRow = jTableDuyetThanhToan.getSelectedRow();
@@ -1364,7 +1362,6 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JButton BanHang;
     private javax.swing.JButton DangXuat;
     private javax.swing.JButton Duyet;
-    private javax.swing.JButton DuyetThanhToan;
     private javax.swing.JButton KhoaTK;
     private javax.swing.JButton Kiemtra;
     private javax.swing.JButton LamMoi;
@@ -1379,6 +1376,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JButton Xemchitiet;
     private javax.swing.JButton Xemchitiet2;
     private javax.swing.JButton Xóa;
+    private javax.swing.JButton btnDuyetThanhToan;
     private javax.swing.JButton btnHuyDonQuaHan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
