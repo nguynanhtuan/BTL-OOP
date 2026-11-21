@@ -35,11 +35,14 @@ public class AdminFrame extends javax.swing.JFrame {
         this.currentUser = user;
         
         khoaSuaBang();
-        jScrollPane1.getViewport().setBackground(new java.awt.Color(217, 234, 247));
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable1.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTable2.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable3.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTable3.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
+        jTableDuyetThanhToan.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTableDuyetThanhToan.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         loadDataToTable1("Tất cả");
         loadDataToTable2();
         loadDataToTable3("Tất cả");
@@ -84,8 +87,13 @@ public class AdminFrame extends javax.swing.JFrame {
         loadDonChoThanhToan();
         khoaSuaBang();
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTable1.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTable2.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable3.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTable3.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
+        jTableDuyetThanhToan.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        jTableDuyetThanhToan.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         loadDataToTable1("Tất cả");
         loadDataToTable2();
         loadDataToTable3("Tất cả");
@@ -376,7 +384,10 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID", "Tên máy", "Người dùng", "Trạng thái", "Ngày"
             }
         ));
-        jTable1.setGridColor(new java.awt.Color(0, 0, 0));
+        jTable1.setGridColor(new java.awt.Color(190, 195, 205));
+        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 1));
+        jTable1.setRowHeight(28);
+        jTable1.setShowHorizontalLines(true);
         jScrollPane1.setViewportView(jTable1);
 
         Duyet.setBackground(new java.awt.Color(51, 255, 51));
@@ -474,6 +485,10 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID", "Username", "Họ tên", "SDT", "Vai trò", "Trạng thái"
             }
         ));
+        jTable2.setGridColor(new java.awt.Color(190, 195, 205));
+        jTable2.setIntercellSpacing(new java.awt.Dimension(0, 1));
+        jTable2.setRowHeight(28);
+        jTable2.setShowHorizontalLines(true);
         jScrollPane2.setViewportView(jTable2);
 
         KhoaTK.setBackground(new java.awt.Color(255, 0, 0));
@@ -558,6 +573,9 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID đơn", "Sản phẩm", "Người bán", "Người mua", "Giá", "Trạng thái", "Ngày xác nhận"
             }
         ));
+        jTable3.setGridColor(new java.awt.Color(190, 195, 205));
+        jTable3.setIntercellSpacing(new java.awt.Dimension(0, 1));
+        jTable3.setShowHorizontalLines(true);
         jScrollPane3.setViewportView(jTable3);
 
         Thatbai.setBackground(new java.awt.Color(255, 0, 0));
@@ -646,6 +664,9 @@ public class AdminFrame extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableDuyetThanhToan.setGridColor(new java.awt.Color(190, 195, 205));
+        jTableDuyetThanhToan.setIntercellSpacing(new java.awt.Dimension(0, 1));
+        jTableDuyetThanhToan.setShowHorizontalLines(true);
         jScrollPane4.setViewportView(jTableDuyetThanhToan);
 
         DuyetThanhToan.setBackground(new java.awt.Color(51, 255, 51));
