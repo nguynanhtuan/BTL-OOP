@@ -18,7 +18,6 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
     public GiaoDienDangNhap() {
         initComponents();
         setLocationRelativeTo(null);
-        getContentPane().setBackground(jPanel2.getBackground());
         try {
             java.net.URL iconURL = getClass().getResource("/icons/logo.png");
             if (iconURL != null) {
@@ -40,6 +39,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
 
         jPasswordField1 = new javax.swing.JPasswordField();
         jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         Dang_Nhap_ = new javax.swing.JButton();
@@ -55,8 +55,9 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
         jButton2.setText("jButton2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(240, 242, 245));
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        setBackground(new java.awt.Color(255, 255, 255));
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+        getContentPane().add(jLabel1);
 
         jPanel2.setBackground(new java.awt.Color(236, 244, 251));
 
@@ -107,7 +108,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
                                     .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                                     .addComponent(Dang_Nhap_, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,10 +129,10 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
                 .addComponent(Dang_Ki_, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(jLabel5)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel2, new java.awt.GridBagConstraints());
+        getContentPane().add(jPanel2);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -232,6 +233,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
     private javax.swing.JButton Dang_Ki_;
     private javax.swing.JButton Dang_Nhap_;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -37,10 +37,7 @@ public class AdminFrame extends javax.swing.JFrame {
         this.currentUser = user;
         
         khoaSuaBang();
-        jScrollPane1.getViewport().setBackground(java.awt.Color.WHITE);
-        jScrollPane2.getViewport().setBackground(java.awt.Color.WHITE);
-        jScrollPane3.getViewport().setBackground(java.awt.Color.WHITE);
-        jScrollPane4.getViewport().setBackground(java.awt.Color.WHITE);
+        jScrollPane1.getViewport().setBackground(new java.awt.Color(217, 234, 247));
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable1.getTableHeader().setBackground(new java.awt.Color(185, 215, 240));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
@@ -88,10 +85,6 @@ public class AdminFrame extends javax.swing.JFrame {
         initComponents();
         loadDonChoThanhToan();
         khoaSuaBang();
-        jScrollPane1.getViewport().setBackground(java.awt.Color.WHITE);
-        jScrollPane2.getViewport().setBackground(java.awt.Color.WHITE);
-        jScrollPane3.getViewport().setBackground(java.awt.Color.WHITE);
-        jScrollPane4.getViewport().setBackground(java.awt.Color.WHITE);
         jTable1.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable2.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         jTable3.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
@@ -337,7 +330,7 @@ public class AdminFrame extends javax.swing.JFrame {
         Thatbai = new javax.swing.JButton();
         Xemchitiet2 = new javax.swing.JButton();
         BanHang = new javax.swing.JButton();
-        Xacminh = new javax.swing.JButton();
+        Kiemtra = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableDuyetThanhToan = new javax.swing.JTable();
@@ -385,10 +378,7 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID", "Tên máy", "Người dùng", "Trạng thái", "Ngày"
             }
         ));
-        jTable1.setGridColor(new java.awt.Color(190, 195, 205));
-        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTable1.setRowHeight(28);
-        jTable1.setShowHorizontalLines(true);
+        jTable1.setGridColor(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(jTable1);
 
         Duyet.setBackground(new java.awt.Color(51, 255, 51));
@@ -423,15 +413,15 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(294, 294, 294)
-                        .addComponent(Xemchitiet, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(Xemchitiet)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Duyet, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                        .addComponent(Duyet)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Tuchoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Tuchoi)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Xóa, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(Xóa))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -453,10 +443,10 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Xóa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Tuchoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Duyet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Xemchitiet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(Xóa)
+                    .addComponent(Tuchoi)
+                    .addComponent(Duyet)
+                    .addComponent(Xemchitiet)))
         );
 
         jTabbedPane1.addTab("Quản lý tin", jPanel1);
@@ -486,10 +476,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID", "Username", "Họ tên", "SDT", "Vai trò", "Trạng thái"
             }
         ));
-        jTable2.setGridColor(new java.awt.Color(190, 195, 205));
-        jTable2.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTable2.setRowHeight(28);
-        jTable2.setShowHorizontalLines(true);
         jScrollPane2.setViewportView(jTable2);
 
         KhoaTK.setBackground(new java.awt.Color(255, 0, 0));
@@ -517,10 +503,10 @@ public class AdminFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(LamMoi2, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(366, 366, 366)
-                        .addComponent(MoKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(MoKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(KhoaTK, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(KhoaTK)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -531,15 +517,13 @@ public class AdminFrame extends javax.swing.JFrame {
                     .addComponent(LamMoi2)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(MoKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(KhoaTK, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(MoKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                    .addComponent(KhoaTK, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {KhoaTK, MoKhoa});
 
         jTabbedPane1.addTab("Quản lý user", jPanel2);
 
@@ -576,10 +560,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 "ID đơn", "Sản phẩm", "Người bán", "Người mua", "Giá", "Trạng thái", "Ngày xác nhận"
             }
         ));
-        jTable3.setGridColor(new java.awt.Color(190, 195, 205));
-        jTable3.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTable3.setRowHeight(28);
-        jTable3.setShowHorizontalLines(true);
         jScrollPane3.setViewportView(jTable3);
 
         Thatbai.setBackground(new java.awt.Color(255, 0, 0));
@@ -600,11 +580,11 @@ public class AdminFrame extends javax.swing.JFrame {
         BanHang.setText("Đã bán ");
         BanHang.addActionListener(this::BanHangActionPerformed);
 
-        Xacminh.setBackground(new java.awt.Color(255, 153, 0));
-        Xacminh.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        Xacminh.setForeground(new java.awt.Color(255, 255, 255));
-        Xacminh.setText("Xác minh");
-        Xacminh.addActionListener(this::XacminhActionPerformed);
+        Kiemtra.setBackground(new java.awt.Color(51, 51, 255));
+        Kiemtra.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Kiemtra.setForeground(new java.awt.Color(255, 255, 255));
+        Kiemtra.setText("Kiểm tra");
+        Kiemtra.addActionListener(this::KiemtraActionPerformed);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -622,14 +602,14 @@ public class AdminFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(Lammoi3, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                .addGap(254, 254, 254)
-                                .addComponent(Xemchitiet2, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(Xemchitiet2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Xacminh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Kiemtra)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(BanHang, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                                .addComponent(BanHang)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Thatbai, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))))
+                                .addComponent(Thatbai, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -645,10 +625,10 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Thatbai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Xemchitiet2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(BanHang, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Xacminh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(Thatbai)
+                    .addComponent(Xemchitiet2)
+                    .addComponent(BanHang)
+                    .addComponent(Kiemtra))
                 .addGap(14, 14, 14))
         );
 
@@ -668,10 +648,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTableDuyetThanhToan.setGridColor(new java.awt.Color(190, 195, 205));
-        jTableDuyetThanhToan.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        jTableDuyetThanhToan.setRowHeight(28);
-        jTableDuyetThanhToan.setShowHorizontalLines(true);
         jScrollPane4.setViewportView(jTableDuyetThanhToan);
 
         btnDuyetThanhToan.setBackground(new java.awt.Color(51, 255, 51));
@@ -704,16 +680,19 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(326, 326, 326)
-                        .addComponent(btnDuyetThanhToan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnDuyetThanhToan)
                         .addGap(18, 18, 18)
-                        .addComponent(btnHuyDonQuaHan, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
+                        .addComponent(btnHuyDonQuaHan))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(Lammoi4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
+
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnDuyetThanhToan, btnHuyDonQuaHan});
+
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
@@ -725,8 +704,8 @@ public class AdminFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDuyetThanhToan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnHuyDonQuaHan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnDuyetThanhToan)
+                    .addComponent(btnHuyDonQuaHan))
                 .addGap(23, 23, 23))
         );
 
@@ -752,14 +731,14 @@ public class AdminFrame extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(506, Short.MAX_VALUE)
+                .addGap(0, 506, Short.MAX_VALUE)
                 .addComponent(DangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(7, 7, 7)
-                .addComponent(DangXuat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 7, Short.MAX_VALUE)
+                .addComponent(DangXuat))
         );
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.PAGE_END);
@@ -1148,7 +1127,7 @@ public class AdminFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BanHangActionPerformed
 
-    private void XacminhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XacminhActionPerformed
+    private void KiemtraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KiemtraActionPerformed
         int row = jTable3.getSelectedRow();
 
         if (row == -1) {
@@ -1202,7 +1181,7 @@ public class AdminFrame extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
         }
-    }//GEN-LAST:event_XacminhActionPerformed
+    }//GEN-LAST:event_KiemtraActionPerformed
 
     private void btnDuyetThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuyetThanhToanActionPerformed
         int selectedRow = jTableDuyetThanhToan.getSelectedRow();
@@ -1386,6 +1365,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JButton DangXuat;
     private javax.swing.JButton Duyet;
     private javax.swing.JButton KhoaTK;
+    private javax.swing.JButton Kiemtra;
     private javax.swing.JButton LamMoi;
     private javax.swing.JButton LamMoi2;
     private javax.swing.JButton Lammoi3;
@@ -1395,7 +1375,6 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> ThanhTim1;
     private javax.swing.JButton Thatbai;
     private javax.swing.JButton Tuchoi;
-    private javax.swing.JButton Xacminh;
     private javax.swing.JButton Xemchitiet;
     private javax.swing.JButton Xemchitiet2;
     private javax.swing.JButton Xóa;
