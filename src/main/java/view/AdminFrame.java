@@ -31,6 +31,8 @@ public class AdminFrame extends javax.swing.JFrame {
     // Hàm khởi tạo nhận đối tượng User theo đúng quy chuẩn của nhóm
     public AdminFrame(model.User user) {
         initComponents();
+        setLocationRelativeTo(null);
+        
         loadDonChoThanhToan();
         this.currentUser = user;
         

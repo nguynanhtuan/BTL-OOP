@@ -174,8 +174,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
             model.User user = userDAO.login(username, password); 
 
             if (user != null) {
-                // Hiển thị thông báo chuyển đến trang chủ theo đúng yêu cầu
-                javax.swing.JOptionPane.showMessageDialog(this, "Chuyển đến trang chủ");
+                
 
                 // Đóng form đăng nhập lại
                 this.dispose();
@@ -205,6 +204,10 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        new Thread(() -> {
+        try (java.sql.Connection c = util.DBConnection.getConnection()) { }
+        catch (Exception e) { e.printStackTrace(); }
+    }).start();
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -221,7 +224,7 @@ public class GiaoDienDangNhap extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new GiaoDienDangNhap().setVisible(true));
     }
