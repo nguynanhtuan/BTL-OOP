@@ -16,7 +16,7 @@ public class DBConnection {
         + "&useServerPrepStmts=true";
 
     private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_yQcSYQwX9SJ1ptJXJ35";
+    private static final String PASSWORD = "ok";
 
     private static final HikariDataSource ds;
 
