@@ -314,6 +314,7 @@ public class Main extends javax.swing.JFrame {
         ));
         jTable1.setShowHorizontalLines(true);
         jTable1.setShowVerticalLines(true);
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
 
         jButton6.setBackground(new java.awt.Color(0, 255, 0));
@@ -421,6 +422,7 @@ public class Main extends javax.swing.JFrame {
             }
         ));
         jTableDonMua.setShowGrid(false);
+        jTableDonMua.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTableDonMua);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -470,6 +472,7 @@ public class Main extends javax.swing.JFrame {
         ));
         jTableDonBan.setShowHorizontalLines(true);
         jTableDonBan.setShowVerticalLines(true);
+        jTableDonBan.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jTableDonBan);
 
         btnXemChiTietDonBan.setBackground(new java.awt.Color(0, 255, 0));
@@ -545,6 +548,7 @@ public class Main extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblQuanLyTin.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tblQuanLyTin);
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
@@ -959,6 +963,7 @@ if (dialog.isCanceled()) {
 
             if (selectedPhone != null) {
                 ChiTietSP chiTiet = new ChiTietSP(this, true, selectedPhone, currentUser);
+                chiTiet.setSize(750, 650);
                 chiTiet.setLocationRelativeTo(this);
                 chiTiet.setVisible(true);
                 loadDanhSachMay();

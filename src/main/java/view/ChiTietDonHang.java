@@ -24,52 +24,73 @@ public class ChiTietDonHang extends javax.swing.JDialog {
     }
     
    private void loadDuLieuDonHang(int orderId) {
-    model.OrderDetail d = new dao.OrderDAO().getOrderDetail(orderId);
+        model.OrderDetail d = new dao.OrderDAO().getOrderDetail(orderId);
 
-    if (d == null) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin đơn hàng!");
-        dispose();
-        return;
-    }
-
-    lblTenMay.setText("Tên máy: " + d.getPhoneName());
-    lblGia.setText("Giá: " + String.format("%,.0f VNĐ", d.getPrice()));
-    lblTrangThai.setText("Trạng thái đơn: " + d.getStatus());
-
-    lblNguoiMua.setText("Người mua: " + d.getBuyerName());
-    lblNguoiBan.setText("Người bán: " + d.getSellerName());
-
-    String nganHang = d.getBankName();
-    String stk = d.getBankAccount();
-    lblNganHang.setText("Ngân hàng: " + (nganHang != null ? nganHang : "Chưa cập nhật"));
-    lblSTK.setText("Số tài khoản: " + (stk != null ? stk : "Chưa cập nhật"));
-
-    String imgName = d.getImagePath();
-    if (imgName != null && !imgName.trim().isEmpty()) {
-        File fileAnh = new File("images/" + imgName);
-        if (fileAnh.exists()) {
-    ImageIcon goc = new ImageIcon(fileAnh.getAbsolutePath());
-    int khungW = 140;
-    int khungH = 187;
-
-    // Giữ tỉ lệ: co ảnh vừa trong khung, không bị méo
-    double tiLe = Math.min((double) khungW / goc.getIconWidth(),
-                           (double) khungH / goc.getIconHeight());
-    int w = (int) (goc.getIconWidth() * tiLe);
-    int h = (int) (goc.getIconHeight() * tiLe);
-
-    Image img = goc.getImage().getScaledInstance(140, 187, Image.SCALE_SMOOTH);
-    lblAnh.setIcon(new ImageIcon(img));
-    lblAnh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    lblAnh.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
-    lblAnh.setText("");
-} else {
-            lblAnh.setText("Lỗi file ảnh");
+        if (d == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin đơn hàng!");
+            dispose();
+            return;
         }
-    } else {
-        lblAnh.setText("Không có ảnh");
+
+        lblTenMay.setText("Tên máy: " + d.getPhoneName());
+        lblGia.setText("Giá: " + String.format("%,.0f VNĐ", d.getPrice()));
+        lblTrangThai.setText("Trạng thái đơn: " + d.getStatus());
+
+        lblNguoiMua.setText("Người mua: " + d.getBuyerName());
+        lblNguoiBan.setText("Người bán: " + d.getSellerName());
+
+        // 1. Hiển thị Ngân hàng & STK của Người bán (có sẵn trong OrderDetail)
+        String nganHang = d.getBankName();
+        String stk = d.getBankAccount();
+        lblNganHang.setText("Ngân hàng: " + (nganHang != null && !nganHang.isEmpty() ? nganHang : "Chưa cập nhật"));
+        lblSTK.setText("Số tài khoản: " + (stk != null && !stk.isEmpty() ? stk : "Chưa cập nhật"));
+
+        // 2. Lấy thêm Ngân hàng & STK của Người mua từ bảng users
+        String sqlBuyerBank = "SELECT u.bank_name, u.bank_account FROM orders o "
+                            + "JOIN users u ON o.buyer_id = u.id WHERE o.id = ?";
+        try (java.sql.Connection conn = util.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sqlBuyerBank)) {
+            pst.setInt(1, orderId);
+            try (java.sql.ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    String nhMua = rs.getString("bank_name");
+                    String stkMua = rs.getString("bank_account");
+                    lblNganHangNguoiMua.setText("Ngân hàng: " + (nhMua != null && !nhMua.isEmpty() ? nhMua : "Chưa cập nhật"));
+                    lblSTKNguoiMua.setText("Số tài khoản: " + (stkMua != null && !stkMua.isEmpty() ? stkMua : "Chưa cập nhật"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblNganHangNguoiMua.setText("Ngân hàng: Lỗi tải dữ liệu");
+            lblSTKNguoiMua.setText("Số tài khoản: Lỗi tải dữ liệu");
+        }
+
+        // 3. Hiển thị ảnh sản phẩm
+        String imgName = d.getImagePath();
+        if (imgName != null && !imgName.trim().isEmpty()) {
+            File fileAnh = new File("images/" + imgName);
+            if (fileAnh.exists()) {
+                ImageIcon goc = new ImageIcon(fileAnh.getAbsolutePath());
+                int khungW = 140;
+                int khungH = 187;
+
+                double tiLe = Math.min((double) khungW / goc.getIconWidth(),
+                                       (double) khungH / goc.getIconHeight());
+                int w = (int) (goc.getIconWidth() * tiLe);
+                int h = (int) (goc.getIconHeight() * tiLe);
+
+                Image img = goc.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                lblAnh.setIcon(new ImageIcon(img));
+                lblAnh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                lblAnh.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+                lblAnh.setText("");
+            } else {
+                lblAnh.setText("Lỗi file ảnh");
+            }
+        } else {
+            lblAnh.setText("Không có ảnh");
+        }
     }
-}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -97,6 +118,8 @@ public class ChiTietDonHang extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        lblSTKNguoiMua = new javax.swing.JLabel();
+        lblNganHangNguoiMua = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
@@ -144,6 +167,10 @@ public class ChiTietDonHang extends javax.swing.JDialog {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setText("Mọi thắc mắc vui lòng liên hệ admin(Zalo): 0393163529");
 
+        lblSTKNguoiMua.setText("Số tài khoản : 6969696969");
+
+        lblNganHangNguoiMua.setText("Ngân hàng : Ancuopbank");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -174,17 +201,18 @@ public class ChiTietDonHang extends javax.swing.JDialog {
                                         .addGap(42, 42, 42)
                                         .addComponent(lblAnh, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(10, 10, 10)
-                                        .addComponent(lblNguoiMua)))
+                                        .addGap(24, 24, 24)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblSTKNguoiMua)
+                                            .addComponent(lblNguoiMua)
+                                            .addComponent(lblNganHangNguoiMua))))
                                 .addGap(112, 112, 112)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                             .addGap(64, 64, 64)
                                             .addComponent(lblTenMay))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(lblGia)))
+                                        .addComponent(lblGia, javax.swing.GroupLayout.Alignment.TRAILING))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(59, 59, 59)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,7 +220,7 @@ public class ChiTietDonHang extends javax.swing.JDialog {
                                             .addComponent(lblTrangThai)
                                             .addComponent(lblNganHang)
                                             .addComponent(lblSTK))))))))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,10 +242,14 @@ public class ChiTietDonHang extends javax.swing.JDialog {
                     .addComponent(lblNguoiBan)
                     .addComponent(lblNguoiMua))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblNganHang)
-                .addGap(18, 18, 18)
-                .addComponent(lblSTK)
-                .addGap(17, 17, 17)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNganHang)
+                    .addComponent(lblNganHangNguoiMua))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSTK)
+                    .addComponent(lblSTKNguoiMua))
+                .addGap(23, 23, 23)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
@@ -261,9 +293,11 @@ public class ChiTietDonHang extends javax.swing.JDialog {
     private javax.swing.JLabel lblAnh;
     private javax.swing.JLabel lblGia;
     private javax.swing.JLabel lblNganHang;
+    private javax.swing.JLabel lblNganHangNguoiMua;
     private javax.swing.JLabel lblNguoiBan;
     private javax.swing.JLabel lblNguoiMua;
     private javax.swing.JLabel lblSTK;
+    private javax.swing.JLabel lblSTKNguoiMua;
     private javax.swing.JLabel lblTenMay;
     private javax.swing.JLabel lblTrangThai;
     // End of variables declaration//GEN-END:variables
