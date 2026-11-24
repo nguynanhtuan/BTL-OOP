@@ -48,9 +48,7 @@ public class DangBanDT extends javax.swing.JDialog {
         jTextField1 = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
         Chon_File_ = new javax.swing.JButton();
-        jTextField4 = new javax.swing.JTextField();
         Nut_Huy_ = new javax.swing.JButton();
         Nut_Luu_ = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -60,6 +58,10 @@ public class DangBanDT extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
 
         jToggleButton1.setText("jToggleButton1");
 
@@ -80,8 +82,6 @@ public class DangBanDT extends javax.swing.JDialog {
 
         Chon_File_.setText("Chọn File");
         Chon_File_.addActionListener(this::Chon_File_ActionPerformed);
-
-        jTextField4.addActionListener(this::jTextField4ActionPerformed);
 
         Nut_Huy_.setBackground(new java.awt.Color(255, 102, 0));
         Nut_Huy_.setText("Hủy");
@@ -108,6 +108,18 @@ public class DangBanDT extends javax.swing.JDialog {
         jLabel1.setText("ĐĂNG BÁN ĐIỆN THOẠI");
         jLabel1.setToolTipText("IÊN");
 
+        jTextArea1.setColumns(20);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(5);
+        jTextArea1.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jTextArea2.setColumns(20);
+        jTextArea2.setLineWrap(true);
+        jTextArea2.setRows(5);
+        jTextArea2.setWrapStyleWord(true);
+        jScrollPane2.setViewportView(jTextArea2);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -119,32 +131,34 @@ public class DangBanDT extends javax.swing.JDialog {
                         .addComponent(jLabel1))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(26, 26, 26)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField2)
-                                    .addComponent(jComboBox1, 0, 203, Short.MAX_VALUE)))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addGap(38, 38, 38)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel4)
+                                            .addComponent(jLabel3))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jTextField2)
+                                            .addComponent(jComboBox1, 0, 203, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(48, 48, 48)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField3)
-                                    .addComponent(Chon_File_, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(Chon_File_, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane1)))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField4)))))
-                .addContainerGap(37, Short.MAX_VALUE))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)))))
+                .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -169,19 +183,22 @@ public class DangBanDT extends javax.swing.JDialog {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addGap(20, 20, 20)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jLabel5))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(Chon_File_))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(Nut_Luu_, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Nut_Huy_, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -198,41 +215,13 @@ public class DangBanDT extends javax.swing.JDialog {
 
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    private void Chon_File_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Chon_File_ActionPerformed
-                                                      
-        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "png", "jpeg"));
-        
-        int result = fileChooser.showOpenDialog(this);
-        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-            // LƯU LẠI FILE GỐC
-            selectedImageFile = fileChooser.getSelectedFile(); 
-            imagePath = selectedImageFile.getName(); 
-            
-            javax.swing.JOptionPane.showMessageDialog(this, "Đã chọn ảnh: " + imagePath);
-            
-            // Code hiển thị ảnh nhỏ lên jPanel1 (giữ nguyên như cũ của bạn)
-            try {
-                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(selectedImageFile.getAbsolutePath());
-                java.awt.Image img = icon.getImage().getScaledInstance(jPanel1.getWidth(), jPanel1.getHeight(), java.awt.Image.SCALE_SMOOTH);
-                jPanel1.removeAll();
-                jPanel1.add(new javax.swing.JLabel(new javax.swing.ImageIcon(img)));
-                jPanel1.revalidate();
-                jPanel1.repaint();
-            } catch (Exception e) {
-                System.out.println("Lỗi hiển thị ảnh!");
-            }
-        }
-    
-    }//GEN-LAST:event_Chon_File_ActionPerformed
-
     private void Nut_Luu_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_Luu_ActionPerformed
                                                    
         String tenMay = jTextField1.getText().trim();
         String hang = jComboBox1.getSelectedItem().toString();
         String giaStr = jTextField2.getText().trim();
-        String moTa = jTextField3.getText().trim();
-        String videoLink = jTextField4.getText().trim();
+        String moTa = jTextArea1.getText().trim();
+        String videoLink = jTextArea2.getText().trim();
         
         if (tenMay.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng nhập tên máy!");
@@ -330,10 +319,6 @@ public class DangBanDT extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_Nut_Huy_ActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
-
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
@@ -341,6 +326,34 @@ public class DangBanDT extends javax.swing.JDialog {
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void Chon_File_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Chon_File_ActionPerformed
+
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "png", "jpeg"));
+
+        int result = fileChooser.showOpenDialog(this);
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            // LƯU LẠI FILE GỐC
+            selectedImageFile = fileChooser.getSelectedFile();
+            imagePath = selectedImageFile.getName();
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Đã chọn ảnh: " + imagePath);
+
+            // Code hiển thị ảnh nhỏ lên jPanel1 (giữ nguyên như cũ của bạn)
+            try {
+                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(selectedImageFile.getAbsolutePath());
+                java.awt.Image img = icon.getImage().getScaledInstance(jPanel1.getWidth(), jPanel1.getHeight(), java.awt.Image.SCALE_SMOOTH);
+                jPanel1.removeAll();
+                jPanel1.add(new javax.swing.JLabel(new javax.swing.ImageIcon(img)));
+                jPanel1.revalidate();
+                jPanel1.repaint();
+            } catch (Exception e) {
+                System.out.println("Lỗi hiển thị ảnh!");
+            }
+        }
+
+    }//GEN-LAST:event_Chon_File_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -393,10 +406,12 @@ public class DangBanDT extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 }
