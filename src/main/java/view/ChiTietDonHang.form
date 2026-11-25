@@ -110,7 +110,7 @@
                           <Component id="lblTenMay" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="lblGia" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="lblTrangThai" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="lblAnh" min="-2" pref="186" max="-2" attributes="0"/>

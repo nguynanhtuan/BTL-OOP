@@ -240,7 +240,7 @@ public class ChiTietDonHang extends javax.swing.JDialog {
                         .addComponent(lblTenMay)
                         .addGap(18, 18, 18)
                         .addComponent(lblGia)
-                        .addGap(30, 30, 30)
+                        .addGap(18, 18, 18)
                         .addComponent(lblTrangThai))
                     .addComponent(lblAnh, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
