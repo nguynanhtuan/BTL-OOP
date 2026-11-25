@@ -8,14 +8,14 @@ public class Order {
     private double price;
     private String status;
     private java.util.Date createdAt;
-    private java.util.Date confirmedAt; // Ngày xác nhận đơn
+    private java.util.Date confirmedAt; 
     private java.util.Date paidAt;
     private java.util.Date checkedAt;
 
     public Order() {
     }
 
-    // Đã thêm confirmedAt vào Constructor đầy đủ
+   
     public Order(int id, int phoneId, int buyerId, int sellerId,
                  double price, String status, java.util.Date createdAt, java.util.Date confirmedAt,java.util.Date paidAt,java.util.Date checkedAt) {
         this.id = id;
@@ -56,7 +56,7 @@ public class Order {
         this.createdAt = createdAt;
     }
 
-    // --- THÊM 2 HÀM NÀY ĐỂ HẾT LỖI ĐỎ BÊN DAO ---
+   
     public java.util.Date getConfirmedAt() {
         return confirmedAt;
     }
@@ -79,7 +79,7 @@ public class Order {
     public void setCheckedAt(java.util.Date checkedAt) {
         this.checkedAt = checkedAt;
     }
-    // ---------------------------------------------
+  
 
     @Override
     public String toString() {

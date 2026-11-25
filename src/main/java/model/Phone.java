@@ -7,7 +7,7 @@ public class Phone {
     private double price;
     private String description;
     private String imagePath;
-    private String videoPath; // Đã đưa lên đây cho gọn
+    private String videoPath; 
     private String status;
     private int userId;
     private java.util.Date createdAt; 
@@ -15,7 +15,7 @@ public class Phone {
     public Phone() {
     }
 
-    // Đã thêm videoPath và createdAt vào Constructor đầy đủ
+    
     public Phone(int id, String name, String brand, double price,
                  String description, String imagePath, String videoPath, String status, int userId, java.util.Date createdAt) {
         this.id = id;

@@ -36,4 +36,9 @@ public class OrderDetail {
 
     public String getBankAccount() { return bankAccount; }
     public void setBankAccount(String bankAccount) { this.bankAccount = bankAccount; }
+    
+    private int phoneId;
+
+    public int getPhoneId() { return phoneId; }
+    public void setPhoneId(int phoneId) { this.phoneId = phoneId; } 
 }

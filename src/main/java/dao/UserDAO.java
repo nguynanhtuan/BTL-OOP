@@ -10,7 +10,7 @@ import util.DBConnection;
 
 public class UserDAO {
 
-    // ==================== ĐĂNG NHẬP ====================
+  
     public User login(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ? AND status != 'LOCKED'";
         try (Connection conn = DBConnection.getConnection();
@@ -49,7 +49,7 @@ public class UserDAO {
     return null;
 }
 
-    // ==================== ĐĂNG KÝ ====================
+   
     public boolean register(User u) {
         if (findByUsername(u.getUsername()) != null) {
             return false;
@@ -63,7 +63,7 @@ public class UserDAO {
             ps.setString(2, u.getPassword());
             ps.setString(3, u.getFullName());
             ps.setString(4, u.getPhoneNumber());
-            ps.setString(5, u.getBankAccount()); // Thêm số tài khoản
+            ps.setString(5, u.getBankAccount()); 
             ps.setString(6, u.getBankName());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class UserDAO {
         return false;
     }
 
-    // ==================== TÌM THEO USERNAME ====================
+
     public User findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -89,7 +89,7 @@ public class UserDAO {
         return null;
     }
 
-    // ==================== TÌM THEO ID ====================
+   
     public User findById(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -106,7 +106,7 @@ public class UserDAO {
         return null;
     }
 
-    // ==================== LẤY TẤT CẢ USER ====================
+  
     public List<User> findAll() {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM users ORDER BY id";
@@ -123,7 +123,7 @@ public class UserDAO {
         return list;
     }
 
-    // ==================== CẬP NHẬT TRẠNG THÁI (Khóa/Mở khóa) ====================
+   
     public boolean updateStatus(int userId, String status) {
         String sql = "UPDATE users SET status = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -138,7 +138,7 @@ public class UserDAO {
         return false;
     }
 
-    // ==================== CẬP NHẬT THÔNG TIN NGÂN HÀNG ====================
+   
     public boolean updateBankInfo(int userId, String bankAccount, String bankName) {
         String sql = "UPDATE users SET bank_account = ?, bank_name = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -171,7 +171,7 @@ public class UserDAO {
         return false;
     }   
 
-    // ==================== HÀM PHỤ ====================
+
     private User mapRow(ResultSet rs) throws Exception {
         User u = new User();
         u.setId(rs.getInt("id"));
@@ -182,7 +182,7 @@ public class UserDAO {
         u.setRole(rs.getString("role"));
         u.setStatus(rs.getString("status")); 
         
-        // Lấy thông tin ngân hàng từ Database
+        
         u.setBankAccount(rs.getString("bank_account"));
         u.setBankName(rs.getString("bank_name"));
         

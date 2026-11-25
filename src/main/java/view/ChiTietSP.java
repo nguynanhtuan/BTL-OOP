@@ -37,7 +37,8 @@ public class ChiTietSP extends javax.swing.JDialog {
         jLabel9.setText(currentPhone.getName());
         jLabel10.setText(currentPhone.getBrand());
         jLabel11.setText(String.format("%,.0f", currentPhone.getPrice()) + " VNĐ");
-        jLabel12.setText("<html>" + currentPhone.getDescription() + "</html>"); 
+        txtMoTa.setText(currentPhone.getDescription());
+        txtMoTa.setCaretPosition(0);
         // 👉 THÊM ĐOẠN NÀY: Hiển thị ID máy lên jLabel18
         jLabel18.setText(String.valueOf(currentPhone.getId()));
 
@@ -85,55 +86,28 @@ public class ChiTietSP extends javax.swing.JDialog {
 
     // Hàm phụ: Chuyên xử lý việc load và hiển thị ảnh
     private void hienThiAnh() {
-        // Xóa những gì đang có trong khung ảnh (nếu có)
-        jPanel1.removeAll(); 
-        
-        // Ép layout cho jPanel1 để nhãn ảnh không bị co lại bằng 0
-        jPanel1.setLayout(new java.awt.BorderLayout()); 
+    jPanel1.removeAll();
+    jPanel1.setLayout(new java.awt.BorderLayout());
 
-        String imgName = currentPhone.getImagePath();
-        
-        // Trường hợp 1: Không có tên file ảnh trong Database
-        if (imgName == null || imgName.trim().isEmpty()) {
-            javax.swing.JLabel lblNoImage = new javax.swing.JLabel("Không có ảnh", javax.swing.SwingConstants.CENTER);
-            lblNoImage.setFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 12));
-            jPanel1.add(lblNoImage, java.awt.BorderLayout.CENTER);
-        } 
-        // Trường hợp 2: Có tên file ảnh
-        else {
-            try {
-                // Đường dẫn tới thư mục images của project
-                String fullPath = "images/" + imgName;
-                java.io.File fileAnh = new java.io.File(fullPath);
+    byte[] data = new dao.PhoneDAO().getImageData(currentPhone.getId());
 
-                // Kiểm tra xem file ảnh có thực sự tồn tại trong máy không
-                if (fileAnh.exists()) {
-                    javax.swing.ImageIcon icon = new javax.swing.ImageIcon(fullPath);
-                    // Lấy kích thước hiện tại của jPanel1 để resize ảnh cho vừa
-                    int w = jPanel1.getWidth() > 0 ? jPanel1.getWidth() : 132;
-                    int h = jPanel1.getHeight() > 0 ? jPanel1.getHeight() : 110;
-                    
-                    java.awt.Image img = icon.getImage().getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
-                    javax.swing.JLabel lblImage = new javax.swing.JLabel(new javax.swing.ImageIcon(img));
-                    lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-                    
-                    jPanel1.add(lblImage, java.awt.BorderLayout.CENTER);
-                } else {
-                    // Có tên trong DB nhưng không tìm thấy file trong thư mục
-                    javax.swing.JLabel lblError = new javax.swing.JLabel("Không tìm thấy file", javax.swing.SwingConstants.CENTER);
-                    lblError.setForeground(java.awt.Color.RED);
-                    jPanel1.add(lblError, java.awt.BorderLayout.CENTER);
-                    System.out.println("Lỗi: Không tìm thấy file tại " + fileAnh.getAbsolutePath());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        
-        // Làm mới khung ảnh để nó vẽ lại
-        jPanel1.revalidate();
-        jPanel1.repaint();
+    if (data == null || data.length == 0) {
+        javax.swing.JLabel lbl = new javax.swing.JLabel("Không có ảnh", javax.swing.SwingConstants.CENTER);
+        lbl.setFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 12));
+        jPanel1.add(lbl, java.awt.BorderLayout.CENTER);
+    } else {
+        int w = jPanel1.getWidth() > 0 ? jPanel1.getWidth() : 200;
+        int h = jPanel1.getHeight() > 0 ? jPanel1.getHeight() : 196;
+        java.awt.Image img = new javax.swing.ImageIcon(data).getImage()
+                .getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
+        javax.swing.JLabel lblImage = new javax.swing.JLabel(new javax.swing.ImageIcon(img));
+        lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel1.add(lblImage, java.awt.BorderLayout.CENTER);
     }
+
+    jPanel1.revalidate();
+    jPanel1.repaint();
+}
     // ... (các phần khác giữ nguyên)
 
     /**
@@ -158,7 +132,6 @@ public class ChiTietSP extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -167,6 +140,8 @@ public class ChiTietSP extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         Mua_Ngay_ = new javax.swing.JButton();
         Nut_Dong_ = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtMoTa = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
@@ -208,8 +183,6 @@ public class ChiTietSP extends javax.swing.JDialog {
 
         jLabel5.setText("Mô tả:");
 
-        jLabel12.setText("Phần Mô tả");
-
         jLabel15.setText("Video chi tiết:");
 
         jLabel16.setText("Link vd");
@@ -230,6 +203,14 @@ public class ChiTietSP extends javax.swing.JDialog {
         Nut_Dong_.setBackground(new java.awt.Color(255, 102, 0));
         Nut_Dong_.setText("Đóng");
         Nut_Dong_.addActionListener(this::Nut_Dong_ActionPerformed);
+
+        txtMoTa.setEditable(false);
+        txtMoTa.setColumns(20);
+        txtMoTa.setLineWrap(true);
+        txtMoTa.setRows(5);
+        txtMoTa.setWrapStyleWord(true);
+        txtMoTa.setOpaque(false);
+        jScrollPane1.setViewportView(txtMoTa);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -252,27 +233,20 @@ public class ChiTietSP extends javax.swing.JDialog {
                         .addGap(34, 34, 34)
                         .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
                                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)
-                                .addComponent(jLabel18))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel15)
                                 .addGap(18, 18, 18)
@@ -280,8 +254,16 @@ public class ChiTietSP extends javax.swing.JDialog {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4))
+                                .addGap(34, 34, 34)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel18))))
+                        .addContainerGap(69, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,11 +291,12 @@ public class ChiTietSP extends javax.swing.JDialog {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(70, 70, 70)
-                                .addComponent(jLabel5))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel5)
+                                .addGap(59, 59, 59))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel15)
                             .addComponent(jLabel16))
@@ -404,7 +387,6 @@ public class ChiTietSP extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -421,5 +403,7 @@ public class ChiTietSP extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea txtMoTa;
     // End of variables declaration//GEN-END:variables
 }
