@@ -289,9 +289,14 @@ public class DangBanDT extends javax.swing.JDialog {
             phone.setStatus("PENDING");      
                System.out.println("USER ID HIỆN TẠI LÀ: " + currentUser.getId());
             dao.PhoneDAO phoneDAO = new dao.PhoneDAO();
-            boolean success = phoneDAO.insert(phone); 
+            int newId = phoneDAO.insert(phone);
+boolean success = newId > 0;
+if (success) {
+    // Lưu ảnh vào database để máy khác cũng xem được
+    phoneDAO.updateImage(newId, selectedImageFile);
+}
 
-            if (success) {
+if (success) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Đăng bán thành công! Vui lòng chờ Admin duyệt.");
                 this.dispose(); 
             } else {

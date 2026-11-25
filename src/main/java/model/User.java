@@ -8,13 +8,13 @@ public class User {
     private String phoneNumber;
     private String role;
     private String status;
-    private String bankAccount; // Số tài khoản
-    private String bankName;    // Tên ngân hàng
+    private String bankAccount;
+    private String bankName;    
 
     public User() {
     }
 
-    // Cập nhật Constructor đầy đủ (thêm bankAccount và bankName)
+    
     public User(int id, String username, String password, String fullName, String phoneNumber, String role, String bankAccount, String bankName) {
         this.id = id;
         this.username = username;
@@ -26,7 +26,7 @@ public class User {
         this.bankName = bankName;
     }
 
-    // ==================== GETTER & SETTER ====================
+    
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

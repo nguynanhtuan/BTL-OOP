@@ -23,7 +23,7 @@ public class ChiTietDonHang extends javax.swing.JDialog {
         loadDuLieuDonHang(orderId); // Gọi hàm tải dữ liệu
     }
     
-   private void loadDuLieuDonHang(int orderId) {
+       private void loadDuLieuDonHang(int orderId) {
         model.OrderDetail d = new dao.OrderDAO().getOrderDetail(orderId);
 
         if (d == null) {
@@ -39,13 +39,13 @@ public class ChiTietDonHang extends javax.swing.JDialog {
         lblNguoiMua.setText("Người mua: " + d.getBuyerName());
         lblNguoiBan.setText("Người bán: " + d.getSellerName());
 
-        // 1. Hiển thị Ngân hàng & STK của Người bán (có sẵn trong OrderDetail)
+        // 1. Ngân hàng & STK của Người bán
         String nganHang = d.getBankName();
         String stk = d.getBankAccount();
         lblNganHang.setText("Ngân hàng: " + (nganHang != null && !nganHang.isEmpty() ? nganHang : "Chưa cập nhật"));
         lblSTK.setText("Số tài khoản: " + (stk != null && !stk.isEmpty() ? stk : "Chưa cập nhật"));
 
-        // 2. Lấy thêm Ngân hàng & STK của Người mua từ bảng users
+        // 2. Ngân hàng & STK của Người mua
         String sqlBuyerBank = "SELECT u.bank_name, u.bank_account FROM orders o "
                             + "JOIN users u ON o.buyer_id = u.id WHERE o.id = ?";
         try (java.sql.Connection conn = util.DBConnection.getConnection();
@@ -65,29 +65,36 @@ public class ChiTietDonHang extends javax.swing.JDialog {
             lblSTKNguoiMua.setText("Số tài khoản: Lỗi tải dữ liệu");
         }
 
-        // 3. Hiển thị ảnh sản phẩm
-        String imgName = d.getImagePath();
-        if (imgName != null && !imgName.trim().isEmpty()) {
-            File fileAnh = new File("images/" + imgName);
-            if (fileAnh.exists()) {
-                ImageIcon goc = new ImageIcon(fileAnh.getAbsolutePath());
-                int khungW = 140;
-                int khungH = 187;
-
-                double tiLe = Math.min((double) khungW / goc.getIconWidth(),
-                                       (double) khungH / goc.getIconHeight());
-                int w = (int) (goc.getIconWidth() * tiLe);
-                int h = (int) (goc.getIconHeight() * tiLe);
-
-                Image img = goc.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
-                lblAnh.setIcon(new ImageIcon(img));
-                lblAnh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-                lblAnh.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
-                lblAnh.setText("");
-            } else {
-                lblAnh.setText("Lỗi file ảnh");
-            }
+        // 3. Hiển thị ảnh: ưu tiên database, dự phòng thư mục images
+        ImageIcon goc = null;
+        byte[] data = new dao.PhoneDAO().getImageData(d.getPhoneId());
+        if (data != null && data.length > 0) {
+            goc = new ImageIcon(data);
         } else {
+            String imgName = d.getImagePath();
+            if (imgName != null && !imgName.trim().isEmpty()) {
+                File fileAnh = new File("images/" + imgName);
+                if (fileAnh.exists()) {
+                    goc = new ImageIcon(fileAnh.getAbsolutePath());
+                }
+            }
+        }
+
+        if (goc != null) {
+            int khungW = 140;
+            int khungH = 187;
+            double tiLe = Math.min((double) khungW / goc.getIconWidth(),
+                                   (double) khungH / goc.getIconHeight());
+            int w = (int) (goc.getIconWidth() * tiLe);
+            int h = (int) (goc.getIconHeight() * tiLe);
+
+            Image img = goc.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
+            lblAnh.setIcon(new ImageIcon(img));
+            lblAnh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            lblAnh.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+            lblAnh.setText("");
+        } else {
+            lblAnh.setIcon(null);
             lblAnh.setText("Không có ảnh");
         }
     }
@@ -206,20 +213,19 @@ public class ChiTietDonHang extends javax.swing.JDialog {
                                             .addComponent(lblSTKNguoiMua)
                                             .addComponent(lblNguoiMua)
                                             .addComponent(lblNganHangNguoiMua))))
-                                .addGap(112, 112, 112)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addGap(64, 64, 64)
-                                            .addComponent(lblTenMay))
-                                        .addComponent(lblGia, javax.swing.GroupLayout.Alignment.TRAILING))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(59, 59, 59)
+                                        .addGap(171, 171, 171)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(lblNguoiBan)
-                                            .addComponent(lblTrangThai)
                                             .addComponent(lblNganHang)
-                                            .addComponent(lblSTK))))))))
+                                            .addComponent(lblSTK)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(176, 176, 176)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblGia)
+                                            .addComponent(lblTenMay)
+                                            .addComponent(lblTrangThai))))))))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -234,7 +240,7 @@ public class ChiTietDonHang extends javax.swing.JDialog {
                         .addComponent(lblTenMay)
                         .addGap(18, 18, 18)
                         .addComponent(lblGia)
-                        .addGap(28, 28, 28)
+                        .addGap(30, 30, 30)
                         .addComponent(lblTrangThai))
                     .addComponent(lblAnh, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)

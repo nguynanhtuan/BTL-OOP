@@ -27,7 +27,7 @@ public class DBConnection {
         cfg.setPassword(PASSWORD);
         cfg.setMaximumPoolSize(5);
         cfg.setMinimumIdle(2);
-        cfg.setMaxLifetime(300000);   // 5 phút, tránh server cắt kết nối rảnh
+        cfg.setMaxLifetime(300000);   
         ds = new HikariDataSource(cfg);
     }
 

@@ -86,55 +86,28 @@ public class ChiTietSP extends javax.swing.JDialog {
 
     // Hàm phụ: Chuyên xử lý việc load và hiển thị ảnh
     private void hienThiAnh() {
-        // Xóa những gì đang có trong khung ảnh (nếu có)
-        jPanel1.removeAll(); 
-        
-        // Ép layout cho jPanel1 để nhãn ảnh không bị co lại bằng 0
-        jPanel1.setLayout(new java.awt.BorderLayout()); 
+    jPanel1.removeAll();
+    jPanel1.setLayout(new java.awt.BorderLayout());
 
-        String imgName = currentPhone.getImagePath();
-        
-        // Trường hợp 1: Không có tên file ảnh trong Database
-        if (imgName == null || imgName.trim().isEmpty()) {
-            javax.swing.JLabel lblNoImage = new javax.swing.JLabel("Không có ảnh", javax.swing.SwingConstants.CENTER);
-            lblNoImage.setFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 12));
-            jPanel1.add(lblNoImage, java.awt.BorderLayout.CENTER);
-        } 
-        // Trường hợp 2: Có tên file ảnh
-        else {
-            try {
-                // Đường dẫn tới thư mục images của project
-                String fullPath = "images/" + imgName;
-                java.io.File fileAnh = new java.io.File(fullPath);
+    byte[] data = new dao.PhoneDAO().getImageData(currentPhone.getId());
 
-                // Kiểm tra xem file ảnh có thực sự tồn tại trong máy không
-                if (fileAnh.exists()) {
-                    javax.swing.ImageIcon icon = new javax.swing.ImageIcon(fullPath);
-                    // Lấy kích thước hiện tại của jPanel1 để resize ảnh cho vừa
-                    int w = jPanel1.getWidth() > 0 ? jPanel1.getWidth() : 132;
-                    int h = jPanel1.getHeight() > 0 ? jPanel1.getHeight() : 110;
-                    
-                    java.awt.Image img = icon.getImage().getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
-                    javax.swing.JLabel lblImage = new javax.swing.JLabel(new javax.swing.ImageIcon(img));
-                    lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-                    
-                    jPanel1.add(lblImage, java.awt.BorderLayout.CENTER);
-                } else {
-                    // Có tên trong DB nhưng không tìm thấy file trong thư mục
-                    javax.swing.JLabel lblError = new javax.swing.JLabel("Không tìm thấy file", javax.swing.SwingConstants.CENTER);
-                    lblError.setForeground(java.awt.Color.RED);
-                    jPanel1.add(lblError, java.awt.BorderLayout.CENTER);
-                    System.out.println("Lỗi: Không tìm thấy file tại " + fileAnh.getAbsolutePath());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        
-        // Làm mới khung ảnh để nó vẽ lại
-        jPanel1.revalidate();
-        jPanel1.repaint();
+    if (data == null || data.length == 0) {
+        javax.swing.JLabel lbl = new javax.swing.JLabel("Không có ảnh", javax.swing.SwingConstants.CENTER);
+        lbl.setFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 12));
+        jPanel1.add(lbl, java.awt.BorderLayout.CENTER);
+    } else {
+        int w = jPanel1.getWidth() > 0 ? jPanel1.getWidth() : 200;
+        int h = jPanel1.getHeight() > 0 ? jPanel1.getHeight() : 196;
+        java.awt.Image img = new javax.swing.ImageIcon(data).getImage()
+                .getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
+        javax.swing.JLabel lblImage = new javax.swing.JLabel(new javax.swing.ImageIcon(img));
+        lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel1.add(lblImage, java.awt.BorderLayout.CENTER);
     }
+
+    jPanel1.revalidate();
+    jPanel1.repaint();
+}
     // ... (các phần khác giữ nguyên)
 
     /**
