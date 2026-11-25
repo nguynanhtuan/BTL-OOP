@@ -12,9 +12,8 @@ public class ChiTietSP extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ChiTietSP.class.getName());
 
-        private model.Phone currentPhone;
-        private model.User currentUser;
-        private javax.swing.JScrollPane moTaScrollPane;
+     private model.Phone currentPhone;
+    private model.User currentUser;
     
     
    public ChiTietSP(java.awt.Frame parent, boolean modal, model.Phone phone, model.User user) {
@@ -22,11 +21,9 @@ public class ChiTietSP extends javax.swing.JDialog {
         this.currentPhone = phone;
         this.currentUser = user;
         initComponents();
+        setLocationRelativeTo(parent); 
         
-        styleDetailUI();
-        loadData();
-        setResizable(false);
-        setLocationRelativeTo(parent);  
+        loadData();   
         
         
     }
@@ -34,83 +31,30 @@ public class ChiTietSP extends javax.swing.JDialog {
     public void hideBuyButton() {
         Mua_Ngay_.setVisible(false); 
     }
-    private void styleInfoLabel(javax.swing.JLabel label) {
-        label.setOpaque(true);
-        label.setBackground(java.awt.Color.WHITE);
-        label.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(215, 225, 235)),
-            javax.swing.BorderFactory.createEmptyBorder(7, 10, 7, 10)
-        ));
-    }
-    private void styleDetailUI() {
-    styleInfoLabel(jLabel9);
-    styleInfoLabel(jLabel10);
-    styleInfoLabel(jLabel18);
-    styleInfoLabel(jLabel11);
-    styleInfoLabel(jLabel13);
-    styleInfoLabel(jLabel14);
-
-    jLabel9.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 16));
-    jLabel9.setForeground(new java.awt.Color(45, 55, 65));
-
-    jLabel11.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 16));
-    jLabel11.setForeground(new java.awt.Color(0, 150, 136));
-
-    jLabel10.setForeground(new java.awt.Color(70, 80, 90));
-    jLabel18.setForeground(new java.awt.Color(70, 80, 90));
-    jLabel13.setForeground(new java.awt.Color(70, 80, 90));
-    jLabel14.setForeground(new java.awt.Color(70, 80, 90));
-
-    jTextArea2.setBackground(java.awt.Color.WHITE);
-    jTextArea2.setForeground(new java.awt.Color(60, 60, 60));
-    jTextArea2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 13));
-    jTextArea2.setMargin(new java.awt.Insets(8, 10, 8, 10));
-
-    jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(
-        new java.awt.Color(220, 228, 235)
-    ));
-    jLabel16.setForeground(new java.awt.Color(0, 140, 130));
-    jLabel16.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
-    jLabel16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-}
             // Hàm chính: Đổ dữ liệu chữ và gọi hàm hiển thị ảnh
     private void loadData() {
-        styleInfoLabel(jLabel9);
-        styleInfoLabel(jLabel10);
-        styleInfoLabel(jLabel18);
-        styleInfoLabel(jLabel11);
-        styleInfoLabel(jLabel13);
-        styleInfoLabel(jLabel14);
-        jLabel11.setForeground(new java.awt.Color(0, 150, 136));
-        jLabel11.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 13));
         // 1. Hiển thị thông tin cơ bản
         jLabel9.setText(currentPhone.getName());
         jLabel10.setText(currentPhone.getBrand());
         jLabel11.setText(String.format("%,.0f", currentPhone.getPrice()) + " VNĐ");
-        String desc = currentPhone.getDescription();
-
-        if (desc == null || desc.trim().isEmpty()) {
-            jTextArea2.setText("Không có mô tả");
-        } else {
-            jTextArea2.setText(desc);
-        }
-
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setWrapStyleWord(true);
-        jTextArea2.setEditable(false);
+        txtMoTa.setText(currentPhone.getDescription());
+        txtMoTa.setCaretPosition(0);
         // 👉 THÊM ĐOẠN NÀY: Hiển thị ID máy lên jLabel18
         jLabel18.setText(String.valueOf(currentPhone.getId()));
 
         // 👉 THÊM ĐOẠN NÀY: Xử lý hiển thị link video và sự kiện bấm mở trình duyệt
         String vPath = currentPhone.getVideoPath();
         if (vPath != null && !vPath.trim().isEmpty()) {
-            jLabel16.setText("<html><a href=''>Xem video chi tiết</a></html>");
+            // Hiển thị dạng chữ màu xanh có gạch chân cho giống link web
+            jLabel16.setText("<html><a href=''>" + vPath + "</a></html>");
             jLabel16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
+            
+            // Xóa các sự kiện chuột cũ (nếu có) để tránh bị cộng dồn
             for (java.awt.event.MouseListener ml : jLabel16.getMouseListeners()) {
                 jLabel16.removeMouseListener(ml);
             }
-
+            
+            // Thêm sự kiện bấm vào chữ -> Tự động mở trình duyệt web lên xem video
             jLabel16.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -223,8 +167,8 @@ public class ChiTietSP extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         Mua_Ngay_ = new javax.swing.JButton();
         Nut_Dong_ = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtMoTa = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
@@ -287,14 +231,13 @@ public class ChiTietSP extends javax.swing.JDialog {
         Nut_Dong_.setText("Đóng");
         Nut_Dong_.addActionListener(this::Nut_Dong_ActionPerformed);
 
-        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setRows(5);
-        jTextArea2.setWrapStyleWord(true);
-        jScrollPane2.setViewportView(jTextArea2);
+        txtMoTa.setEditable(false);
+        txtMoTa.setColumns(20);
+        txtMoTa.setLineWrap(true);
+        txtMoTa.setRows(5);
+        txtMoTa.setWrapStyleWord(true);
+        txtMoTa.setOpaque(false);
+        jScrollPane1.setViewportView(txtMoTa);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -308,20 +251,21 @@ public class ChiTietSP extends javax.swing.JDialog {
                 .addGap(27, 27, 27)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Mua_Ngay_, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                    .addComponent(Mua_Ngay_, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
                     .addComponent(Nut_Dong_, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel15)
-                                    .addComponent(jLabel6))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabel3)
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(18, 18, 18)
@@ -331,23 +275,22 @@ public class ChiTietSP extends javax.swing.JDialog {
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel16))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel4))
                                 .addGap(34, 34, 34)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(12, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(34, 34, 34)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel5))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                    .addComponent(jLabel18))))
+                        .addContainerGap(69, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -374,12 +317,13 @@ public class ChiTietSP extends javax.swing.JDialog {
                             .addComponent(jLabel11))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(60, 60, 60)
-                                .addComponent(jLabel5))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(27, 27, 27)
+                                .addGap(70, 70, 70)
+                                .addComponent(jLabel5)
+                                .addGap(59, 59, 59))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel15)
                             .addComponent(jLabel16))
@@ -390,14 +334,13 @@ public class ChiTietSP extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
-                            .addComponent(jLabel14)))
+                            .addComponent(jLabel14)
+                            .addComponent(Nut_Dong_, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39)
-                        .addComponent(Mua_Ngay_, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(Nut_Dong_, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(51, Short.MAX_VALUE))
+                        .addComponent(Mua_Ngay_, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2);
@@ -487,7 +430,7 @@ public class ChiTietSP extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea txtMoTa;
     // End of variables declaration//GEN-END:variables
 }
