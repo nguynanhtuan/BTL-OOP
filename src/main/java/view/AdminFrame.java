@@ -25,10 +25,8 @@ import java.text.DecimalFormat;
  * @author Admin
  */
 public class AdminFrame extends javax.swing.JFrame {
-    // Khai báo biến để lưu thông tin người dùng đang đăng nhập nếu cần dùng sau này
     private model.User currentUser;
 
-    // Hàm khởi tạo nhận đối tượng User theo đúng quy chuẩn của nhóm
     public AdminFrame(model.User user) {
         initComponents();
         setLocationRelativeTo(null);
@@ -48,8 +46,6 @@ public class AdminFrame extends javax.swing.JFrame {
         loadDataToTable1("Tất cả");
         loadDataToTable2();
         loadDataToTable3("Tất cả");
-        // (Tùy chọn) Bạn có thể hiển thị tên Admin lên tiêu đề form hoặc một Label nào đó:
-        // this.setTitle("Trang Quản Trị - Xin chào: " + user.getFullName());
     }
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminFrame.class.getName());
@@ -63,12 +59,10 @@ public class AdminFrame extends javax.swing.JFrame {
         List<User> users = userDAO.findAll();
 
         for (User user : users) {
-            // Lấy đơn hàng người dùng mua
             for (Order order : orderDAO.findByBuyer(user.getId())) {
                 orders.put(order.getId(), order);
             }
 
-            // Lấy đơn hàng người dùng bán
             for (Order order : orderDAO.findBySeller(user.getId())) {
                 orders.put(order.getId(), order);
             }
@@ -76,7 +70,6 @@ public class AdminFrame extends javax.swing.JFrame {
 
         List<Order> list = new ArrayList<>(orders.values());
 
-        // Sắp xếp ID đơn hàng giảm dần
         list.sort(Comparator.comparingInt(Order::getId).reversed());
 
         return list;
@@ -100,8 +93,6 @@ public class AdminFrame extends javax.swing.JFrame {
         loadDataToTable3("Tất cả");
     }
 
-    
-    // Hiển thị danh sách tin đăng trên jTable1
     private void loadDataToTable1(String statusFilter) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
@@ -115,7 +106,6 @@ public class AdminFrame extends javax.swing.JFrame {
             list = phoneDAO.findByStatus(statusFilter);
         }
 
-        // Định dạng ngày/tháng/năm
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         for (Phone p : list) {
@@ -125,7 +115,6 @@ public class AdminFrame extends javax.swing.JFrame {
                     ? u.getUsername()
                     : "Không xác định";
 
-            // Lấy ngày đăng từ Phone
             String ngayDang = "";
 
             if (p.getCreatedAt() != null) {
@@ -144,7 +133,6 @@ public class AdminFrame extends javax.swing.JFrame {
         }
     }
 
-    // Hiển thị danh sách tài khoản trên jTable2
     private void loadDataToTable2() {
         DefaultTableModel model =
                 (DefaultTableModel) jTable2.getModel();
@@ -181,7 +169,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 continue;
             }
 
-            // Lọc trạng thái
             if (!"Tất cả".equals(statusFilter)) {
                 boolean khop =
                         statusFilter.equalsIgnoreCase(status)
@@ -193,7 +180,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 }
             }
 
-            // Lấy thông tin sản phẩm và người dùng
             Phone phone = phoneDAO.findById(order.getPhoneId());
             User seller = userDAO.findById(order.getSellerId());
             User buyer = userDAO.findById(order.getBuyerId());
@@ -296,7 +282,6 @@ public class AdminFrame extends javax.swing.JFrame {
         jTable3.setModel(model3);
     }
     
-    // Hàm phụ trợ lấy ID của dòng đang chọn trên JTable
     private int getSelectedId(int row, javax.swing.JTable table) {
         return Integer.parseInt(table.getValueAt(row, 0).toString());
     }
@@ -775,7 +760,6 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void DangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DangXuatActionPerformed
         // TODO add your handling code here:
-        // Xác nhận đăng xuất
         int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc chắn muốn đăng xuất?",
@@ -783,17 +767,14 @@ public class AdminFrame extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION
         );
 
-        // Nếu chọn Không thì không làm gì
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
 
-        // Mở giao diện đăng nhập
         GiaoDienDangNhap login = new GiaoDienDangNhap();
         login.setLocationRelativeTo(null);
         login.setVisible(true);
 
-        // Đóng giao diện Admin
         this.dispose();
     }//GEN-LAST:event_DangXuatActionPerformed
 
@@ -1025,10 +1006,9 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void Xemchitiet2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Xemchitiet2ActionPerformed
         // TODO add your handling code here:
-         // Lấy dòng đang chọn
+
         int row = jTable3.getSelectedRow();
 
-        // Kiểm tra đã chọn đơn hàng chưa
         if (row == -1) {
             JOptionPane.showMessageDialog(
                     this,
@@ -1037,10 +1017,10 @@ public class AdminFrame extends javax.swing.JFrame {
             return;
         }
 
-        // Lấy ID đơn hàng ở cột đầu tiên
+
         int orderId = getSelectedId(row, jTable3);
 
-        // Mở cửa sổ chi tiết đơn hàng
+
         ChiTietDonHang dialog = new ChiTietDonHang(this, true, orderId);
         dialog.setVisible(true);
     }//GEN-LAST:event_Xemchitiet2ActionPerformed
@@ -1182,7 +1162,7 @@ public class AdminFrame extends javax.swing.JFrame {
         boolean isUpdated = false;
 
         if (newStatus.equals("CHECKED")) {
-            // Khi chuyển sang CHECKED thì lưu thêm ngày giờ kiểm tra xong (checked_at = NOW())
+
             String sql = "UPDATE orders SET status = 'CHECKED', checked_at = NOW() WHERE id = ?";
             try (java.sql.Connection conn = util.DBConnection.getConnection();
                  java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -1192,7 +1172,7 @@ public class AdminFrame extends javax.swing.JFrame {
                 e.printStackTrace();
             }
         } else {
-            // Khi chuyển sang CHECKING thì dùng hàm có sẵn của OrderDAO
+
             isUpdated = orderDAO.updateStatus(id, newStatus);
         }
 
@@ -1220,7 +1200,6 @@ public class AdminFrame extends javax.swing.JFrame {
                 "Duyệt thanh toán", javax.swing.JOptionPane.YES_NO_OPTION);
 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            // ---> ĐẶT ĐOẠN CODE 1 VÀO ĐÂY <---
             String sql = "UPDATE orders SET status = 'CONFIRMED', paid_at = NOW() WHERE id = ?";
             try (java.sql.Connection conn = util.DBConnection.getConnection();
                  java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -1262,29 +1241,28 @@ public class AdminFrame extends javax.swing.JFrame {
             String sqlRestorePhone = "UPDATE phones SET status = 'APPROVED' WHERE id = (SELECT phone_id FROM orders WHERE id = ?)";
 
             try (java.sql.Connection conn = util.DBConnection.getConnection()) {
-                conn.setAutoCommit(false); // Bật Transaction để đảm bảo 2 lệnh chạy cùng lúc
+                conn.setAutoCommit(false); 
 
                 try (java.sql.PreparedStatement pstOrder = conn.prepareStatement(sqlUpdateOrder);
                      java.sql.PreparedStatement pstPhone = conn.prepareStatement(sqlRestorePhone)) {
 
-                    // 1. Mở bán lại điện thoại (SOLD -> APPROVED)
                     pstPhone.setInt(1, orderId);
                     pstPhone.executeUpdate();
 
-                    // 2. Chuyển trạng thái đơn sang CANCELED
+
                     pstOrder.setInt(1, orderId);
                     pstOrder.executeUpdate();
 
-                    conn.commit(); // Xác nhận lưu cả 2 thay đổi
+                    conn.commit(); 
 
                     javax.swing.JOptionPane.showMessageDialog(this, 
                             "Đã huỷ đơn quá hạn và mở bán lại [" + tenMay + "] thành công!", 
                             "Thành công", javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
-                    loadDonChoThanhToan(); // Làm mới lại bảng Admin
+                    loadDonChoThanhToan(); 
 
                 } catch (Exception ex) {
-                    conn.rollback(); // Hoàn tác nếu 1 trong 2 câu lệnh bị lỗi
+                    conn.rollback(); 
                     throw ex;
                 }
             } catch (Exception e) {
@@ -1313,7 +1291,7 @@ public class AdminFrame extends javax.swing.JFrame {
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(null, columnNames);
         jTableDuyetThanhToan.setModel(model);
 
-        // Ẩn cột ID đơn (cột 0)
+
         jTableDuyetThanhToan.getColumnModel().getColumn(0).setMinWidth(0);
         jTableDuyetThanhToan.getColumnModel().getColumn(0).setMaxWidth(0);
         jTableDuyetThanhToan.getColumnModel().getColumn(0).setWidth(0);
@@ -1376,7 +1354,7 @@ public class AdminFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             AdminFrame frame = new AdminFrame();
-            frame.setLocationRelativeTo(null); // Hiện chính giữa màn hình
+            frame.setLocationRelativeTo(null); 
             frame.setVisible(true);
         });
     }
