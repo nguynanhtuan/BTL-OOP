@@ -3,11 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package view;
-
-/**
- *
- * @author Master
- */
 public class ChiTietSP extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ChiTietSP.class.getName());
@@ -22,39 +17,25 @@ public class ChiTietSP extends javax.swing.JDialog {
         this.currentUser = user;
         initComponents();
         setLocationRelativeTo(parent); 
-        
-        loadData();   
-        
-        
+        loadData();         
     }
-       // Hàm ẩn nút Mua Ngay
     public void hideBuyButton() {
         Mua_Ngay_.setVisible(false); 
     }
-            // Hàm chính: Đổ dữ liệu chữ và gọi hàm hiển thị ảnh
     private void loadData() {
-        // 1. Hiển thị thông tin cơ bản
         jLabel9.setText(currentPhone.getName());
         jLabel10.setText(currentPhone.getBrand());
         jLabel11.setText(String.format("%,.0f", currentPhone.getPrice()) + " VNĐ");
         txtMoTa.setText(currentPhone.getDescription());
         txtMoTa.setCaretPosition(0);
-        // 👉 THÊM ĐOẠN NÀY: Hiển thị ID máy lên jLabel18
         jLabel18.setText(String.valueOf(currentPhone.getId()));
-
-        // 👉 THÊM ĐOẠN NÀY: Xử lý hiển thị link video và sự kiện bấm mở trình duyệt
         String vPath = currentPhone.getVideoPath();
         if (vPath != null && !vPath.trim().isEmpty()) {
-            // Hiển thị dạng chữ màu xanh có gạch chân cho giống link web
-            jLabel16.setText("<html><a href=''>" + vPath + "</a></html>");
+            jLabel16.setText("<html><a href=''>Xem video chi tiết</a></html>");
             jLabel16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            
-            // Xóa các sự kiện chuột cũ (nếu có) để tránh bị cộng dồn
             for (java.awt.event.MouseListener ml : jLabel16.getMouseListeners()) {
                 jLabel16.removeMouseListener(ml);
             }
-            
-            // Thêm sự kiện bấm vào chữ -> Tự động mở trình duyệt web lên xem video
             jLabel16.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -68,8 +49,6 @@ public class ChiTietSP extends javax.swing.JDialog {
         } else {
             jLabel16.setText("Không có video");
         }
-
-        // 2. Lấy thông tin người bán từ Database
         dao.UserDAO userDAO = new dao.UserDAO();
         model.User seller = userDAO.findById(currentPhone.getUserId());
         if (seller != null) {
@@ -79,42 +58,32 @@ public class ChiTietSP extends javax.swing.JDialog {
             jLabel13.setText("Không xác định");
             jLabel14.setText("Không xác định");
         }
-        
-        // 3. Gọi hàm hiển thị ảnh
         hienThiAnh();
     }
-
-    // Hàm phụ: Chuyên xử lý việc load và hiển thị ảnh
     private void hienThiAnh() {
-    jPanel1.removeAll();
-    jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel1.removeAll();
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
-    byte[] data = new dao.PhoneDAO().getImageData(currentPhone.getId());
+        byte[] data = new dao.PhoneDAO().getImageData(currentPhone.getId());
 
-    if (data == null || data.length == 0) {
-        javax.swing.JLabel lbl = new javax.swing.JLabel("Không có ảnh", javax.swing.SwingConstants.CENTER);
-        lbl.setFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 12));
-        jPanel1.add(lbl, java.awt.BorderLayout.CENTER);
-    } else {
-        int w = jPanel1.getWidth() > 0 ? jPanel1.getWidth() : 200;
-        int h = jPanel1.getHeight() > 0 ? jPanel1.getHeight() : 196;
-        java.awt.Image img = new javax.swing.ImageIcon(data).getImage()
-                .getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
-        javax.swing.JLabel lblImage = new javax.swing.JLabel(new javax.swing.ImageIcon(img));
-        lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jPanel1.add(lblImage, java.awt.BorderLayout.CENTER);
+        if (data == null || data.length == 0) {
+            javax.swing.JLabel lbl = new javax.swing.JLabel("Không có ảnh", javax.swing.SwingConstants.CENTER);
+            lbl.setFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 12));
+            jPanel1.add(lbl, java.awt.BorderLayout.CENTER);
+        } else {
+            int w = jPanel1.getWidth() > 0 ? jPanel1.getWidth() : 200;
+            int h = jPanel1.getHeight() > 0 ? jPanel1.getHeight() : 196;
+            java.awt.Image img = new javax.swing.ImageIcon(data).getImage()
+                    .getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
+            javax.swing.JLabel lblImage = new javax.swing.JLabel(new javax.swing.ImageIcon(img));
+            lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            jPanel1.add(lblImage, java.awt.BorderLayout.CENTER);
     }
 
     jPanel1.revalidate();
     jPanel1.repaint();
 }
     // ... (các phần khác giữ nguyên)
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -322,27 +291,23 @@ public class ChiTietSP extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void Nut_Dong_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nut_Dong_ActionPerformed
-        // TODO add your handling code here:
+
         this.dispose();
     }//GEN-LAST:event_Nut_Dong_ActionPerformed
 
     private void Mua_Ngay_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mua_Ngay_ActionPerformed
-       
-                                                   
-        // 1. Kiểm tra lỗi: Không cho tự mua máy của chính mình
+
         if (currentPhone.getUserId() == currentUser.getId()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Bạn không thể mua máy của chính mình!");
             return;
         }
 
-        // 2. Kiểm tra lỗi: Đã đặt mua máy này chưa (Tránh spam tạo nhiều đơn)
         dao.OrderDAO orderDAO = new dao.OrderDAO();
         if (orderDAO.existsByPhoneAndBuyer(currentPhone.getId(), currentUser.getId())) {
             javax.swing.JOptionPane.showMessageDialog(this, "Bạn đã đặt mua máy này rồi, vui lòng chờ xác nhận!");
             return;
         }
 
-        // 3. Hỏi xác nhận
         int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
             "Bạn có chắc chắn muốn mua " + currentPhone.getName() + " với giá " + String.format("%,.0f", currentPhone.getPrice()) + " đ?", 
             "Xác nhận mua hàng", 
@@ -350,15 +315,14 @@ public class ChiTietSP extends javax.swing.JDialog {
             
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
             try {
-                // 4. Tạo đối tượng Order và đóng gói dữ liệu
+
                 model.Order order = new model.Order();
                 order.setPhoneId(currentPhone.getId());
                 order.setBuyerId(currentUser.getId());
                 order.setSellerId(currentPhone.getUserId());
                 order.setPrice(currentPhone.getPrice());
-                order.setStatus("PENDING"); // Trạng thái chờ người bán xác nhận
+                order.setStatus("PENDING");
 
-                // 5. Gọi DAO lưu vào Database
                 if (orderDAO.create(order)) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Đặt mua thành công! Vui lòng chờ người bán xác nhận.");
                     this.dispose(); // Đóng form
@@ -374,9 +338,6 @@ public class ChiTietSP extends javax.swing.JDialog {
     
     }//GEN-LAST:event_Mua_Ngay_ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
     
     }

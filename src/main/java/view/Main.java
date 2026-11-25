@@ -15,19 +15,12 @@ import model.Phone;
 import model.User;
 import util.ReadOnlyTableModel;
 
-/**
- * Giao diện chính của người dùng: xem máy, đơn mua, đơn bán, quản lý tin đăng.
- */
 public class Main extends javax.swing.JFrame {
-
-    // ==================== HẰNG SỐ ====================
     private static final String ALL = "Tất cả";
     private static final String UNKNOWN = "Unknown";
 
     private static final java.util.logging.Logger logger =
             java.util.logging.Logger.getLogger(Main.class.getName());
-
-    // ==================== THUỘC TÍNH ====================
     private final PhoneDAO phoneDAO = new PhoneDAO();
     private final UserDAO userDAO = new UserDAO();
     private final OrderDAO orderDAO = new OrderDAO();
@@ -37,19 +30,16 @@ public class Main extends javax.swing.JFrame {
 
     private User currentUser;
     private final int currentUserId;
-
-    // ==================== KHỞI TẠO ====================
-
-    /** Dùng khi chạy thử trực tiếp (không có thông tin đăng nhập). */
+    
     public Main() {
         this((User) null);
     }
 
-    /** Constructor nhận thông tin User từ form Đăng nhập. */
     public Main(User user) {
         this.currentUser = user;
         this.currentUserId = (user != null) ? user.getId() : -1;
         initComponents();
+        tuDongCoGian();
         setLocationRelativeTo(null);
         try {
             java.net.URL iconURL = getClass().getResource("/icons/logo.png");
@@ -64,16 +54,192 @@ public class Main extends javax.swing.JFrame {
         }
         refreshAll();
     }
+    private void tuDongCoGian() {
 
-    /** Nạp dữ liệu cho tất cả các tab. */
+        java.awt.Color nen = jPanel9.getBackground();
+
+        getContentPane().removeAll();
+        getContentPane().setLayout(new java.awt.BorderLayout());
+
+        jPanel9.removeAll();
+        jPanel9.setLayout(new java.awt.BorderLayout(10, 10));
+        jPanel9.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        );
+
+
+        javax.swing.JPanel thanhTren = new javax.swing.JPanel(
+            new java.awt.BorderLayout(10, 10)
+        );
+        thanhTren.setBackground(nen);
+
+        javax.swing.JPanel nhomNut = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 15, 5)
+        );
+        nhomNut.setBackground(nen);
+
+        btnThongTinTaiKhoan.setPreferredSize(
+            new java.awt.Dimension(160, 50)
+        );
+
+        nhomNut.add(btnThongTinTaiKhoan);
+        nhomNut.add(jButton8);
+        nhomNut.add(jButton1);
+
+        thanhTren.add(jLabel1, java.awt.BorderLayout.CENTER);
+        thanhTren.add(nhomNut, java.awt.BorderLayout.EAST);
+
+        jPanel9.add(thanhTren, java.awt.BorderLayout.NORTH);
+        jPanel9.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+
+        // ==================== TAB DANH SACH MAY ====================
+
+        jPanel7.removeAll();
+        jPanel7.setLayout(new java.awt.BorderLayout(10, 10));
+        jPanel7.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
+
+        javax.swing.JPanel timKiem = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 5)
+        );
+        timKiem.setBackground(nen);
+
+        jTextField1.setPreferredSize(
+            new java.awt.Dimension(200, 40)
+        );
+
+        jComboBox1.setPreferredSize(
+            new java.awt.Dimension(160, 40)
+        );
+
+        jButton2.setPreferredSize(
+            new java.awt.Dimension(110, 40)
+        );
+
+        timKiem.add(jLabel2);
+        timKiem.add(jTextField1);
+        timKiem.add(jLabel3);
+        timKiem.add(jComboBox1);
+        timKiem.add(jButton2);
+
+        javax.swing.JPanel nutDanhSach = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 5)
+        );
+        nutDanhSach.setBackground(nen);
+
+        jButton3.setPreferredSize(
+            new java.awt.Dimension(160, 50)
+        );
+
+        nutDanhSach.add(jButton6);
+        nutDanhSach.add(jButton3);
+
+        jPanel7.add(timKiem, java.awt.BorderLayout.NORTH);
+        jPanel7.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel7.add(nutDanhSach, java.awt.BorderLayout.SOUTH);
+        jPanel1.removeAll();
+        jPanel1.setLayout(new java.awt.BorderLayout(10, 10));
+        jPanel1.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
+
+        javax.swing.JPanel nutDonMua = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 5)
+        );
+        nutDonMua.setBackground(nen);
+
+        nutDonMua.add(btnXemChiTietDonMua);
+        nutDonMua.add(btnThanhToan);
+        nutDonMua.add(jButton7);
+
+        jPanel1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        jPanel1.add(nutDonMua, java.awt.BorderLayout.SOUTH);
+        jPanel11.removeAll();
+        jPanel11.setLayout(new java.awt.BorderLayout(10, 10));
+        jPanel11.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
+
+        javax.swing.JPanel nutDonBan = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 5)
+        );
+        nutDonBan.setBackground(nen);
+
+        nutDonBan.add(btnXacNhanDonBan);
+        nutDonBan.add(btnXemChiTietDonBan);
+        nutDonBan.add(jButton5);
+
+        jPanel11.add(jScrollPane3, java.awt.BorderLayout.CENTER);
+        jPanel11.add(nutDonBan, java.awt.BorderLayout.SOUTH);
+
+        jPanel10.removeAll();
+        jPanel10.setLayout(new java.awt.BorderLayout(10, 10));
+        jPanel10.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
+
+        javax.swing.JPanel boLoc = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 5)
+        );
+        boLoc.setBackground(nen);
+
+        cbLocTrangThaiTin.setPreferredSize(
+            new java.awt.Dimension(160, 40)
+        );
+
+        boLoc.add(jLabel4);
+        boLoc.add(cbLocTrangThaiTin);
+
+        javax.swing.JPanel nutQuanLy = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 5)
+        );
+        nutQuanLy.setBackground(nen);
+
+        btnXoaTin.setPreferredSize(
+            new java.awt.Dimension(170, 50)
+        );
+
+        nutQuanLy.add(btnXemChiTietTin);
+        nutQuanLy.add(btnXoaTin);
+
+        jPanel10.add(boLoc, java.awt.BorderLayout.NORTH);
+        jPanel10.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+        jPanel10.add(nutQuanLy, java.awt.BorderLayout.SOUTH);
+        
+        jPanel2.removeAll();
+        jPanel2.setLayout(new java.awt.BorderLayout());
+        jPanel2.add(jPanel7, java.awt.BorderLayout.CENTER);
+
+        jPanel3.removeAll();
+        jPanel3.setLayout(new java.awt.BorderLayout());
+        jPanel3.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jPanel4.removeAll();
+        jPanel4.setLayout(new java.awt.BorderLayout());
+        jPanel4.add(jPanel11, java.awt.BorderLayout.CENTER);
+
+        jPanel8.removeAll();
+        jPanel8.setLayout(new java.awt.BorderLayout());
+        jPanel8.add(jPanel10, java.awt.BorderLayout.CENTER);
+        
+        getContentPane().add(jPanel9, java.awt.BorderLayout.CENTER);
+
+        setTitle("PHONE SHOP");
+        setResizable(true);
+        setMinimumSize(new java.awt.Dimension(850, 550));
+        setSize(1050, 700);
+
+        revalidate();
+        repaint();
+    }
+
     private void refreshAll() {
         loadDanhSachMay();
         loadDonMua();
         loadDonBan();
         loadTinDaDang();
     }
-
-    /** Tên hiển thị của người dùng: họ tên nếu có, không thì username. */
     private String displayName(User u) {
         if (u == null) {
             return UNKNOWN;
@@ -81,7 +247,6 @@ public class Main extends javax.swing.JFrame {
         return u.getFullName() != null ? u.getFullName() : u.getUsername();
     }
 
-    // ==================== TAB DANH SÁCH MÁY ====================
 
     private void loadDanhSachMay() {
         loadDanhSachMay("", ALL);
@@ -122,9 +287,8 @@ public class Main extends javax.swing.JFrame {
         return p.getBrand() != null && p.getBrand().equalsIgnoreCase(brand);
     }
     
-    // Hàm phụ lấy thêm ngày thanh toán (paid_at) và ngày kiểm tra (checked_at) mà không cần sửa Order.java / OrderDAO.java
     private java.sql.Timestamp[] getExtraOrderDates(int orderId) {
-        java.sql.Timestamp[] dates = new java.sql.Timestamp[2]; // [0]: paid_at, [1]: checked_at
+        java.sql.Timestamp[] dates = new java.sql.Timestamp[2];
         String sql = "SELECT paid_at, checked_at FROM orders WHERE id = ?";
         try (java.sql.Connection conn = util.DBConnection.getConnection();
              java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -140,8 +304,6 @@ public class Main extends javax.swing.JFrame {
         }
         return dates;
     }
-    
-    // ==================== TAB ĐƠN MUA ====================
 
     private void loadDonMua() {
         ReadOnlyTableModel model = new ReadOnlyTableModel(
@@ -168,10 +330,7 @@ public class Main extends javax.swing.JFrame {
             });
         }
     }
-
-    // ==================== TAB ĐƠN BÁN ====================
-    
-    
+        
     private void loadDonBan() {
         ReadOnlyTableModel model = new ReadOnlyTableModel(
                 "ID đơn", "Tên máy", "Giá", "Người mua", "Trạng thái", 
@@ -198,7 +357,6 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    // ==================== TAB QUẢN LÝ TIN ĐĂNG ====================
 
     private void loadTinDaDang() {
         ReadOnlyTableModel model = new ReadOnlyTableModel(
@@ -227,7 +385,6 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    /** Lọc tin theo combobox. "Tất cả" không gồm tin đã ngừng bán (CANCELED). */
     private boolean matchesPostFilter(String status, String filter) {
         switch (filter) {
             case "Chờ duyệt":
@@ -240,12 +397,6 @@ public class Main extends javax.swing.JFrame {
                 return !"CANCELED".equals(status);
         }
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -775,15 +926,14 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // 1. (Tùy chọn) Xóa dữ liệu cũ đang nhập trong ô tìm kiếm để lấy toàn bộ danh sách
-    jTextField1.setText("");
-    jComboBox1.setSelectedIndex(0);
+        jTextField1.setText("");
+        jComboBox1.setSelectedIndex(0);
 
-    // 2. Gọi lại 3 hàm lấy dữ liệu từ cơ sở dữ liệu để làm mới cả 3 bảng
-    loadDanhSachMay();
-    loadDonMua();
-    loadDonBan();
-    loadTinDaDang();
+
+        loadDanhSachMay();
+        loadDonMua();
+        loadDonBan();
+        loadTinDaDang();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void cbLocTrangThaiTinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbLocTrangThaiTinActionPerformed
@@ -797,7 +947,6 @@ public class Main extends javax.swing.JFrame {
             return;
         }
 
-        // Lấy trạng thái hiện tại
         String currentStatus = tblQuanLyTin.getValueAt(selectedRow, 4).toString();
         if (currentStatus.equals("SOLD")) {
             javax.swing.JOptionPane.showMessageDialog(this, "Máy đã bán thành công, không thể xóa!");
@@ -873,11 +1022,9 @@ chiTiet.setVisible(true);
         }
 
         try {
-            // Lấy ID đơn hàng ở cột số 0
             int modelRow = jTableDonBan.convertRowIndexToModel(selectedRow);
             int orderId = Integer.parseInt(jTableDonBan.getModel().getValueAt(modelRow, 0).toString());
 
-            // Mở Dialog chi tiết đơn hàng
             view.ChiTietDonHang dialog = new view.ChiTietDonHang(this, true, orderId);
             dialog.setVisible(true);
 
@@ -905,7 +1052,6 @@ new HoSo(this, true, currentUser).setVisible(true);
         int modelRow = jTableDonMua.convertRowIndexToModel(selectedRow);
         String status = jTableDonMua.getModel().getValueAt(modelRow, 4).toString();
 
-        // Chỉ cho phép thanh toán khi người bán đã xác nhận (WAITING_PAYMENT)
         if (!status.equals("WAITING_PAYMENT")) {
             JOptionPane.showMessageDialog(this, 
                     "Chỉ có thể thanh toán cho đơn hàng ở trạng thái WAITING_PAYMENT (Chờ thanh toán)!", 
@@ -993,13 +1139,7 @@ if (dialog.isCanceled()) {
             e.printStackTrace();
         }
     }//GEN-LAST:event_jButton6ActionPerformed
-                       
-                                                                    
 
-   
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -1011,8 +1151,6 @@ if (dialog.isCanceled()) {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             User dummyUser = new User();
             dummyUser.setId(1);
@@ -1023,7 +1161,6 @@ if (dialog.isCanceled()) {
     
 
     private void anCotID(javax.swing.JTable table) {
-    // Ép chiều rộng của cột đầu tiên (cột 0 - chứa ID) về 0 pixel để ẩn đi
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
